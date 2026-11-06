@@ -11,6 +11,8 @@ export const BALANCE = {
   adaptive: { base: 100, bonus: 10, scamShareMin: 0.55, scamShareMax: 0.65 },
   swipe: { cards: 10, seconds: 60, revealMs: 1500 },
   typing: { minMs: 600, maxMs: 1500 },
+  /** After a chat ends: pause before "Lihat apa jadi seterusnya"; consequence step interval; flag hunt wrong taps. */
+  aftermath: { endPauseMs: 800, stepMs: 900, stepMsReduced: 300, meterMs: 1000, wrongTaps: 3 },
   persona: { hookMatch: 40, hookMiss: 10, max: 100 },
   kelas: { pointsCorrect: 100, rounds: 10, minTeams: 2, maxTeams: 6 },
 } as const;

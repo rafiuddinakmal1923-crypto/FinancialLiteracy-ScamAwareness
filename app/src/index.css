@@ -95,3 +95,19 @@ html[data-reduced-motion] .active\:scale-\[\.98\]:active { transform: none; }
 .typing-dot { animation: typing-dot 1.2s ease-in-out infinite; }
 @media (prefers-reduced-motion: reduce) { .typing-dot { animation: none !important; opacity: 0.7; } }
 html[data-reduced-motion] .typing-dot { animation: none !important; opacity: 0.7; }
+
+/* Flag hunt: a wrong tap gives a gentle shake with a soft red flash; reduced motion keeps only the flash. */
+@keyframes flag-shake {
+  0%, 100% { transform: translateX(0); background-color: transparent; }
+  20% { transform: translateX(-3px); background-color: var(--color-danger-soft); }
+  40% { transform: translateX(3px); }
+  60% { transform: translateX(-2px); }
+  80% { transform: translateX(2px); }
+}
+@keyframes flag-flash {
+  0%, 100% { background-color: transparent; }
+  40% { background-color: var(--color-danger-soft); }
+}
+.flag-shake { display: inline-block; animation: flag-shake 320ms ease-in-out; }
+@media (prefers-reduced-motion: reduce) { .flag-shake { animation-name: flag-flash; } }
+html[data-reduced-motion] .flag-shake { animation-name: flag-flash; }

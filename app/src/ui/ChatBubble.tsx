@@ -28,10 +28,11 @@ export type BubbleFrom = 'them' | 'me' | 'system';
 
 /**
  * One chat bubble. `first` marks the first bubble of a run from the same sender: it gets the 4 px tail
- * corner. `sender` is read by screen readers before the text ("Kak Mira (HR): ...").
+ * corner. `sender` is read by screen readers before the text ("Kak Mira (HR): ..."). `content` replaces the
+ * linkified text (the flag hunt passes tappable words).
  */
-export function ChatBubble({ from, text, first = true, sender }: {
-  from: BubbleFrom; text: string; first?: boolean; sender?: string;
+export function ChatBubble({ from, text, first = true, sender, content }: {
+  from: BubbleFrom; text: string; first?: boolean; sender?: string; content?: ReactNode;
 }) {
   if (from === 'system') {
     return (
@@ -50,7 +51,7 @@ export function ChatBubble({ from, text, first = true, sender }: {
         className={`max-w-[82%] whitespace-pre-wrap break-words rounded-[18px] ${tail} px-3.5 py-2 text-base leading-[1.4] text-ink shadow-[0_1px_1.5px_rgba(28,27,58,.12)] ${me ? 'bg-chat-out' : 'bg-chat-in'}`}
       >
         {sender && <span className="sr-only">{sender}: </span>}
-        {linkify(text)}
+        {content ?? linkify(text)}
       </p>
     </div>
   );

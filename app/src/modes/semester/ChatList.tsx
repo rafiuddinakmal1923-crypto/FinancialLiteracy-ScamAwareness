@@ -1,4 +1,4 @@
-import { ArrowLeft, Search } from 'lucide-react';
+import { ArrowLeft, CircleCheck, Search } from 'lucide-react';
 import { scenarios } from 'virtual:celik-content';
 import { StoryRunner } from '../../engine/story';
 import type { CompiledScenario } from '../../engine/types';
@@ -41,7 +41,8 @@ export function chatIds(results: { id: string }[], activeId: string | null, avai
   return [...out.filter(unread), ...out.filter((id) => !unread(id))];
 }
 
-function ChatRow({ id, unread }: { id: string; unread: boolean }) {
+/** One chat. A finished one (ruling R8) shows "Selesai" and opens read-only in ChatThread. */
+function ChatRow({ id, unread, finished }: { id: string; unread: boolean; finished: boolean }) {
   const t = useT();
   const { meta } = scenarios[id];
   // Unknown numbers show the number, never a made-up name.
@@ -65,6 +66,12 @@ function ChatRow({ id, unread }: { id: string; unread: boolean }) {
           {sub && <span className="block truncate text-base text-ink-soft">{sub}</span>}
           <span className="mt-0.5 flex items-center gap-2">
             <span className={`line-clamp-1 flex-1 text-base ${unread ? 'text-ink' : 'text-ink-soft'}`}>{previewOf(scenarios[id])}</span>
+            {finished && (
+              <span className="flex shrink-0 items-center gap-1 rounded-full bg-safe-soft px-2.5 py-0.5 text-base font-semibold text-safe">
+                <CircleCheck aria-hidden size={16} strokeWidth={2} />
+                {t('sembang.done')}
+              </span>
+            )}
             {unread && (
               <span className="flex shrink-0 items-center">
                 <span aria-hidden="true" className="h-3 w-3 rounded-full bg-kancil ring-2 ring-kancil-soft" />
@@ -109,7 +116,7 @@ export function ChatList() {
         <p className="px-6 py-10 text-center text-base text-ink-soft">{t('sembang.empty')}</p>
       ) : (
         <ul aria-label={t('sembang.listLabel')} className="mt-3 divide-y divide-indigo-soft">
-          {ids.map((id) => <ChatRow key={id} id={id} unread={!played.has(id) && id !== activeId} />)}
+          {ids.map((id) => <ChatRow key={id} id={id} unread={!played.has(id) && id !== activeId} finished={played.has(id)} />)}
         </ul>
       )}
     </div>

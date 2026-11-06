@@ -20,3 +20,21 @@ export interface Meters {
 }
 export interface ScenarioResult { id: string; outcome: Outcome; right: boolean; flagsFound: number; flagsTotal: number; tactics: Tactic[]; family: Family }
 export interface CompiledScenario { meta: ScenarioMeta; json: string; flags: Flag[] }
+
+/** One bubble of a played scenario (kept as the transcript for the flag hunt and the read-only replay). */
+export interface ChatMessage {
+  id: number;
+  from: 'them' | 'me' | 'system';
+  speaker: string | null;
+  text: string;
+  flags: Flag[];
+}
+
+/**
+ * The scenario whose chat just ended and whose consequence, flag hunt and debrief are still open.
+ * `found` lists the tactics already found in the flag hunt (each awards a card once); `huntDone` is set by Selesai.
+ */
+export interface EndedScenario {
+  id: string; outcome: Outcome; missed?: number; transcript: ChatMessage[];
+  found: Tactic[]; huntDone: boolean;
+}

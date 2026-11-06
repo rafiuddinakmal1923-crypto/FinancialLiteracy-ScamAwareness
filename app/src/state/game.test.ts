@@ -109,6 +109,57 @@ describe('game store', () => {
   });
 });
 
+describe('ended scenario (consequence, flag hunt, debrief)', () => {
+  const transcript = [{ id: 1, from: 'them' as const, speaker: 'X', text: 'RM300 sehari', flags: [{ tactic: 'greed' as const, phrase: 'RM300 sehari' }] }];
+
+  it('endScenario keeps the outcome and transcript for the active scenario only', () => {
+    useGame.getState().endScenario({ id: 's1', outcome: 'scammed', transcript });
+    expect(useGame.getState().lastEnded).toBeNull();
+    useGame.getState().startScenario('s1');
+    useGame.getState().endScenario({ id: 's1', outcome: 'scammed', transcript });
+    expect(useGame.getState().lastEnded).toEqual({ id: 's1', outcome: 'scammed', transcript, found: [], huntDone: false });
+  });
+
+  it('huntFlag awards each tactic once and stops after finishHunt', () => {
+    const g = useGame.getState();
+    g.startScenario('s1');
+    g.endScenario({ id: 's1', outcome: 'scammed', transcript });
+    useGame.getState().huntFlag('greed', 'job');
+    useGame.getState().huntFlag('greed', 'job');
+    expect(useGame.getState().meters.xp).toBe(BALANCE.xp.flag);
+    expect(useGame.getState().lastEnded!.found).toEqual(['greed']);
+    useGame.getState().finishHunt();
+    useGame.getState().huntFlag('urgency', 'job');
+    expect(useGame.getState().cards).toEqual(['greed-job']);
+    expect(useGame.getState().lastEnded!.huntDone).toBe(true);
+  });
+
+  it('finishScenario clears lastEnded and keeps the transcript; retry clears it too', () => {
+    const g = useGame.getState();
+    g.startScenario('s1');
+    g.endScenario({ id: 's1', outcome: 'scammed', transcript });
+    useGame.getState().retryScenario();
+    expect(useGame.getState().lastEnded).toBeNull();
+    useGame.getState().endScenario({ id: 's1', outcome: 'scammed', transcript });
+    useGame.getState().finishScenario(scamMeta, 'scammed', 1, 3);
+    const s = useGame.getState();
+    expect(s.lastEnded).toBeNull();
+    expect(s.transcripts).toEqual({ s1: transcript });
+  });
+
+  it('hydrate keeps an ended scenario (with its effects) but rolls back a cut-off chat', () => {
+    const snap = initialMeters();
+    const dirty = { ...snap, duit: 1600 };
+    const ended = { id: 's1', outcome: 'scammed' as const, transcript, found: [], huntDone: false };
+    useGame.getState().hydrate({ ...initialGame(), meters: dirty, active: { id: 's1', snapshot: snap, hintUsed: false }, lastEnded: ended });
+    expect(useGame.getState().meters.duit).toBe(1600);
+    expect(useGame.getState().lastEnded).toEqual(ended);
+    expect(useGame.getState().active?.id).toBe('s1');
+    useGame.getState().hydrate({ ...initialGame(), meters: dirty, active: null, lastEnded: ended });
+    expect(useGame.getState().lastEnded).toBeNull();
+  });
+});
+
 describe('settings store', () => {
   it('has defaults and toggles', () => {
     const s = useSettings.getState();

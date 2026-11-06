@@ -4,6 +4,9 @@ import type { ComponentType } from 'react';
 import type { KancilMood } from '../ui/Kancil';
 import { ChatList } from '../modes/semester/ChatList';
 import { ChatThread } from '../modes/semester/ChatThread';
+import { Consequence } from '../modes/semester/Consequence';
+import { Debrief } from '../modes/semester/Debrief';
+import { FlagHunt } from '../modes/semester/FlagHunt';
 import { ComingSoon } from './ComingSoon';
 import { HomeScreen } from './HomeScreen';
 import { Onboarding } from './Onboarding';
@@ -31,6 +34,9 @@ export const ROUTE_TABLE: RouteDef[] = [
   { pattern: '/settings', name: 'settings', component: Settings, statusBar: 'light', tip: 'side.tip.settings', mood: 'neutral' },
   { pattern: '/sembang', name: 'sembang', component: ChatList, statusBar: 'light', needsGame: true, tip: 'side.tip.sembang', mood: 'neutral' },
   { pattern: '/sembang/:id', name: 'chat', component: ChatThread, statusBar: 'light', needsGame: true, tip: 'side.tip.chat', mood: 'worried' },
+  { pattern: '/semester/akibat/:id', name: 'akibat', component: Consequence, statusBar: 'light', needsGame: true, tip: 'side.tip.akibat', mood: 'worried' },
+  { pattern: '/semester/bendera/:id', name: 'bendera', component: FlagHunt, statusBar: 'light', needsGame: true, tip: 'side.tip.bendera', mood: 'neutral' },
+  { pattern: '/semester/debrief/:id', name: 'debrief', component: Debrief, statusBar: 'light', needsGame: true, tip: 'side.tip.debrief', mood: 'proud' },
   { pattern: '/demo/:scene', name: 'demo', component: ComingSoon, statusBar: 'light', tip: 'side.tip.demo', mood: 'neutral' },
 ];
 

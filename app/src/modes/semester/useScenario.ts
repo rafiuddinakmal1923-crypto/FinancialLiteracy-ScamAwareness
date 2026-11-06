@@ -1,20 +1,14 @@
-// Plays one ink scenario as a chat: typing delays, bubbles, reply choices, ui pauses, hint, end navigation.
+// Plays one ink scenario as a chat: typing delays, bubbles, reply choices, ui pauses, hint. On the end it
+// records the outcome and transcript in the store (lastEnded); ChatThread then offers "Lihat apa jadi seterusnya".
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { scenarios } from 'virtual:celik-content';
 import { BALANCE } from '../../engine/balance';
 import { StoryRunner } from '../../engine/story';
-import type { Flag, Outcome, ScenarioMeta, UiDirective } from '../../engine/types';
-import { navigate } from '../../shell/router';
+import type { ChatMessage, Outcome, ScenarioMeta, UiDirective } from '../../engine/types';
 import { useGame } from '../../state/game';
 import { useSettings } from '../../state/settings';
 
-export interface ChatMessage {
-  id: number;
-  from: 'them' | 'me' | 'system';
-  speaker: string | null;
-  text: string;
-  flags: Flag[];
-}
+export type { ChatMessage };
 
 export interface ScenarioOptions {
   /** Waits `ms` before an incoming line (tests pass their own). Default: setTimeout. */
@@ -68,10 +62,13 @@ export function useScenario(id: string, opts?: ScenarioOptions): ScenarioView {
   const uiResolverRef = useRef<(() => void) | null>(null);
   const hintUsedRef = useRef(false);
   const nextIdRef = useRef(1);
+  /** Mirror of `messages` for the transcript handed to the store on the end. */
+  const logRef = useRef<ChatMessage[]>([]);
 
   const push = useCallback((m: Omit<ChatMessage, 'id'>) => {
     const msg = { ...m, id: nextIdRef.current++ };
-    setMessages((ms) => [...ms, msg]);
+    logRef.current = [...logRef.current, msg];
+    setMessages(logRef.current);
   }, []);
 
   /** Advances the story until it needs the player (choices, ui) or ends. */
@@ -92,7 +89,7 @@ export function useScenario(id: string, opts?: ScenarioOptions): ScenarioView {
         const end: { outcome: Outcome; missed?: number } = { outcome: step.outcome };
         if (step.missed !== undefined) end.missed = step.missed;
         setEnded(end);
-        navigate(`/semester/akibat/${id}`);
+        useGame.getState().endScenario({ id, ...end, transcript: logRef.current });
         return;
       }
       if (step.text !== '') {
@@ -127,6 +124,7 @@ export function useScenario(id: string, opts?: ScenarioOptions): ScenarioView {
     uiResolverRef.current = null;
     hintUsedRef.current = false;
     nextIdRef.current = 1;
+    logRef.current = [];
     setMessages([]);
     setChoices(null);
     setTyping(false);

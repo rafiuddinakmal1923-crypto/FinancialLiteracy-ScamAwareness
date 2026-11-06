@@ -25,11 +25,14 @@ async function smallText(page: Page): Promise<string[]> {
   });
 }
 
-/** Visible buttons, links and switches smaller than 48 x 48 px. */
+/**
+ * Visible buttons, links and switches smaller than 48 x 48 px. Inline targets inside a sentence (the flag hunt's
+ * tappable words, marked data-inline-target) are exempt, as in WCAG 2.5.8.
+ */
 async function smallTargets(page: Page): Promise<string[]> {
   return page.evaluate(() => {
     const out: string[] = [];
-    for (const el of Array.from(document.querySelectorAll<HTMLElement>('button, a[href], [role="switch"]'))) {
+    for (const el of Array.from(document.querySelectorAll<HTMLElement>('button:not([data-inline-target]), a[href], [role="switch"]'))) {
       const r = el.getBoundingClientRect();
       if (r.width === 0 || r.height === 0) continue;
       if (r.width < 47.5 || r.height < 47.5) {
@@ -47,7 +50,8 @@ for (const vp of VIEWPORTS) {
     await seedGame(page);
     for (const route of ROUTES) {
       await test.step(route.name, async () => {
-        await page.goto(`/#${route.path}`);
+        if (route.setup) await route.setup(page);
+        else await page.goto(`/#${route.path}`);
         await expect(page.locator(`[data-screen="${route.name}"]`)).toBeVisible();
         if (route.name === 'splash') await expect(page.getByRole('button', { name: 'Mula' })).toBeVisible();
         if (route.waitFor) await expect(page.getByText(route.waitFor)).toBeVisible({ timeout: 15_000 });

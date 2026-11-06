@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { BALANCE } from '../engine/balance';
 import { cardId } from '../engine/cards';
 import { applyEffect, applyFlagFound, applyOutcome, applyXp, initialMeters, isRight } from '../engine/meters';
-import type { Effect, Family, Meters, Outcome, ScenarioMeta, ScenarioResult, Tactic } from '../engine/types';
+import type { ChatMessage, Effect, EndedScenario, Family, Meters, Outcome, ScenarioMeta, ScenarioResult, Tactic } from '../engine/types';
 
 export interface GameData {
   character: 'aina' | 'amir'; name: string; week: number; meters: Meters;
@@ -11,6 +11,10 @@ export interface GameData {
   swipe: { best: number; streak: number; lastPlayed: string | null };
   actions: string[]; incomeTotal: number;
   active: { id: string; snapshot: Meters; hintUsed: boolean } | null;
+  /** The chat that just ended, until its debrief is closed (or Cuba lagi). */
+  lastEnded: EndedScenario | null;
+  /** Read-only transcripts of finished scenarios, by id (ruling R8: no replays from Sembang). */
+  transcripts: Record<string, ChatMessage[]>;
 }
 
 export interface GameActions {
@@ -20,6 +24,11 @@ export interface GameActions {
   finishScenario(meta: ScenarioMeta, outcome: Outcome, flagsFound: number, flagsTotal: number): void;
   retryScenario(): void;
   foundFlag(tactic: Tactic, family: Family): void;
+  /** Called when the active scenario's story ends: keeps the outcome and transcript for the post-chat screens. */
+  endScenario(e: { id: string; outcome: Outcome; missed?: number; transcript: ChatMessage[] }): void;
+  /** Flag hunt progress on lastEnded: a newly found tactic (awards its card via foundFlag) and/or Selesai. */
+  huntFlag(tactic: Tactic, family: Family): void;
+  finishHunt(): void;
   hydrate(d: GameData | null): void;
   reset(): void;
   set(p: Partial<GameData>): void;
@@ -29,13 +38,13 @@ export function initialGame(): GameData {
   return {
     character: 'aina', name: 'Aina', week: 0, meters: initialMeters(), budget: null,
     results: [], cards: [], badges: [], swipe: { best: 0, streak: 0, lastPlayed: null },
-    actions: [], incomeTotal: 0, active: null,
+    actions: [], incomeTotal: 0, active: null, lastEnded: null, transcripts: {},
   };
 }
 
 const DATA_KEYS: (keyof GameData)[] = [
   'character', 'name', 'week', 'meters', 'budget', 'results', 'cards', 'badges',
-  'swipe', 'actions', 'incomeTotal', 'active',
+  'swipe', 'actions', 'incomeTotal', 'active', 'lastEnded', 'transcripts',
 ];
 
 /** Picks only the persisted data fields (no actions) from the store state. */
@@ -68,18 +77,43 @@ export const useGame = create<GameData & GameActions>()((set, get) => ({
   },
 
   finishScenario: (meta, outcome, flagsFound, flagsTotal) => {
-    const { meters, results } = get();
+    const { meters, results, lastEnded, transcripts } = get();
     const result: ScenarioResult = {
       id: meta.id, outcome, right: isRight(meta.type, outcome), flagsFound, flagsTotal,
       tactics: meta.tactics, family: meta.family,
     };
-    set({ meters: applyOutcome(meters, meta, outcome), results: [...results, result], active: null });
+    const transcript = lastEnded?.id === meta.id ? lastEnded.transcript : null;
+    set({
+      meters: applyOutcome(meters, meta, outcome), results: [...results, result], active: null, lastEnded: null,
+      transcripts: transcript ? { ...transcripts, [meta.id]: transcript } : transcripts,
+    });
   },
 
   retryScenario: () => {
     const { active } = get();
     if (!active) return;
-    set({ meters: active.snapshot, active: { ...active, hintUsed: false } });
+    set({ meters: active.snapshot, active: { ...active, hintUsed: false }, lastEnded: null });
+  },
+
+  endScenario: ({ id, outcome, missed, transcript }) => {
+    const { active } = get();
+    if (active?.id !== id) return;
+    const e: EndedScenario = { id, outcome, transcript, found: [], huntDone: false };
+    if (missed !== undefined) e.missed = missed;
+    set({ lastEnded: e });
+  },
+
+  huntFlag: (tactic, family) => {
+    const { lastEnded } = get();
+    if (!lastEnded || lastEnded.huntDone || lastEnded.found.includes(tactic)) return;
+    get().foundFlag(tactic, family);
+    set({ lastEnded: { ...lastEnded, found: [...lastEnded.found, tactic] } });
+  },
+
+  finishHunt: () => {
+    const { lastEnded } = get();
+    if (!lastEnded || lastEnded.huntDone) return;
+    set({ lastEnded: { ...lastEnded, huntDone: true } });
   },
 
   foundFlag: (tactic, family) => {
@@ -90,7 +124,10 @@ export const useGame = create<GameData & GameActions>()((set, get) => ({
 
   hydrate: (d) => {
     if (!d) { set(initialGame()); return; }
-    set({ ...initialGame(), ...d, meters: d.active ? d.active.snapshot : d.meters, active: null });
+    // A chat cut off mid-story is rolled back. One that had already ended keeps its effects, so its
+    // consequence, flag hunt and debrief can still be finished (or retried) after a reload.
+    if (d.active && d.lastEnded?.id === d.active.id) { set({ ...initialGame(), ...d }); return; }
+    set({ ...initialGame(), ...d, meters: d.active ? d.active.snapshot : d.meters, active: null, lastEnded: null });
   },
 
   reset: () => set(initialGame()),

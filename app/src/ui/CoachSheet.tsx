@@ -1,4 +1,4 @@
-import { useId, useState } from 'react';
+import { useId, useState, type ReactNode } from 'react';
 import { ChevronUp } from 'lucide-react';
 import { Kancil, type KancilMood } from './Kancil';
 import { useT } from '../shell/i18n';
@@ -10,11 +10,11 @@ const TONE_BG: Record<CoachTone, string> = {
 };
 
 /**
- * Sang Kancil bottom sheet: tip text and at most one button.
+ * Sang Kancil bottom sheet: tip text (and/or richer `children`, e.g. the debrief) and at most one button.
  * `peek` starts collapsed to one line; tapping the header opens it.
  */
-export function CoachSheet({ mood, text, button, onButton, title, tone = 'tip', peek = false, className = '' }: {
-  mood: KancilMood; text: string; button?: string; onButton?: () => void;
+export function CoachSheet({ mood, text, children, button, onButton, title, tone = 'tip', peek = false, className = '' }: {
+  mood: KancilMood; text?: string; children?: ReactNode; button?: string; onButton?: () => void;
   title?: string; tone?: CoachTone; peek?: boolean; className?: string;
 }) {
   const t = useT();
@@ -55,9 +55,10 @@ export function CoachSheet({ mood, text, button, onButton, title, tone = 'tip', 
           ) : (
             <p className="flex min-h-12 items-center font-display text-base font-bold text-ink">{heading}</p>
           )}
-          {open && <p id={bodyId} className="text-base leading-snug text-ink">{text}</p>}
+          {open && text && <p id={bodyId} className="text-base leading-snug text-ink">{text}</p>}
         </div>
       </div>
+      {open && children}
       {button && open && (
         <button
           type="button"

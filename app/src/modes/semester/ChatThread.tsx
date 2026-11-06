@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, ArrowLeftRight, Link2 } from 'lucide-react';
+import { ArrowLeft, ArrowLeftRight, CircleCheck, Link2 } from 'lucide-react';
 import { scenarios } from 'virtual:celik-content';
-import type { UiDirective } from '../../engine/types';
+import { BALANCE } from '../../engine/balance';
+import type { ChatMessage, UiDirective } from '../../engine/types';
 import { useT } from '../../shell/i18n';
 import { navigate, replaceRoute } from '../../shell/router';
 import { useGame } from '../../state/game';
@@ -13,7 +14,7 @@ import { formatRM } from '../../ui/format';
 import { Kancil } from '../../ui/Kancil';
 import { ReplyChip } from '../../ui/ReplyChip';
 import { TypingIndicator } from '../../ui/TypingIndicator';
-import { useScenario, type ChatMessage } from './useScenario';
+import { useScenario } from './useScenario';
 
 const SPRING = { type: 'spring', stiffness: 300, damping: 28 } as const;
 
@@ -40,6 +41,37 @@ function UiCard({ ui, onOpen }: { ui: UiDirective; onOpen(): void }) {
   );
 }
 
+/** Thread header: back, avatar, name, "dalam talian". Never a verified tick, so players do not learn that ticks mean safe. */
+function ThreadHeader({ name }: { name: string }) {
+  const t = useT();
+  return (
+    <div className="relative z-10 flex items-center gap-2 bg-white py-1.5 pl-1 pr-20 shadow-[0_2px_8px_rgba(28,27,58,.08)]">
+      <button
+        type="button"
+        aria-label={t('sembang.backToList')}
+        onClick={() => navigate('/sembang')}
+        className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-ink"
+      >
+        <ArrowLeft aria-hidden size={24} strokeWidth={1.75} />
+      </button>
+      <Avatar name={name} size={40} />
+      <div className="min-w-0">
+        <h1 className="truncate font-display text-lg font-bold leading-tight text-ink">{name}</h1>
+        <p className="flex items-center gap-1.5 text-base leading-tight text-ink-soft">
+          <span aria-hidden="true" className="h-2 w-2 shrink-0 rounded-full bg-safe" />
+          <span className="truncate">{t('sembang.online')}</span>
+        </p>
+      </div>
+    </div>
+  );
+}
+
+/** True when bubble i continues a run from the same sender (6 px gap, no tail); otherwise 12 px. */
+function sameRun(messages: ChatMessage[], i: number): boolean {
+  const prev = messages[i - 1];
+  return !!prev && prev.from === messages[i].from && prev.speaker === messages[i].speaker;
+}
+
 function Thread({ id }: { id: string }) {
   const t = useT();
   const view = useScenario(id);
@@ -47,13 +79,22 @@ function Thread({ id }: { id: string }) {
   const reduced = useSettings((s) => s.reducedMotion);
   const hintUsed = useGame((s) => s.active?.id === id && s.active.hintUsed);
   const [hintText, setHintText] = useState<string | null>(null);
+  const [showEnd, setShowEnd] = useState(false);
   const logRef = useRef<HTMLDivElement>(null);
   const name = meta.contact || meta.number || '';
+  const ended = !!view.ended;
+
+  // Let the last bubble land before offering "Lihat apa jadi seterusnya".
+  useEffect(() => {
+    if (!ended) { setShowEnd(false); return; }
+    const timer = setTimeout(() => setShowEnd(true), BALANCE.aftermath.endPauseMs);
+    return () => clearTimeout(timer);
+  }, [ended]);
 
   useEffect(() => {
     const el = logRef.current;
     el?.scrollTo?.({ top: el.scrollHeight, behavior: reduced ? 'auto' : 'smooth' });
-  }, [messages.length, typing, choices, pendingUi, hintText, reduced]);
+  }, [messages.length, typing, choices, pendingUi, hintText, showEnd, reduced]);
 
   const askKancil = () => {
     const h = view.hint();
@@ -62,30 +103,12 @@ function Thread({ id }: { id: string }) {
   };
 
   const senderOf = (m: ChatMessage) => (m.from === 'me' ? t('sembang.you') : m.speaker ?? name);
-  const waiting = !!choices || !!pendingUi;
+  const waiting = !!choices || !!pendingUi || showEnd;
   const showHintChip = !!meta.hint && !hintText && !hintUsed && !!choices;
 
   return (
     <div data-screen="chat" className="flex min-h-0 flex-1 flex-col">
-      {/* Header: never a verified tick, so players do not learn that ticks mean safe. */}
-      <div className="relative z-10 flex items-center gap-2 bg-white py-1.5 pl-1 pr-20 shadow-[0_2px_8px_rgba(28,27,58,.08)]">
-        <button
-          type="button"
-          aria-label={t('sembang.backToList')}
-          onClick={() => navigate('/sembang')}
-          className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-ink"
-        >
-          <ArrowLeft aria-hidden size={24} strokeWidth={1.75} />
-        </button>
-        <Avatar name={name} size={40} />
-        <div className="min-w-0">
-          <h1 className="truncate font-display text-lg font-bold leading-tight text-ink">{name}</h1>
-          <p className="flex items-center gap-1.5 text-base leading-tight text-ink-soft">
-            <span aria-hidden="true" className="h-2 w-2 shrink-0 rounded-full bg-safe" />
-            <span className="truncate">{t('sembang.online')}</span>
-          </p>
-        </div>
-      </div>
+      <ThreadHeader name={name} />
 
       <div
         ref={logRef}
@@ -96,8 +119,7 @@ function Thread({ id }: { id: string }) {
         <p className="mx-auto mb-3 w-fit rounded-xl bg-white/80 px-3 py-1 text-base font-medium text-ink-soft">{t('sembang.today')}</p>
         <ol>
           {messages.map((m, i) => {
-            const prev = messages[i - 1];
-            const same = !!prev && prev.from === m.from && prev.speaker === m.speaker;
+            const same = sameRun(messages, i);
             return (
               <motion.li
                 key={m.id}
@@ -135,6 +157,18 @@ function Thread({ id }: { id: string }) {
             </div>
           )}
           {pendingUi && <div className={choices ? 'mb-2' : ''}><UiCard ui={pendingUi} onOpen={() => view.resolveUi(true)} /></div>}
+          {showEnd && (
+            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={SPRING}>
+              <p className="mb-2 text-center text-base font-medium text-ink-soft">{t('sembang.ended')}</p>
+              <button
+                type="button"
+                onClick={() => navigate(`/semester/akibat/${id}`)}
+                className="min-h-12 w-full rounded-2xl bg-ink px-4 text-base font-semibold text-paper active:scale-[.98]"
+              >
+                {t('sembang.seeNext')}
+              </button>
+            </motion.div>
+          )}
           {choices && (
             <motion.div
               role="group"
@@ -173,13 +207,52 @@ function Thread({ id }: { id: string }) {
   );
 }
 
-/** S06: Sembang chat thread that plays one scenario. Unknown ids go back to the list. */
+/** Ruling R8: a finished scenario opens read-only, from the stored transcript. */
+function ReadOnlyThread({ id }: { id: string }) {
+  const t = useT();
+  const { meta } = scenarios[id];
+  const transcript = useGame((s) => s.transcripts[id]);
+  const messages = transcript ?? [];
+  const name = meta.contact || meta.number || '';
+  const senderOf = (m: ChatMessage) => (m.from === 'me' ? t('sembang.you') : m.speaker ?? name);
+  return (
+    <div data-screen="chat" className="flex min-h-0 flex-1 flex-col">
+      <ThreadHeader name={name} />
+      <div role="log" aria-label={t('sembang.logLabel', { name })} className="sembang-wall min-h-0 flex-1 overflow-y-auto px-3 pb-3 pt-4">
+        <ol>
+          {messages.map((m, i) => {
+            const same = sameRun(messages, i);
+            return (
+              <li key={m.id} className={i === 0 ? '' : same ? 'mt-1.5' : 'mt-3'}>
+                <ChatBubble from={m.from} text={m.text} first={!same} sender={m.from === 'system' ? undefined : senderOf(m)} />
+              </li>
+            );
+          })}
+        </ol>
+      </div>
+      <div className="relative z-10 flex min-h-16 shrink-0 items-center justify-center gap-2 rounded-t-[24px] bg-white px-3 py-3 text-base font-medium text-ink-soft shadow-[0_-8px_24px_rgba(28,27,58,.12)]">
+        <CircleCheck aria-hidden size={20} strokeWidth={1.75} className="text-safe" />
+        {t('sembang.readOnly')}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * S06: Sembang chat thread that plays one scenario. Unknown ids go back to the list; a chat that already ended
+ * but whose debrief is still open goes to its consequence; a finished one opens read-only, never replayed (R8).
+ */
 export function ChatThread({ params }: { params: Record<string, string> }) {
   const id = params.id ?? '';
   const known = !!scenarios[id] && scenarios[id].meta.ui === 'chat';
+  const finished = useGame((s) => s.results.some((r) => r.id === id));
+  // Checked once on open: the end of this very thread also sets lastEnded, and must not redirect.
+  const [pending] = useState(() => useGame.getState().lastEnded?.id === id);
+  const redirect = !known ? '/sembang' : pending && !finished ? `/semester/akibat/${id}` : null;
   useEffect(() => {
-    if (!known) replaceRoute('/sembang');
-  }, [known]);
-  if (!known) return null;
+    if (redirect) replaceRoute(redirect);
+  }, [redirect]);
+  if (redirect) return null;
+  if (finished) return <ReadOnlyThread id={id} />;
   return <Thread key={id} id={id} />;
 }

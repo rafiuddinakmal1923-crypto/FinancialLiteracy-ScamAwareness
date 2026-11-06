@@ -115,7 +115,12 @@ describe('useScenario', () => {
     await tick(MIN);
     expect(result.current.messages.at(-1)).toMatchObject({ from: 'them', text: 'Ok.' });
     expect(result.current.ended).toEqual({ outcome: 'safe' });
-    expect(window.location.hash).toBe('#/semester/akibat/fixture');
+    // No navigation on the end: ChatThread shows "Lihat apa jadi seterusnya" after a pause.
+    expect(window.location.hash).toBe('#/sembang/fixture');
+    const ended = useGame.getState().lastEnded;
+    expect(ended).toMatchObject({ id: 'fixture', outcome: 'safe', found: [], huntDone: false });
+    expect(ended!.transcript.map((m) => m.text)).toEqual(['Halo dik.', 'Mesej ini dipadam.', 'Nak kerja?', 'Tak', 'Ok.']);
+    expect(ended!.transcript[2].flags).toEqual([{ tactic: 'greed', phrase: 'Nak kerja' }]);
   });
 
   it('double-tapping a chip chooses once', async () => {
