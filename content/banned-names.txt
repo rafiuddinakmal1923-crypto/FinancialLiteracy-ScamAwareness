@@ -1,0 +1,80 @@
+# Real Malaysian brand names that must never appear in content (Hard rule 1).
+# One name per line, matched case-insensitively as whole words. Lines starting with # are comments.
+# This file itself is exempt from the content scan.
+# Left out on purpose because they are everyday words in BM/EN chat: Boost, Grab, Setel, Yes, TM, UPS, Fave.
+
+# Banks
+Maybank
+Maybank2u
+CIMB
+CIMB Clicks
+Public Bank
+RHB
+Hong Leong
+Hong Leong Bank
+AmBank
+Bank Islam
+Bank Rakyat
+Bank Simpanan Nasional
+BSN
+MyBSN
+Affin Bank
+Affin
+Alliance Bank
+UOB
+OCBC
+HSBC
+Standard Chartered
+Bank Muamalat
+Agrobank
+MBSB
+Kuwait Finance House
+Al Rajhi
+Citibank
+GXBank
+AEON Bank
+
+# E-wallets and payment brands
+Touch 'n Go
+Touch n Go
+TnG
+GrabPay
+ShopeePay
+BigPay
+MAE
+DuitNow
+KiplePay
+MCash
+
+# Telcos
+Maxis
+Hotlink
+Celcom
+Digi
+CelcomDigi
+U Mobile
+Unifi
+Tune Talk
+XOX
+redONE
+Yoodo
+
+# Couriers and marketplaces
+Pos Malaysia
+Poslaju
+Pos Laju
+J&T
+J&T Express
+GDex
+Ninja Van
+DHL
+FedEx
+City-Link
+Citylink
+SkyNet
+Lalamove
+Flash Express
+ABX Express
+Shopee
+Shopee Express
+Lazada
