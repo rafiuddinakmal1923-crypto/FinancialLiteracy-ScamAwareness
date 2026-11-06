@@ -10,13 +10,20 @@ import { Avatar } from '../../ui/Avatar';
 /** The scenario on offer until the week logic (Task 25) decides availability. */
 export const FIRST_SCENARIO = 'kerja_sambilan';
 
-/** The mule scenario (W3, D20) and the week it arrives. */
-const MULE_SCENARIO = 'sewa_akaun';
-const MULE_WEEK = 3;
+/**
+ * The week each scenario opens in the chat list (simple rule until the semester loop, Task 25). One table, one place:
+ * add a scenario here and it appears from that week, newest first.
+ */
+export const CHAT_WEEKS: Record<string, number> = {
+  kerja_sambilan: 0, sewa_akaun: 3, kawan_labur: 5, crypto_naga: 8, bayar_nanti: 9,
+};
 
-/** Chats on offer this week (simple rule until Task 25): sewa_akaun from week 3 (newest first), kerja_sambilan always. */
+/** Chats on offer this week: every scenario whose week has come, the newest first (kerja_sambilan always, last). */
 export function availableChats(week: number): string[] {
-  return week >= MULE_WEEK ? [MULE_SCENARIO, FIRST_SCENARIO] : [FIRST_SCENARIO];
+  return Object.entries(CHAT_WEEKS)
+    .filter(([, from]) => week >= from)
+    .sort((x, y) => y[1] - x[1])
+    .map(([id]) => id);
 }
 
 const previews = new Map<string, string>();

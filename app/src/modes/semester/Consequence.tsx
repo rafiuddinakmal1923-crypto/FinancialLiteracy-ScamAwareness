@@ -63,8 +63,11 @@ function MeterChange({ label, from, to, format, worse }: {
   );
 }
 
-/** Penal Code note after the mule timeline (UI-SPEC S09). The sentence is `legal.penalCode`, TODO-VERIFY. */
-function LegalNote() {
+/**
+ * Note after the timeline: the Penal Code after a mule (UI-SPEC S09, `legal.penalCode`) or where to get help after
+ * a hutang outcome (`legal.akpk`). Both sentences are TODO-VERIFY.
+ */
+function LegalNote({ titleKey, bodyKey, noteKey = 'legal.unverified' }: { titleKey: string; bodyKey: string; noteKey?: string }) {
   const t = useT();
   const reduced = useSettings((s) => s.reducedMotion);
   const ref = useRef<HTMLElement>(null);
@@ -85,9 +88,9 @@ function LegalNote() {
         <Scale aria-hidden size={22} strokeWidth={1.75} />
       </span>
       <div className="min-w-0 flex-1">
-        <h3 id="legal-title" className="font-display text-lg font-bold leading-tight text-ink">{t('legal.title')}</h3>
-        <p className="mt-1 text-base font-medium leading-snug text-ink">{t('legal.penalCode')}</p>
-        <p className="mt-1.5 text-base leading-snug text-ink-soft">{t('legal.unverified')}</p>
+        <h3 id="legal-title" className="font-display text-lg font-bold leading-tight text-ink">{t(titleKey)}</h3>
+        <p className="mt-1 text-base font-medium leading-snug text-ink">{t(bodyKey)}</p>
+        <p className="mt-1.5 text-base leading-snug text-ink-soft">{t(noteKey)}</p>
       </div>
     </motion.aside>
   );
@@ -106,6 +109,7 @@ export function Consequence({ params }: { params: Record<string, string> }) {
   const onChainDone = useCallback(() => setChainDone(true), []);
   const onTimelineDone = useCallback(() => setTimelineDone(true), []);
   const mule = ended?.outcome === 'mule';
+  const hutang = ended?.outcome === 'hutang';
   if (!ended || !scenario) return null;
 
   const { outcome } = ended;
@@ -152,7 +156,7 @@ export function Consequence({ params }: { params: Record<string, string> }) {
           </motion.h1>
           <p className="mt-1.5 text-base leading-snug text-ink">{t('akibat.lead')}</p>
           <div aria-label={t('akibat.changes')} role="group" className="mt-4 flex gap-2">
-            <MeterChange label={t('meter.duit')} from={before.duit} to={meters.duit} format={formatRM} worse={meters.duit < before.duit} />
+            <MeterChange label={t('meter.duit')} from={before.duit} to={meters.duit} format={formatRM} worse={meters.duit < before.duit && outcome !== 'untung'} />
             {before.tekanan !== meters.tekanan && (
               <MeterChange label={t('meter.tekanan')} from={before.tekanan} to={meters.tekanan} format={String} worse={meters.tekanan > before.tekanan} />
             )}
@@ -168,8 +172,9 @@ export function Consequence({ params }: { params: Record<string, string> }) {
         {(!mule || chainDone) && (
           <section className="px-4 pb-6 pt-5">
             <h2 className="mb-3 font-display text-xl font-bold text-ink">{t('akibat.timeline')}</h2>
-            <ConsequenceTimeline steps={steps} tone={tone} label={t('akibat.timeline')} onDone={mule ? onTimelineDone : undefined} follow={mule} />
-            {mule && timelineDone && <LegalNote />}
+            <ConsequenceTimeline steps={steps} tone={tone} label={t('akibat.timeline')} onDone={mule || hutang ? onTimelineDone : undefined} follow={mule} />
+            {mule && timelineDone && <LegalNote titleKey="legal.title" bodyKey="legal.penalCode" />}
+            {hutang && timelineDone && <LegalNote titleKey="legal.helpTitle" bodyKey="legal.akpk" noteKey="legal.helpUnverified" />}
           </section>
         )}
       </div>
