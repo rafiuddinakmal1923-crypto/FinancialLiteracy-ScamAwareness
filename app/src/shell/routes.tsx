@@ -12,6 +12,8 @@ import { FakePageScreen } from '../modes/semester/FakePageScreen';
 import { FlagHunt } from '../modes/semester/FlagHunt';
 import { WeekIntro } from '../modes/semester/WeekIntro';
 import { Kalkulator } from '../modes/kalkulator/Kalkulator';
+import { CekHarian } from '../modes/harian/CekHarian';
+import { SwipeGame } from '../modes/harian/SwipeGame';
 import { DemoScene } from './DemoScene';
 import { HomeScreen } from './HomeScreen';
 import { Onboarding } from './Onboarding';
@@ -46,6 +48,8 @@ export const ROUTE_TABLE: RouteDef[] = [
   { pattern: '/dompet', name: 'dompet', component: Dompet, statusBar: 'dark', needsGame: true, tip: 'side.tip.dompet', mood: 'smile' },
   { pattern: '/kalkulator', name: 'kalkulator', component: Kalkulator, statusBar: 'dark', needsGame: true, tip: 'side.tip.kalkulator', mood: 'smile' },
   { pattern: '/kalkulator/:tab', name: 'kalkulator-tab', component: Kalkulator, statusBar: 'dark', needsGame: true, tip: 'side.tip.kalkulator', mood: 'smile' },
+  { pattern: '/harian', name: 'harian', component: CekHarian, statusBar: 'dark', needsGame: true, tip: 'side.tip.harian', mood: 'smile' },
+  { pattern: '/swipe', name: 'swipe', component: SwipeGame, statusBar: 'dark', needsGame: true, tip: 'side.tip.swipe', mood: 'neutral' },
   { pattern: '/semester/minggu', name: 'minggu', component: WeekIntro, statusBar: 'dark', needsGame: true, tip: 'side.tip.minggu', mood: 'neutral' },
   { pattern: '/laman/:url', name: 'laman', component: FakePageScreen, statusBar: 'light', needsGame: true, tip: 'side.tip.laman', mood: 'worried' },
   { pattern: '/demo/:scene', name: 'demo', component: DemoScene, statusBar: 'light', tip: 'side.tip.demo', mood: 'neutral' },

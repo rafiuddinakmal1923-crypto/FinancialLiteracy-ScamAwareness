@@ -141,3 +141,6 @@ html[data-reduced-motion] .flag-shake { animation-name: flag-flash; }
     repeating-radial-gradient(circle at 0% 130%, transparent 0 9px, rgb(255 255 255 / 0.1) 9px 10px),
     repeating-radial-gradient(circle at 100% -30%, transparent 0 9px, rgb(255 255 255 / 0.07) 9px 10px);
 }
+
+/* Card back appearing under reduced motion (Cek Harian / Sahih atau Scam). */
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }

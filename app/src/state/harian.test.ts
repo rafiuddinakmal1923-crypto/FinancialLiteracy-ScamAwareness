@@ -48,3 +48,34 @@ describe('harian store', () => {
     expect(useGame.getState().harian.lastDeckDate).toBeNull();
   });
 });
+
+describe('60-second round store', () => {
+  it('claimSwipeXp is true once per local day', () => {
+    expect(useGame.getState().claimSwipeXp('2026-11-07')).toBe(true);
+    expect(useGame.getState().claimSwipeXp('2026-11-07')).toBe(false);
+    expect(useGame.getState().claimSwipeXp('2026-11-08')).toBe(true);
+  });
+  it('answerRound moves Imuniti but only gives XP when asked', () => {
+    useGame.getState().answerRound(true, ['greed'], false);
+    expect(useGame.getState().meters.xp).toBe(0);
+    expect(useGame.getState().meters.imuniti.greed).toBeGreaterThan(initialGame().meters.imuniti.greed);
+    useGame.getState().answerRound(true, ['greed'], true);
+    expect(useGame.getState().meters.xp).toBe(BALANCE.xp.swipeRight);
+  });
+  it('recordSwipe keeps the best score and a day streak', () => {
+    useGame.getState().recordSwipe(6, '2026-11-07');
+    expect(useGame.getState().swipe).toEqual({ best: 6, streak: 1, lastPlayed: '2026-11-07' });
+    useGame.getState().recordSwipe(4, '2026-11-07');
+    expect(useGame.getState().swipe).toEqual({ best: 6, streak: 1, lastPlayed: '2026-11-07' });
+    useGame.getState().recordSwipe(8, '2026-11-08');
+    expect(useGame.getState().swipe).toEqual({ best: 8, streak: 2, lastPlayed: '2026-11-08' });
+    useGame.getState().recordSwipe(1, '2026-11-12');
+    expect(useGame.getState().swipe.streak).toBe(1);
+  });
+  it('harianProgress starts empty and is persisted', async () => {
+    const { gameData } = await import('./game');
+    expect(useGame.getState().harianProgress).toBeNull();
+    useGame.getState().setHarianProgress({ date: '2026-11-07', answers: [true] });
+    expect(gameData(useGame.getState()).harianProgress).toEqual({ date: '2026-11-07', answers: [true] });
+  });
+});

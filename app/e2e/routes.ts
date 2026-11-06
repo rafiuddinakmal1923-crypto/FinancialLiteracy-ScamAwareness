@@ -1,6 +1,6 @@
 // Routes captured by screens.spec.ts. Later tasks append their screens here.
 import type { Page } from '@playwright/test';
-import { acceptMuleOffer, patchSavedGame, playScenario1ToEnd, SAMPLE_TX } from './helpers';
+import { acceptMuleOffer, patchSavedGame, playHarianCards, playScenario1ToEnd, SAMPLE_TX } from './helpers';
 
 /** Confirms the starting split (Simpanan 10%, RM200: under the RM300 emergency target). */
 async function confirmBudget(page: Page): Promise<void> {
@@ -49,6 +49,13 @@ export const ROUTES: ScreenRoute[] = [
   { path: '/kalkulator/masa', name: 'kalkulator-masa', screen: 'kalkulator', waitFor: 'RM8,775.28' },
   { path: '/kalkulator/pulangan', name: 'kalkulator-pulangan', screen: 'kalkulator', waitFor: 'Semak dulu: SC Investor Alert List' },
   { path: '/kalkulator/kos', name: 'kalkulator-kos', screen: 'kalkulator', waitFor: 'Jumlah bayar balik' },
+  // Cek Harian: the 5-card round, then (after playing it) the 60-second round's ready screen.
+  { path: '/harian', name: 'harian', waitFor: 'Cek Harian · 5 kad · ~2 minit' },
+  { path: '/harian', name: 'harian-sebab', screen: 'harian', setup: async (page) => { await page.goto('/#/harian'); await playHarianCards(page, 1); } },
+  { path: '/harian', name: 'harian-hasil', screen: 'harian', waitFor: 'Streak +1', setup: async (page) => { await page.goto('/#/home'); await page.goto('/#/harian'); await playHarianCards(page, 5, true); } },
+  { path: '/harian', name: 'harian-esok', screen: 'harian', waitFor: 'Datang lagi esok', setup: async (page) => { await page.goto('/#/home'); await page.goto('/#/harian'); } },
+  { path: '/swipe', name: 'swipe', waitFor: 'Mula' },
+  { path: '/swipe', name: 'swipe-main', screen: 'swipe', waitFor: 'Skor 0', setup: async (page) => { await page.goto('/#/swipe'); await page.getByRole('button', { name: 'Mula' }).click(); } },
   // In-game fake page on its own route (a link scenario opens the same page over the chat).
   { path: '/laman/kurierkilat-bayar.test', name: 'laman', screen: 'fakepage' },
   // The mule demo preset (resets the game): the chat with the urgency cue, then the BankKu transfer and its TAC.

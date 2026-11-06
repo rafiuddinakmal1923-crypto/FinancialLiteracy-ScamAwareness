@@ -5,6 +5,7 @@ import { applyBudget, applyWeekIntro, moveLabur as engineMoveLabur, type BudgetS
 import { round2 } from '../engine/money';
 import { applyEffect, applyFlagFound, applyMoneyAnswer, applyOutcome, applySwipeAnswer, applyXp, initialMeters, isRight } from '../engine/meters';
 import { updateHarianStreak } from '../engine/harian';
+import { dayDiff } from '../engine/dates';
 import type { ChatMessage, Concept, Effect, EndedScenario, Family, LaburProduct, Meters, Outcome, ScenarioMeta, ScenarioResult, Tactic } from '../engine/types';
 
 /**
@@ -76,6 +77,9 @@ export interface HarianData {
   lastScore: number | null; lastDeckDate: string | null;
 }
 
+/** Cek Harian round in progress (survives a reload): the local date, and the right/wrong flag of each card answered so far. */
+export interface HarianProgress { date: string; answers: boolean[] }
+
 export function initialHarian(): HarianData {
   return { streak: 0, lastPlayed: null, freezeWeek: null, best: 0, lastScore: null, lastDeckDate: null };
 }
@@ -92,6 +96,10 @@ export interface GameData {
   swipe: { best: number; streak: number; lastPlayed: string | null };
   /** Cek Harian (Task 20): streak with one free freeze a week (`freezeWeek` = ISO week it was used), last result. */
   harian: HarianData;
+  /** Cek Harian round in progress, or null (cleared when the round ends or the date changes). */
+  harianProgress: HarianProgress | null;
+  /** Local date on which the 60-second round already gave its XP (XP once a day, no farming). */
+  swipeXpDate: string | null;
   actions: string[]; incomeTotal: number;
   active: { id: string; snapshot: Meters; hintUsed: boolean } | null;
   /** The chat that just ended, until its debrief is closed (or Cuba lagi). */
@@ -147,6 +155,14 @@ export interface GameActions {
   playHarian(score: number, today: string): void;
   /** One card answered: swipe cards move Imuniti per tactic, money cards move Celik for `concept`; XP when right. */
   answerCard(kind: 'swipe' | 'money', right: boolean, tactics: Tactic[], concept?: Concept): void;
+  /** Saves (or clears) the Cek Harian round in progress. */
+  setHarianProgress(p: HarianProgress | null): void;
+  /** True the first time it is called on local date `today` (the 60-second round then gives XP); false after that. */
+  claimSwipeXp(today: string): boolean;
+  /** A 60-second round answer: Imuniti always, XP only when `withXp`. */
+  answerRound(right: boolean, tactics: Tactic[], withXp: boolean): void;
+  /** A 60-second round ended with `score`: best score and the day streak of the round. */
+  recordSwipe(score: number, today: string): void;
   hydrate(d: GameData | null): void;
   reset(): void;
   set(p: Partial<GameData>): void;
@@ -155,7 +171,7 @@ export interface GameActions {
 export function initialGame(): GameData {
   return {
     character: 'aina', name: 'Aina', onboarded: false, week: 0, meters: initialMeters(), budget: null,
-    results: [], cards: [], badges: [], swipe: { best: 0, streak: 0, lastPlayed: null }, harian: initialHarian(),
+    results: [], cards: [], badges: [], swipe: { best: 0, streak: 0, lastPlayed: null }, harian: initialHarian(), harianProgress: null, swipeXpDate: null,
     actions: [], incomeTotal: 0, active: null, lastEnded: null, transcripts: {}, weekIntroOpen: false,
     txLog: [], calcUsed: [], calcResume: null, calcFlagged: [],
   };
@@ -163,7 +179,7 @@ export function initialGame(): GameData {
 
 const DATA_KEYS: (keyof GameData)[] = [
   'character', 'name', 'onboarded', 'week', 'meters', 'budget', 'results', 'cards', 'badges',
-  'swipe', 'harian', 'actions', 'incomeTotal', 'active', 'lastEnded', 'transcripts', 'weekIntroOpen', 'txLog',
+  'swipe', 'harian', 'harianProgress', 'swipeXpDate', 'actions', 'incomeTotal', 'active', 'lastEnded', 'transcripts', 'weekIntroOpen', 'txLog',
   'calcUsed', 'calcResume', 'calcFlagged',
 ];
 
@@ -337,6 +353,27 @@ export const useGame = create<GameData & GameActions>()((set, get) => ({
   answerCard: (kind, right, tactics, concept) => {
     if (kind === 'swipe') set(bumpMeters(get(), (m) => applySwipeAnswer(m, right, tactics)));
     else if (concept) set(bumpMeters(get(), (m) => applyMoneyAnswer(m, right, concept)));
+  },
+
+  setHarianProgress: (p) => set({ harianProgress: p }),
+
+  claimSwipeXp: (today) => {
+    if (get().swipeXpDate === today) return false;
+    set({ swipeXpDate: today });
+    return true;
+  },
+
+  answerRound: (right, tactics, withXp) => {
+    if (withXp) { get().answerCard('swipe', right, tactics); return; }
+    // Imuniti moves the same; take back the XP the shared rule adds.
+    set(bumpMeters(get(), (m) => applyXp(applySwipeAnswer(m, right, tactics), right ? -BALANCE.xp.swipeRight : -BALANCE.xp.swipeWrong)));
+  },
+
+  recordSwipe: (score, today) => {
+    const { swipe } = get();
+    const gap = swipe.lastPlayed === null ? null : dayDiff(swipe.lastPlayed, today);
+    const streak = gap === null ? 1 : gap <= 0 ? Math.max(1, swipe.streak) : gap === 1 ? swipe.streak + 1 : 1;
+    set({ swipe: { best: Math.max(swipe.best, score), streak, lastPlayed: gap !== null && gap < 0 ? swipe.lastPlayed : today } });
   },
 
   hydrate: (saved) => {

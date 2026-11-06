@@ -113,3 +113,29 @@ export async function expectBannerInView(page: Page, primary: string): Promise<v
   expect(button.y, `${primary} inside the viewport`).toBeGreaterThanOrEqual(48);
   expect(button.y + button.height, `${primary} inside the viewport`).toBeLessThanOrEqual(vh);
 }
+
+/**
+ * On /harian: answers cards by their buttons (Scam / BETUL / tile A, whichever the card offers) until card number
+ * `until` has been answered, waiting for its reason each time. Cards before it are moved past with Seterusnya.
+ * With `finish` it also presses Lihat keputusan after the fifth card.
+ */
+export async function playHarianCards(page: Page, until: number, finish = false): Promise<void> {
+  for (;;) {
+    const counter = page.getByText(/^Kad \d daripada 5$/);
+    await expect(counter).toBeVisible();
+    const n = Number((await counter.textContent())!.match(/\d/)![0]);
+    const scam = page.getByRole('button', { name: 'Scam', exact: true });
+    const betul = page.getByRole('button', { name: 'BETUL', exact: true });
+    const tileA = page.getByRole('button', { name: /^A: / });
+    await expect(scam.or(betul).or(tileA).first()).toBeVisible();
+    if (await scam.count()) await scam.click();
+    else if (await betul.count()) await betul.click();
+    else await tileA.click();
+    await expect(page.locator('[data-verdict]')).toBeVisible();
+    if (n >= until) {
+      if (n === 5 && finish) await page.getByRole('button', { name: 'Lihat keputusan' }).click();
+      return;
+    }
+    await page.getByRole('button', { name: 'Seterusnya' }).click();
+  }
+}
