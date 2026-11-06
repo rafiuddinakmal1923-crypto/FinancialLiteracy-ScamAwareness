@@ -1,7 +1,7 @@
 import 'fake-indexeddb/auto';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { useGame, initialGame } from './game';
-import { useSettings } from './settings';
+import { settingsData, useSettings } from './settings';
 import { initialMeters } from '../engine/meters';
 import { BALANCE } from '../engine/balance';
 import type { ScenarioMeta } from '../engine/types';
@@ -144,5 +144,22 @@ describe('persistence wiring', () => {
     await loadAll();
     expect(useGame.getState().week).toBe(4);
     expect(useSettings.getState().lang).toBe('en');
+  });
+});
+
+describe('flushNow', () => {
+  it('writes immediately and cancels the pending debounce', async () => {
+    const { startAutoSave, flushNow, SAVE_DEBOUNCE_MS } = await import('./persist');
+    const db = await import('../storage/db');
+    db.__resetStorageForTests();
+    const stop = startAutoSave();
+    useGame.getState().set({ week: 7 });
+    await flushNow();
+    expect((await db.loadSave())?.game.week).toBe(7);
+    // The debounced write was cancelled: a later change to storage is not overwritten by it.
+    await db.writeSave({ version: 1, game: { ...initialGame(), week: 9 }, settings: settingsData(useSettings.getState()) });
+    await new Promise((r) => setTimeout(r, SAVE_DEBOUNCE_MS + 100));
+    stop();
+    expect((await db.loadSave())?.game.week).toBe(9);
   });
 });

@@ -10,5 +10,5 @@ test('app loads offline after first visit', async ({ page, context }) => {
   await page.waitForFunction(() => !!navigator.serviceWorker.controller);
   await context.setOffline(true);
   await page.reload();
-  await expect(page.getByText('Celik', { exact: true })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Celik' })).toBeVisible();
 });

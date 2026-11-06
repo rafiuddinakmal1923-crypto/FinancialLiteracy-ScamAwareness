@@ -20,6 +20,12 @@ export default defineConfig({
         theme_color: '#2D2A6E',
         background_color: '#FFF8EE',
         display: 'standalone',
+        description: 'Bijak duit, kebal scam. Permainan telefon simulasi untuk pelajar tahun 1.',
+        icons: [
+          { src: 'icon-192.png', sizes: '192x192', type: 'image/png' },
+          { src: 'icon-512.png', sizes: '512x512', type: 'image/png' },
+          { src: 'icon-maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+        ],
       },
     }),
   ],

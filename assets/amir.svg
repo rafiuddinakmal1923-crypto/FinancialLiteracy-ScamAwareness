@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 180" role="img"><title>Amir</title>
+<path d="M14 180C18 146 46 130 80 130C114 130 142 146 146 180Z" fill="#2F8F83"/>
+<rect x="69" y="108" width="22" height="28" rx="9" fill="#D9A27A"/>
+<path d="M62 133L80 152L98 133L91 128L80 141L69 128Z" fill="#FFF8EE"/>
+<ellipse cx="47.5" cy="88" rx="6.5" ry="9" fill="#D9A27A"/><ellipse cx="112.5" cy="88" rx="6.5" ry="9" fill="#D9A27A"/>
+<ellipse cx="80" cy="84" rx="32" ry="36" fill="#E7B48C"/>
+<path d="M47 84C42 56 57 38 80 38C104 38 119 53 113 82C111 71 107 64 101 60C89 67 70 66 58 61C53 67 49 75 47 84Z" fill="#1C1B3A"/>
+<path d="M58 61C64 50 78 46 96 50C84 52 70 56 58 61Z" fill="#2D2A6E"/>
+<path d="M59 74Q67 69.5 76 72.5M84 72.5Q93 69.5 101 74" stroke="#1C1B3A" stroke-width="3.6" fill="none" stroke-linecap="round"/>
+<ellipse cx="68" cy="86" rx="4.3" ry="5.3" fill="#1C1B3A"/><ellipse cx="92" cy="86" rx="4.3" ry="5.3" fill="#1C1B3A"/>
+<circle cx="69.6" cy="84" r="1.6" fill="#fff"/><circle cx="93.6" cy="84" r="1.6" fill="#fff"/>
+<path d="M80.5 90Q83.5 95 79.5 97" stroke="#C48A62" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+<ellipse cx="59" cy="98" rx="6" ry="3.5" fill="#E8735A" opacity=".25"/><ellipse cx="101" cy="98" rx="6" ry="3.5" fill="#E8735A" opacity=".25"/>
+<path d="M70 104Q80 113 90 104" stroke="#1C1B3A" stroke-width="2.8" fill="none" stroke-linecap="round"/>
+<path d="M68 140L77 170M92 140L83 170" stroke="#F4A340" stroke-width="3.5" stroke-linecap="round"/>
+<rect x="69" y="166" width="22" height="14" rx="2.5" fill="#FFF8EE"/><rect x="69" y="166" width="22" height="4" rx="2" fill="#F4A340"/>
+</svg>

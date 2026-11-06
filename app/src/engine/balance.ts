@@ -1,5 +1,6 @@
 export const BALANCE = {
   start: { duit: 2000, simpanan: 0, tekanan: 20, imuniti: 30, xp: 0 },
+  semesterWeeks: 12,
   incomeWeeks: [4, 8, 12],
   income: 400,
   imuniti: { safe: 10, fell: -15, flag: 5, swipeRight: 3, swipeWrong: -5, badge: 5 },

@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img"><title>Sembang</title>
+<rect width="64" height="64" rx="16" fill="#5B54C9"/>
+<path d="M16 16H48A7 7 0 0 1 55 23V38A7 7 0 0 1 48 45H30L20 53V45H16A7 7 0 0 1 9 38V23A7 7 0 0 1 16 16Z" fill="#FFF8EE"/>
+<circle cx="22" cy="30.5" r="3.6" fill="#F4A340"/><circle cx="32" cy="30.5" r="3.6" fill="#F4A340"/><circle cx="42" cy="30.5" r="3.6" fill="#F4A340"/>
+</svg>

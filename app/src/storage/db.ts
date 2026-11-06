@@ -53,6 +53,26 @@ export async function writeSave(data: SaveData): Promise<void> {
   memorySave = structuredClone(data);
 }
 
+/**
+ * Like writeSave, but when the database is already open the IndexedDB transaction is started
+ * synchronously, so a write issued from a pagehide / visibilitychange handler is not lost on unload.
+ */
+export function writeSaveNow(data: SaveData): Promise<void> {
+  if (!db || mode !== 'indexeddb') return writeSave(data);
+  try {
+    const idb = db.backendDB();
+    const tx = idb.transaction('save', 'readwrite');
+    tx.objectStore('save').put({ id: 'main', data } satisfies SaveRow);
+    tx.commit?.();
+    return new Promise((resolve) => {
+      tx.oncomplete = () => resolve();
+      tx.onerror = tx.onabort = () => { void writeSave(data).then(resolve); };
+    });
+  } catch {
+    return writeSave(data);
+  }
+}
+
 export function __resetStorageForTests(): void {
   try { db?.close(); } catch { /* ignore */ }
   db = null; opened = null; mode = 'indexeddb'; memorySave = null;

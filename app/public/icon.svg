@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><title>Celik</title>
+<rect width="512" height="512" fill="#2D2A6E"/>
+<path d="M104 268Q256 92 408 268Q256 444 104 268Z" fill="#FFF8EE"/>
+<circle cx="256" cy="268" r="74" fill="#F4A340"/>
+<circle cx="256" cy="268" r="34" fill="#1C1B3A"/>
+<circle cx="236" cy="246" r="13" fill="#FFF8EE"/>
+<path d="M150 170L134 140M256 140V106M362 170L378 140" stroke="#F4A340" stroke-width="18" stroke-linecap="round"/>
+</svg>

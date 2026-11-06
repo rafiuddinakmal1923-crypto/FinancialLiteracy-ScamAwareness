@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img"><title>Kad</title>
+<rect width="64" height="64" rx="16" fill="#E5484D"/>
+<rect x="17" y="11" width="5" height="43" rx="2.5" fill="#FFF8EE"/>
+<path d="M22 14H48L41 24.5L48 35H22Z" fill="#FFF8EE"/>
+<path d="M22 14H34V35H22Z" fill="#FDECEC"/>
+</svg>

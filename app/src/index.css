@@ -36,3 +36,44 @@ body {
   font-family: var(--font-body);
   font-size: 16px;
 }
+
+/* Songket-inspired diamond lattice in kancil amber, used on indigo surfaces. */
+.songket {
+  background-image:
+    linear-gradient(45deg, transparent 46%, rgb(244 163 64 / 0.14) 46%, rgb(244 163 64 / 0.14) 54%, transparent 54%),
+    linear-gradient(-45deg, transparent 46%, rgb(244 163 64 / 0.14) 46%, rgb(244 163 64 / 0.14) 54%, transparent 54%);
+  background-size: 28px 28px;
+}
+
+/* The desk behind the phone frame: paper on phones, indigo songket on tablets and desktops. */
+.desk { background-color: var(--color-paper); }
+@media (min-width: 768px) {
+  .desk {
+    background-color: var(--color-indigo);
+    background-image:
+      radial-gradient(circle at 50% 40%, rgb(244 163 64 / 0.18), transparent 60%),
+      linear-gradient(45deg, transparent 47%, rgb(244 163 64 / 0.08) 47%, rgb(244 163 64 / 0.08) 53%, transparent 53%),
+      linear-gradient(-45deg, transparent 47%, rgb(244 163 64 / 0.08) 47%, rgb(244 163 64 / 0.08) 53%, transparent 53%);
+    background-size: auto, 40px 40px, 40px 40px;
+  }
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-kancil);
+  outline-offset: 2px;
+}
+
+button { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+button:disabled { cursor: not-allowed; }
+
+/* Reduced motion (Settings flag or OS preference): fades only, under 200 ms. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 150ms !important; transition-duration: 150ms !important; scroll-behavior: auto !important; }
+}
+html[data-reduced-motion] *, html[data-reduced-motion] *::before, html[data-reduced-motion] *::after {
+  animation-duration: 150ms !important;
+  transition-duration: 150ms !important;
+  scroll-behavior: auto !important;
+}
+html[data-reduced-motion] .active\:scale-95:active,
+html[data-reduced-motion] .active\:scale-\[\.98\]:active { transform: none; }

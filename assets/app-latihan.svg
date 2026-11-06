@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img"><title>Latihan</title>
+<rect width="64" height="64" rx="16" fill="#2D2A6E"/>
+<path d="M32 9L51 16.5V30C51 42.5 42.5 51 32 55C21.5 51 13 42.5 13 30V16.5Z" fill="#F4A340"/>
+<path d="M32 9L51 16.5V30C51 42.5 42.5 51 32 55Z" fill="#E58C2C"/>
+<path d="M23.5 31.5L29.5 37.5L41 25" stroke="#1C1B3A" stroke-width="4.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

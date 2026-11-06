@@ -38,3 +38,15 @@ describe('storage', () => {
     }
   });
 });
+
+describe('writeSaveNow', () => {
+  it('writes through the open database and can be read back', async () => {
+    const { writeSaveNow } = await import('./db');
+    __resetStorageForTests();
+    await loadSave(); // opens the database
+    const data: SaveData = { version: 1, game: { ...initialGame(), week: 5 }, settings: defaultSettings() };
+    await writeSaveNow(data);
+    expect((await loadSave())?.game.week).toBe(5);
+    expect(storageMode()).toBe('indexeddb');
+  });
+});

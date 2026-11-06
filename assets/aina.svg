@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 180" role="img"><title>Aina</title>
+<path d="M14 180C18 146 46 130 80 130C114 130 142 146 146 180Z" fill="#2D2A6E"/>
+<path d="M80 18C117 18 135 47 135 84C135 112 125 132 109 144C98 152 62 152 51 144C35 132 25 112 25 84C25 47 43 18 80 18Z" fill="#D9586E"/>
+<ellipse cx="80" cy="86" rx="31" ry="35" fill="#E7B48C"/>
+<path d="M47 78C47 56 61 45 80 45C99 45 113 56 113 78C105 65 94 60 80 60C66 60 55 65 47 78Z" fill="#B8435A"/>
+<path d="M49 111C58 131 102 131 111 111C120 124 124 141 120 158C101 168 59 168 40 158C36 141 40 124 49 111Z" fill="#E77489"/>
+<path d="M66 132Q80 140 95 133" stroke="#D9586E" stroke-width="3" fill="none" stroke-linecap="round"/>
+<circle cx="107" cy="122" r="4" fill="#F4A340"/>
+<path d="M61 77Q68 72.5 75 76M85 76Q92 72.5 99 77" stroke="#1C1B3A" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+<ellipse cx="68" cy="88" rx="4.3" ry="5.3" fill="#1C1B3A"/><ellipse cx="92" cy="88" rx="4.3" ry="5.3" fill="#1C1B3A"/>
+<circle cx="69.6" cy="86" r="1.6" fill="#fff"/><circle cx="93.6" cy="86" r="1.6" fill="#fff"/>
+<path d="M80.5 92Q83.5 97 79.5 99" stroke="#C48A62" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+<ellipse cx="60" cy="100" rx="6" ry="3.5" fill="#E8735A" opacity=".3"/><ellipse cx="100" cy="100" rx="6" ry="3.5" fill="#E8735A" opacity=".3"/>
+<path d="M71.5 106Q80 113.5 88.5 106" stroke="#1C1B3A" stroke-width="2.8" fill="none" stroke-linecap="round"/>
+<path d="M58 160L76 172M102 160L84 172" stroke="#F4A340" stroke-width="3.5" stroke-linecap="round"/>
+<rect x="69" y="168" width="22" height="12" rx="2.5" fill="#FFF8EE"/><rect x="69" y="168" width="22" height="4" rx="2" fill="#F4A340"/>
+</svg>
