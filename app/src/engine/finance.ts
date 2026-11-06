@@ -26,6 +26,7 @@ function requireMonths(name: string, n: number, min: number): void {
 /**
  * Future value of a monthly top-up with monthly compounding.
  * FV = P0 x (1 + i)^n + PMT x ((1 + i)^n - 1) / i, i = yearlyRate / 12, n = months.
+ * Negative inputs throw RangeError by design (UI clamps to >= 0).
  * At i = 0: FV = P0 + PMT x n. contributed = P0 + PMT x n; growth = value - contributed.
  */
 export function futureValue({ monthly, yearlyRate, months, initial = 0 }: FutureValueInput): {
@@ -64,33 +65,47 @@ export function growthSeries(
 }
 
 /**
- * Yearly compounded rate of a promised periodic return: (1 + rate)^periods - 1,
- * periods per year hari 365, minggu 52, bulan 12, tahun 1. Returned as a full-precision ratio.
+ * Yearly compounded rate of a promised periodic return: (1 + rate)^periods - 1.
+ * Negative rates throw RangeError by design: promises are modelled as >= 0 and the Kalkulator UI (Task 18)
+ * clamps inputs to >= 0. Absurd rates may return Infinity.
+ * Periods per year: * periods per year hari 365, minggu 52, bulan 12, tahun 1. Returned as a full-precision ratio.
  */
 export function yearlyFromPeriodic(rate: number, period: Period): number {
   requireNonNegative('rate', rate);
   return (1 + rate) ** PERIODS_PER_YEAR[period] - 1;
 }
 
-/** True when the yearly return is strictly above finance.unrealisticAbove. */
+/**
+ * True when the yearly return is strictly above finance.unrealisticAbove.
+ * Infinity (an absurd promise that overflows) is unrealistic; NaN and -Infinity throw RangeError.
+ */
 export function isUnrealistic(yearly: number, b = BALANCE): boolean {
-  if (!Number.isFinite(yearly)) throw new RangeError('yearly must be finite');
+  if (Number.isNaN(yearly) || yearly === -Infinity) throw new RangeError('yearly must be a number, not NaN or -Infinity');
   return yearly > b.finance.unrealisticAbove;
 }
 
-/** Key of the first band (in balance order) whose max >= yearly, or 'atas' when above every band. */
+/**
+ * Band for a yearly return. Bands overlap (unitAmanah spans the others), so the rule is:
+ * 1. the first band in balance key order with min <= yearly <= max;
+ * 2. else, if yearly is not above every band's max, the nearest band by distance to its [min, max];
+ * 3. else 'atas' (above every band). Infinity returns 'atas'; NaN and -Infinity throw RangeError.
+ * Example: 0.025 is in simpananTetap; 0.015 (gap between two bands), 0 and -0.05 are in unitAmanah (its min is -0.1).
+ */
 export function bandFor(yearly: number, b = BALANCE): BandKey | 'atas' {
-  if (!Number.isFinite(yearly)) throw new RangeError('yearly must be finite');
-  const bands = b.finance.bands as Record<string, { max: number }>;
-  for (const key of Object.keys(bands)) {
-    if (yearly <= bands[key].max) return key as BandKey;
-  }
-  return 'atas';
+  if (Number.isNaN(yearly) || yearly === -Infinity) throw new RangeError('yearly must be a number, not NaN or -Infinity');
+  const bands = b.finance.bands as Record<string, { min: number; max: number }>;
+  const keys = Object.keys(bands);
+  if (keys.every((k) => yearly > bands[k].max)) return 'atas';
+  const inside = keys.find((k) => yearly >= bands[k].min && yearly <= bands[k].max);
+  if (inside) return inside as BandKey;
+  const dist = (k: string): number => (yearly < bands[k].min ? bands[k].min - yearly : yearly - bands[k].max);
+  return keys.reduce((best, k) => (dist(k) < dist(best) ? k : best)) as BandKey;
 }
 
 /**
  * True cost of a loan or BNPL. Flat: total = P x (1 + flat x months / 12). Fee: total = P + fee.
  * Exactly one of flatRate / fee is required. instalment = total / months; cost = total - amount.
+ * Amount 0 or zero cost returns effectiveYearly 0. Negative inputs throw RangeError by design (UI clamps to >= 0).
  * effectiveYearly = 12 x monthly IRR m, solved by bisection from amount = inst x (1 - (1 + m)^-n) / m.
  */
 export function loanCost({

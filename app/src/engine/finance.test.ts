@@ -79,11 +79,29 @@ describe('isUnrealistic and bandFor', () => {
     expect(isUnrealistic(0.2)).toBe(false);
     expect(isUnrealistic(0.2001)).toBe(true);
   });
-  it('bandFor returns a band key or atas', () => {
+  it('bandFor: inside a band, first in key order', () => {
     expect(bandFor(0.005)).toBe('simpanan');
-    expect(bandFor(0.03)).toBe('simpananTetap');
+    expect(bandFor(0.025)).toBe('simpananTetap');
+    expect(bandFor(0.015)).toBe('unitAmanah'); // in the gap between simpanan and simpananTetap, only unitAmanah contains it
+    expect(bandFor(0.04)).toBe('hargaTetap');
     expect(bandFor(0.1)).toBe('unitAmanah');
-    expect(bandFor(5)).toBe('atas');
+  });
+  it('bandFor: -0.05 and 0 fall only inside unitAmanah (min -0.1); 0 is below simpanan.min', () => {
+    expect(bandFor(-0.05)).toBe('unitAmanah');
+    expect(bandFor(0)).toBe('unitAmanah');
+  });
+  it('bandFor: below every band picks the nearest; above every max is atas', () => {
+    expect(bandFor(-0.5)).toBe('unitAmanah');
+    expect(bandFor(0.5)).toBe('atas');
+  });
+  it('Infinity: unrealistic and atas; NaN and -Infinity throw', () => {
+    expect(isUnrealistic(Infinity)).toBe(true);
+    expect(bandFor(Infinity)).toBe('atas');
+    expect(yearlyFromPeriodic(7, 'hari')).toBe(Infinity);
+    expect(() => isUnrealistic(NaN)).toThrow(RangeError);
+    expect(() => bandFor(NaN)).toThrow(RangeError);
+    expect(() => isUnrealistic(-Infinity)).toThrow(RangeError);
+    expect(() => bandFor(-Infinity)).toThrow(RangeError);
   });
 });
 
