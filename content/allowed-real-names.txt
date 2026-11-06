@@ -1,0 +1,23 @@
+# Real scheme and agency names allowed ONLY in content/concepts.json (Kad Ilmu text, D27).
+# Everywhere else they stay banned (they are also listed in banned-names.txt), and they are never used as
+# characters, senders, logos or colours, or as a recommendation. One name per line, matched like banned-names.txt.
+# This file itself is exempt from the content scan.
+
+# Savings, retirement and education schemes
+KWSP
+EPF
+Belanjawanku
+PTPTN
+Tabung Haji
+ASB
+Amanah Saham Bumiputera
+
+# Regulators and help agencies (for "where to check" lines)
+SC
+Suruhanjaya Sekuriti
+Securities Commission
+BNM
+Bank Negara
+Bank Negara Malaysia
+AKPK
+Agensi Kaunseling dan Pengurusan Kredit

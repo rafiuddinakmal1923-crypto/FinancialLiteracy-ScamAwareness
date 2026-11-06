@@ -2,6 +2,7 @@
 // redirect when there is none, and the consequence template lookup.
 import { useCallback, useEffect, useRef } from 'react';
 import { scenarios } from 'virtual:celik-content';
+import { isRight } from '../../engine/meters';
 import type { CompiledScenario, EndedScenario, Outcome } from '../../engine/types';
 import type { Vars } from '../../shell/i18n';
 import { replaceRoute } from '../../shell/router';
@@ -10,9 +11,9 @@ import type { TimelineStep, TimelineTone } from '../../ui/ConsequenceTimeline';
 
 export const MAX_STEPS = 5;
 
-/** Danger for losses, safe for safe, amber for "too suspicious" (a missed real offer, not a scam). */
+/** Safe for right calls (safe, untung), amber for "too suspicious" and a poor money choice, danger for losses and debt. */
 export function outcomeTone(o: Outcome): TimelineTone {
-  return o === 'safe' ? 'safe' : o === 'curiga' ? 'warning' : 'danger';
+  return isRight(o) ? 'safe' : o === 'curiga' || o === 'rugi' ? 'warning' : 'danger';
 }
 
 /**

@@ -1,14 +1,53 @@
 export const BALANCE = {
-  start: { duit: 2000, simpanan: 0, tekanan: 20, imuniti: 30, xp: 0 },
+  start: { duit: 2000, simpanan: 0, tekanan: 20, imuniti: 30, celik: 30, labur: 0, xp: 0 },
   semesterWeeks: 12,
   incomeWeeks: [4, 8, 12],
   income: 400,
   imuniti: { safe: 10, fell: -15, flag: 5, swipeRight: 3, swipeWrong: -5, badge: 5 },
-  xp: { safe: 50, fell: 20, flag: 10, swipeRight: 5, swipeWrong: 0, badge: 30, drill: 40, action: 25, hint: -10 },
-  levels: [['Mangsa', 0], ['Waspada', 200], ['Bijak', 500], ['Penjaga', 900], ['Wira Anti-Scam', 1400]],
-  grade: { weights: { judgement: 0.4, imuniti: 0.3, money: 0.2, flags: 0.1 }, A: 85, B: 70, C: 55, capWhenRecord: 'C' },
+  /** Celik Kewangan per concept (D24): finance right/wrong call, money card right/wrong. */
+  celik: { right: 10, wrong: -10, cardRight: 3, cardWrong: -5 },
+  xp: {
+    safe: 50, fell: 20, flag: 10, swipeRight: 5, swipeWrong: 0, badge: 30, drill: 40, action: 25, hint: -10,
+    financeRight: 50, financeWrong: 20, calc: 10, kadIlmu: 10, moneyCardRight: 5, moneyCardWrong: 0,
+  },
+  levels: [['Pemula', 0], ['Berjimat', 200], ['Bijak', 500], ['Pelabur', 900], ['Celik', 1400]],
+  grade: {
+    weights: { judgement: 0.3, celik: 0.25, imuniti: 0.2, money: 0.15, flags: 0.1 },
+    /** Money health parts (SDS 5.4): money kept, emergency fund vs finance.emergencyTarget, invested (Labur > 0). */
+    moneyHealth: { kept: 0.5, emergency: 0.25, invested: 0.25 },
+    A: 85, B: 70, C: 55, capWhenRecord: 'C',
+  },
   desperation: { simpananBelow: 100, tekananUp: 10, cueAt: 60 },
-  adaptive: { base: 100, bonus: 10, scamShareMin: 0.55, scamShareMax: 0.65 },
+  adaptive: { base: 100, bonus: 10, scamShareMin: 0.35, scamShareMax: 0.45 },
+  /**
+   * Money and Kalkulator numbers (D21, D22, SDS 5.7-5.8). Every rate here is an illustrative "contoh" and
+   * TODO-VERIFY (CLAUDE.md rule 11). Rates are yearly decimals unless noted.
+   */
+  finance: {
+    /** RM in Simpanan before investing counts as an emergency fund. */
+    emergencyTarget: 300,
+    /** A promised yearly return above this is flagged as Terlalu Lumayan in Semak Pulangan. */
+    unrealisticAbove: 0.2,
+    /** Tekanan added when money goes into Labur while Simpanan is below emergencyTarget. */
+    laburBeforeEmergencyTekanan: 5,
+    /** Amanah Cempaka (fictional fixed-price fund): illustrative yearly rate, credited weekly as amanahYearly / 52. */
+    amanahYearly: 0.04,
+    /**
+     * Dana Ekuiti Cempaka (fictional unit trust): weekly % change for weeks 1-12 (index 0 = week 1).
+     * Small gains, a scripted -6% dip in week 8 (index 7), and the value is back above its week-7 level by
+     * week 11 (index 10), to teach that prices go up and down.
+     */
+    ekuitiPath: [0.8, 0.5, 0.7, 0.4, 0.6, 0.5, 0.6, -6, 3, 2, 2, 0.5],
+    /** Source and year for amanahYearly, ekuitiPath and unrealisticAbove (illustrative, not market data). */
+    illustrative: { source: 'TODO-VERIFY', year: 2026 },
+    /** Illustrative yearly return ranges for Semak Pulangan. */
+    bands: {
+      simpanan: { min: 0.0025, max: 0.01, source: 'TODO-VERIFY', year: 2026 },
+      simpananTetap: { min: 0.02, max: 0.035, source: 'TODO-VERIFY', year: 2026 },
+      hargaTetap: { min: 0.03, max: 0.06, source: 'TODO-VERIFY', year: 2026 },
+      unitAmanah: { min: -0.1, max: 0.12, source: 'TODO-VERIFY', year: 2026 },
+    },
+  },
   swipe: { cards: 10, seconds: 60, revealMs: 1500 },
   typing: { minMs: 600, maxMs: 1500 },
   /** After a chat ends: pause before "Lihat apa jadi seterusnya"; consequence step interval; flag hunt wrong taps. */

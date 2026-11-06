@@ -1,8 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import { fileURLToPath } from 'node:url';
-import { scanText, readBannedNames } from './check-content';
+import { scanText, readBannedNames, namesFor, rateMarkerProblems } from './check-content';
 
 const banned = readBannedNames(fileURLToPath(new URL('../../content/banned-names.txt', import.meta.url)));
+const allowed = readBannedNames(fileURLToPath(new URL('../../content/allowed-real-names.txt', import.meta.url)));
 
 describe('scanText', () => {
   it('flags a real brand from the list', () => {
@@ -108,5 +109,54 @@ describe('scanText', () => {
   it('reports the file and line number', () => {
     const [p] = scanText('ok\nCall saya 012-345 6789', 'kerja.ink', []);
     expect(p).toMatch(/kerja\.ink:2/);
+  });
+});
+
+describe('real scheme and agency names (D27)', () => {
+  it('the allowlist names the expected schemes and agencies, all also banned', () => {
+    for (const n of ['KWSP', 'EPF', 'PTPTN', 'Tabung Haji', 'ASB', 'SC', 'BNM', 'Bank Negara', 'AKPK', 'Belanjawanku']) {
+      expect(allowed, n).toContain(n);
+    }
+    const lower = banned.map((b) => b.toLowerCase());
+    for (const n of allowed) expect(lower, n).toContain(n.toLowerCase());
+  });
+
+  it('KWSP is allowed in concepts.json and flagged in a scenario', () => {
+    const text = 'Guna panduan KWSP Belanjawanku. Semak SC Investor Alert List dan BNM Financial Consumer Alert List. Hubungi AKPK.';
+    expect(scanText(text, 'concepts.json', namesFor('concepts.json', banned, allowed))).toEqual([]);
+    expect(scanText('Saya pegawai KWSP.', 'scenarios/x.ink', namesFor('scenarios/x.ink', banned, allowed))).toHaveLength(1);
+    expect(scanText('Simpan dalam ASB.', 'cards.json', namesFor('cards.json', banned, allowed))).toHaveLength(1);
+    expect(scanText('Saya pegawai KWSP.', 'scenarios/concepts.json', namesFor('scenarios/concepts.json', banned, allowed))).toHaveLength(1);
+  });
+
+  it('allowlisted names stay banned elsewhere even if missing from banned-names.txt', () => {
+    expect(namesFor('x.ink', [], ['AKPK'])).toEqual(['AKPK']);
+    expect(namesFor('concepts.json', ['AKPK', 'Maybank'], ['akpk'])).toEqual(['Maybank']);
+  });
+
+  it('other real brands stay banned inside concepts.json', () => {
+    expect(scanText('Buka akaun Maybank', 'concepts.json', namesFor('concepts.json', banned, allowed))).toHaveLength(1);
+  });
+});
+
+describe('rateMarkerProblems (CLAUDE.md rule 11)', () => {
+  it('passes objects with a % figure or rate that carry verify or a source', () => {
+    const ok = [
+      { code: 'kompaun', contoh: { ms: 'Contoh: 5% setahun', verify: 'TODO-VERIFY' } },
+      { contoh: { ms: 'Contoh: 4 % setahun', source: 'KWSP 2025', year: 2025 } },
+      { band: { rate: 0.04, verify: 'TODO-VERIFY' } },
+      { apa: { ms: 'Tiada kadar di sini, cuma RM50 sebulan.' } },
+    ];
+    expect(rateMarkerProblems(ok, 'concepts.json')).toEqual([]);
+  });
+
+  it('flags a % figure or a rate field without a marker, with its path', () => {
+    const bad = [{ code: 'risiko', contoh: { ms: 'Contoh: 30% seminggu', en: 'e.g. 30% a week' } }];
+    const p = rateMarkerProblems(bad, 'concepts.json');
+    expect(p).toHaveLength(1);
+    expect(p[0]).toMatch(/concepts\.json: 0\.contoh/);
+    expect(rateMarkerProblems({ bands: { rate: 0.04 } }, 'concepts.json')[0]).toMatch(/bands/);
+    expect(rateMarkerProblems({ x: { ms: '5%', verify: 'maybe' } }, 'concepts.json')).toHaveLength(1);
+    expect(rateMarkerProblems({ x: { ms: '5%', source: '' } }, 'concepts.json')).toHaveLength(1);
   });
 });

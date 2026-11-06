@@ -82,7 +82,8 @@ Shopee
 Shopee Express
 Lazada
 
-# Agencies (real agencies are banned like brands; 997 and Semak Mule are the only real items)
+# Agencies and schemes (banned like brands; 997 and Semak Mule are the only real items in scenarios and cards).
+# Names also listed in allowed-real-names.txt are allowed in content/concepts.json only (D27).
 Bukit Aman
 PDRM
 SSM
@@ -95,3 +96,12 @@ LHDN
 KWSP
 EPF
 PTPTN
+Belanjawanku
+Tabung Haji
+ASB
+Amanah Saham Bumiputera
+SC
+Suruhanjaya Sekuriti
+Securities Commission
+AKPK
+Agensi Kaunseling dan Pengurusan Kredit

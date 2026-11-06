@@ -20,6 +20,8 @@ describe('loadCelikContent', () => {
     expect(r.problems).toEqual([]);
     expect(r.data.scenarios.kerja_sambilan.meta.family).toBe('job');
     expect(Array.isArray(r.data.tactics)).toBe(true);
+    expect(Array.isArray(r.data.concepts)).toBe(true);
+    expect((r.data.concepts as unknown[]).length).toBe(6);
     expect(r.files.some((f) => f.endsWith('kerja_sambilan.ink'))).toBe(true);
   });
 
@@ -53,10 +55,31 @@ describe('loadCelikContent', () => {
   });
 });
 
+describe('real names and rates (D27)', () => {
+  it('allows KWSP in concepts.json only and does not scan the allowlist file', () => {
+    const dir = tempContent();
+    writeFileSync(join(dir, 'banned-names.txt'), 'KWSP\nMaybank\n');
+    writeFileSync(join(dir, 'allowed-real-names.txt'), 'KWSP\n');
+    writeFileSync(join(dir, 'concepts.json'), JSON.stringify([{ code: 'bajet', apa: { ms: 'Panduan KWSP Belanjawanku.' } }]));
+    writeFileSync(join(dir, 'scenarios', 'rosak.ink'), 'Saya dari KWSP\n-> END\n');
+    const r = loadCelikContent(dir);
+    const kwsp = r.problems.filter((p) => p.includes('KWSP'));
+    expect(kwsp).toHaveLength(1);
+    expect(kwsp[0]).toMatch(/^scenarios\/rosak\.ink:1/);
+  });
+
+  it('reports a rate in concepts.json without a TODO-VERIFY marker', () => {
+    const dir = tempContent();
+    writeFileSync(join(dir, 'concepts.json'), JSON.stringify([{ code: 'kompaun', contoh: { ms: 'Contoh: 5% setahun' } }]));
+    const r = loadCelikContent(dir);
+    expect(r.problems.some((p) => p.startsWith('concepts.json: 0.contoh') && /TODO-VERIFY/.test(p))).toBe(true);
+  });
+});
+
 describe('generateModule', () => {
   it('emits every named export', () => {
     const code = generateModule(loadCelikContent(repoContent).data);
-    for (const name of ['scenarios', 'tactics', 'cards', 'sindiket', 'drills', 'semester', 'pages']) {
+    for (const name of ['scenarios', 'tactics', 'cards', 'concepts', 'sindiket', 'drills', 'semester', 'pages']) {
       expect(code).toContain(`export const ${name} =`);
     }
   });

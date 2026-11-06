@@ -4,6 +4,31 @@ import { cardId } from '../engine/cards';
 import { applyEffect, applyFlagFound, applyOutcome, applyXp, initialMeters, isRight } from '../engine/meters';
 import type { ChatMessage, Effect, EndedScenario, Family, Meters, Outcome, ScenarioMeta, ScenarioResult, Tactic } from '../engine/types';
 
+/**
+ * Fills meter fields an older save does not have (milestone 2 saves have no `celik` or `labur`) from the
+ * defaults, keeping every saved value.
+ */
+export function fillMeters(m: Partial<Meters> | undefined): Meters {
+  const d = initialMeters();
+  if (!m) return d;
+  return {
+    ...d, ...m,
+    imuniti: { ...d.imuniti, ...m.imuniti },
+    celik: { ...d.celik, ...m.celik },
+    labur: { ...d.labur, ...m.labur },
+  };
+}
+
+/** Fills an older save's data: meters, the active snapshot and `results[].concepts`. */
+function fillGame(d: GameData): GameData {
+  return {
+    ...initialGame(), ...d,
+    meters: fillMeters(d.meters),
+    active: d.active ? { ...d.active, snapshot: fillMeters(d.active.snapshot) } : null,
+    results: (d.results ?? []).map((r) => ({ ...r, concepts: r.concepts ?? [] })),
+  };
+}
+
 export interface GameData {
   character: 'aina' | 'amir'; name: string; week: number; meters: Meters;
   budget: { needs: number; wants: number; savings: number } | null;
@@ -79,8 +104,8 @@ export const useGame = create<GameData & GameActions>()((set, get) => ({
   finishScenario: (meta, outcome, flagsFound, flagsTotal) => {
     const { meters, results, lastEnded, transcripts } = get();
     const result: ScenarioResult = {
-      id: meta.id, outcome, right: isRight(meta.type, outcome), flagsFound, flagsTotal,
-      tactics: meta.tactics, family: meta.family,
+      id: meta.id, outcome, right: isRight(outcome), flagsFound, flagsTotal,
+      tactics: meta.tactics, family: meta.family, concepts: meta.concepts,
     };
     const transcript = lastEnded?.id === meta.id ? lastEnded.transcript : null;
     set({
@@ -122,12 +147,13 @@ export const useGame = create<GameData & GameActions>()((set, get) => ({
     set({ meters: applyFlagFound(meters, tactic), cards: cards.includes(id) ? cards : [...cards, id] });
   },
 
-  hydrate: (d) => {
-    if (!d) { set(initialGame()); return; }
+  hydrate: (saved) => {
+    if (!saved) { set(initialGame()); return; }
+    const d = fillGame(saved);
     // A chat cut off mid-story is rolled back. One that had already ended keeps its effects, so its
     // consequence, flag hunt and debrief can still be finished (or retried) after a reload.
-    if (d.active && d.lastEnded?.id === d.active.id) { set({ ...initialGame(), ...d }); return; }
-    set({ ...initialGame(), ...d, meters: d.active ? d.active.snapshot : d.meters, active: null, lastEnded: null });
+    if (d.active && d.lastEnded?.id === d.active.id) { set(d); return; }
+    set({ ...d, meters: d.active ? d.active.snapshot : d.meters, active: null, lastEnded: null });
   },
 
   reset: () => set(initialGame()),

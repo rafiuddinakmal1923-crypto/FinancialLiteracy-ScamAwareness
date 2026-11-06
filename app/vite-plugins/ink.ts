@@ -1,8 +1,9 @@
 // Build-time content pipeline: compiles content/scenarios/*.ink, validates registered JSON files,
-// scans every content file for real brands/URLs/phone numbers, and serves the result as the
+// scans every content file for real brands/URLs/phone numbers (real scheme names only in concepts.json, D27)
+// and unmarked rates in concepts.json, and serves the result as the
 // virtual module "virtual:celik-content". Any problem throws, failing dev and build.
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
-import { basename, join, relative, resolve, sep } from 'node:path';
+import { join, relative, resolve, sep } from 'node:path';
 import type { Plugin } from 'vite';
 import { compileScenario } from '../src/engine/compile';
 import { CONTENT_FILES, ContentError, parseContent } from '../src/engine/schemas';
@@ -11,10 +12,13 @@ import type { CompiledScenario } from '../src/engine/types';
 export const VIRTUAL_ID = 'virtual:celik-content';
 const RESOLVED_ID = '\0' + VIRTUAL_ID;
 const BANNED_FILE = 'banned-names.txt';
+/** Real scheme and agency names allowed only in REAL_NAMES_FILE (D27); banned everywhere else. */
+export const ALLOWED_FILE = 'allowed-real-names.txt';
+export const REAL_NAMES_FILE = 'concepts.json';
 const SCANNED_EXT = /\.(ink|json|txt|md)$/i;
 
 /** Named JSON exports of the virtual module, each backed by `<name>.json` in content/. */
-export const JSON_EXPORTS = ['tactics', 'cards', 'sindiket', 'drills', 'semester', 'pages'] as const;
+export const JSON_EXPORTS = ['tactics', 'cards', 'concepts', 'sindiket', 'drills', 'semester', 'pages'] as const;
 export type JsonExport = (typeof JSON_EXPORTS)[number];
 
 export type CelikContent = { scenarios: Record<string, CompiledScenario> } & Record<JsonExport, unknown>;
@@ -106,6 +110,46 @@ export function scanText(text: string, file: string, banned: string[]): string[]
   return problems;
 }
 
+/**
+ * The names banned in the content file at `relPath` (relative to content/, "/" separated): allowlisted real
+ * names are lifted only in concepts.json and are banned everywhere else, even if banned-names.txt misses them.
+ */
+export function namesFor(relPath: string, banned: string[], allowed: string[]): string[] {
+  if (relPath === REAL_NAMES_FILE) {
+    const lift = new Set(allowed.map((n) => n.toLowerCase()));
+    return banned.filter((n) => !lift.has(n.toLowerCase()));
+  }
+  const have = new Set(banned.map((n) => n.toLowerCase()));
+  return [...banned, ...allowed.filter((n) => !have.has(n.toLowerCase()))];
+}
+
+// A percentage figure such as "5%", "4.5 %" or "30%".
+const PERCENT_RE = /\d(?:[.,]\d+)?\s?%/;
+
+/**
+ * CLAUDE.md rule 11: every object in `data` that holds a `rate` field or a string with a % figure must carry
+ * `"verify": "TODO-VERIFY"` or a non-empty `source`. Returns one problem per unmarked object, with its path.
+ */
+export function rateMarkerProblems(data: unknown, file: string): string[] {
+  const problems: string[] = [];
+  const visit = (node: unknown, path: string[]): void => {
+    if (Array.isArray(node)) {
+      node.forEach((v, i) => visit(v, [...path, String(i)]));
+      return;
+    }
+    if (!node || typeof node !== 'object') return;
+    const o = node as Record<string, unknown>;
+    const hasFigure = 'rate' in o || Object.values(o).some((v) => typeof v === 'string' && PERCENT_RE.test(v));
+    const marked = o.verify === 'TODO-VERIFY' || (typeof o.source === 'string' && o.source.trim() !== '');
+    if (hasFigure && !marked) {
+      problems.push(`${file}: ${path.join('.') || '(root)'} has a rate or % figure without "verify": "TODO-VERIFY" or a "source"`);
+    }
+    for (const [k, v] of Object.entries(o)) visit(v, [...path, k]);
+  };
+  visit(data, []);
+  return problems;
+}
+
 function listFiles(dir: string): string[] {
   if (!existsSync(dir)) return [];
   const out: string[] = [];
@@ -127,11 +171,22 @@ export function loadCelikContent(contentDir: string): LoadResult {
   const files = listFiles(dir);
   const problems: string[] = [];
   const banned = readBannedNames(join(dir, BANNED_FILE));
+  const allowed = readBannedNames(join(dir, ALLOWED_FILE));
   const rel = (p: string) => relative(dir, p).split(sep).join('/');
 
   for (const f of files) {
-    if (basename(f) === BANNED_FILE || !SCANNED_EXT.test(f)) continue;
-    problems.push(...scanText(readText(f), rel(f), banned));
+    const r = rel(f);
+    if (r === BANNED_FILE || r === ALLOWED_FILE || !SCANNED_EXT.test(f)) continue;
+    problems.push(...scanText(readText(f), r, namesFor(r, banned, allowed)));
+  }
+
+  const conceptsPath = join(dir, REAL_NAMES_FILE);
+  if (existsSync(conceptsPath)) {
+    try {
+      problems.push(...rateMarkerProblems(JSON.parse(readText(conceptsPath)), REAL_NAMES_FILE));
+    } catch {
+      // Invalid JSON is reported once, by the schema step below.
+    }
   }
 
   const scenarios: Record<string, CompiledScenario> = {};

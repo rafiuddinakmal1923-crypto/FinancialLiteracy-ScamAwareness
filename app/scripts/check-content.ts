@@ -1,11 +1,12 @@
 // npm run check:content: compiles every scenario, validates content JSON and scans all content
-// for real brands, URLs and phone numbers (CLAUDE.md hard rule 1). Exits 1 on any problem.
+// for real brands, URLs and phone numbers (CLAUDE.md hard rule 1; real scheme names only in concepts.json, D27)
+// and unmarked rates in concepts.json (rule 11). Exits 1 on any problem.
 import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { loadCelikContent, readText } from '../vite-plugins/ink';
 
-export { scanText, readBannedNames } from '../vite-plugins/ink';
+export { scanText, readBannedNames, namesFor, rateMarkerProblems } from '../vite-plugins/ink';
 
 const appDir = fileURLToPath(new URL('..', import.meta.url));
 

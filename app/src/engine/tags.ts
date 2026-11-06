@@ -1,7 +1,7 @@
 import {
-  TACTICS, FAMILIES,
-  type Tactic, type Family, type Outcome, type Akaun, type Rekod,
-  type Effect, type Flag, type UiDirective, type ScenarioMeta,
+  TACTICS, FAMILIES, CONCEPTS, OUTCOMES, LABUR_PRODUCTS, CALC_TABS,
+  type Tactic, type Family, type Concept, type Outcome, type Akaun, type Rekod,
+  type Effect, type Flag, type UiDirective, type ScenarioMeta, type ScenarioType,
 } from './types';
 
 export class TagError extends Error {
@@ -11,12 +11,13 @@ export class TagError extends Error {
   }
 }
 
-const GLOBAL_KEYS = ['id', 'type', 'family', 'tactics', 'contact', 'number', 'ui', 'hint', 'apa_patut'];
-const OUTCOMES: readonly Outcome[] = ['scammed', 'mule', 'frozen', 'safe', 'curiga'];
+const GLOBAL_KEYS = ['id', 'type', 'family', 'tactics', 'concepts', 'contact', 'number', 'ui', 'hint', 'apa_patut'];
+const TYPES: readonly ScenarioType[] = ['scam', 'legit', 'finance'];
 const AKAUN: readonly Akaun[] = ['Aktif', 'Disekat', 'Ditutup'];
 const REKOD: readonly Rekod[] = ['Bersih', 'Disiasat', 'Didakwa'];
 const LINK_RE = /^[a-z0-9-]+\.test(\/[^\s]*)?$/;
 const NUMBER_RE = /^01\d-0000 0\d{3}$/;
+const PRESET_RE = /^[a-z0-9_-]+$/;
 
 function split(tag: string): [string, string] {
   const t = tag.trim();
@@ -27,6 +28,15 @@ function split(tag: string): [string, string] {
 function tactic(s: string, tag: string): Tactic {
   if (!(TACTICS as readonly string[]).includes(s)) throw new TagError(`Unknown tactic "${s}" in tag "${tag}"`);
   return s as Tactic;
+}
+
+function concept(s: string, tag: string): Concept {
+  if (!(CONCEPTS as readonly string[]).includes(s)) throw new TagError(`Unknown concept "${s}" in tag "${tag}"`);
+  return s as Concept;
+}
+
+function list(value: string): string[] {
+  return value.split(',').map((s) => s.trim()).filter(Boolean);
 }
 
 function int(s: string, tag: string): number {
@@ -49,6 +59,14 @@ function parseEffect(rest: string, tag: string): Effect {
       return { kind, value: oneOf(value, AKAUN, tag) };
     case 'rekod':
       return { kind, value: oneOf(value, REKOD, tag) };
+    case 'labur': {
+      // D29: effect:labur:<amanah|ekuiti>:<+/-RM>; a missing product fails the build.
+      const [product, delta] = split(value);
+      if (!(LABUR_PRODUCTS as readonly string[]).includes(product) || !delta) {
+        throw new TagError(`effect:labur needs a product (amanah|ekuiti) and an amount in tag "${tag}"`);
+      }
+      return { kind, product: oneOf(product, LABUR_PRODUCTS, tag), delta: int(delta, tag) };
+    }
     default:
       throw new TagError(`Unknown effect in tag "${tag}"`);
   }
@@ -66,6 +84,12 @@ function parseUi(rest: string, tag: string): UiDirective {
   if (kind === 'link') {
     if (!LINK_RE.test(value)) throw new TagError(`Link must be <name>.test/<path> with no scheme in tag "${tag}"`);
     return { kind: 'link', url: value };
+  }
+  if (kind === 'calc') {
+    // D21: ui:calc:<masa|pulangan|kos>:<preset-id>. Preset ids are checked against calc-presets.json once it exists.
+    const [tab, preset] = split(value);
+    if (!PRESET_RE.test(preset)) throw new TagError(`ui:calc needs a preset id [a-z0-9_-] in tag "${tag}"`);
+    return { kind: 'calc', tab: oneOf(tab, CALC_TABS, tag), preset };
   }
   throw new TagError(`Unknown ui directive in tag "${tag}"`);
 }
@@ -117,11 +141,10 @@ export function parseMeta(globalTags: string[]): ScenarioMeta {
     const [key, value] = split(tag);
     switch (key) {
       case 'id': m.id = value; break;
-      case 'type': m.type = oneOf(value, ['scam', 'legit'] as const, tag); break;
+      case 'type': m.type = oneOf(value, TYPES, tag); break;
       case 'family': m.family = oneOf<Family>(value, FAMILIES, tag); break;
-      case 'tactics':
-        m.tactics = value.split(',').map((s) => s.trim()).filter(Boolean).map((s) => tactic(s, tag));
-        break;
+      case 'tactics': m.tactics = list(value).map((s) => tactic(s, tag)); break;
+      case 'concepts': m.concepts = list(value).map((s) => concept(s, tag)); break;
       case 'contact': m.contact = value; break;
       case 'number':
         if (!NUMBER_RE.test(value)) throw new TagError(`Number must look like 01X-0000 0NNN in tag "${tag}"`);
@@ -136,8 +159,18 @@ export function parseMeta(globalTags: string[]): ScenarioMeta {
       default: throw new TagError(`Unknown global tag "${tag}"`);
     }
   }
-  for (const k of ['id', 'type', 'family', 'tactics', 'contact'] as const) {
+  for (const k of ['id', 'type', 'family', 'contact'] as const) {
     if (m[k] === undefined || m[k] === '') throw new TagError(`Missing required global tag "${k}"`);
+  }
+  m.concepts ??= [];
+  if (m.type === 'finance') {
+    // Finance scenarios teach concepts; tactics are optional.
+    m.tactics ??= [];
+    if (m.concepts.length === 0) throw new TagError('A finance scenario needs at least one concept in "# concepts:"');
+  } else if (m.tactics === undefined) {
+    throw new TagError('Missing required global tag "tactics"');
+  } else if (m.type === 'scam' && m.tactics.length === 0) {
+    throw new TagError('A scam scenario needs at least one tactic in "# tactics:"');
   }
   return m as ScenarioMeta;
 }

@@ -131,6 +131,136 @@ Kafe UCR: Ada kerja part-time di kafe kampus. Temuduga di kafe, Isnin 10 pagi.
   });
 });
 
+function finance(body: string, extra: string[] = []): string {
+  return ['# id:f1', '# type:finance', '# family:budget', '# concepts:bajet,kecemasan', '# contact:Kak Long', ...extra, body].join('\n');
+}
+
+describe('compileScenario: finance and the new outcomes (D23, D29)', () => {
+  it('compiles a finance scenario with a right and a wrong path, no tactics', () => {
+    const c = compileScenario(finance(`Kak Long: Duit biasiswa dah masuk? Nak bahagi macam mana?
+* [Asingkan simpanan dulu]
+    Kak Long: Bagus! # outcome:untung
+    -> END
+* [Belanja dulu, simpan kemudian]
+    Kak Long: Hmm, hujung bulan nanti susah. # outcome:rugi
+    -> END`), 'f1.ink');
+    expect(c.meta.type).toBe('finance');
+    expect(c.meta.concepts).toEqual(['bajet', 'kecemasan']);
+    expect(c.meta.tactics).toEqual([]);
+    expect(enumeratePaths(c.json).map((p) => p.outcome)).toEqual(['untung', 'rugi']);
+  });
+
+  it('accepts safe as the right path and hutang or curiga as the wrong path', () => {
+    for (const [right, wrong] of [['safe', 'hutang'], ['untung', 'curiga']]) {
+      const src = finance(`Kak Long: Pilih.
+* [A]
+    Kak Long: A. # outcome:${right}
+    -> END
+* [B]
+    Kak Long: B. # outcome:${wrong}
+    -> END`);
+      expect(() => compileScenario(src, 'f1.ink'), `${right}/${wrong}`).not.toThrow();
+    }
+  });
+
+  it('rejects a finance scenario without a wrong path', () => {
+    const src = finance(`Kak Long: Pilih.
+* [A]
+    Kak Long: A. # outcome:untung
+    -> END
+* [B]
+    Kak Long: B. # outcome:safe
+    -> END`);
+    expect(() => compileScenario(src, 'f1.ink')).toThrow(ContentError);
+    expect(() => compileScenario(src, 'f1.ink')).toThrow(/wrong/);
+  });
+
+  it('rejects a finance scenario without a right path', () => {
+    const src = finance(`Kak Long: Pilih.
+* [A]
+    Kak Long: A. # outcome:rugi
+    -> END
+* [B]
+    Kak Long: B. # outcome:hutang
+    -> END`);
+    expect(() => compileScenario(src, 'f1.ink')).toThrow(/right/);
+  });
+
+  it('rejects a finance scenario with a scam outcome', () => {
+    const src = finance(`Kak Long: Pilih.
+* [A]
+    Kak Long: A. # outcome:untung
+    -> END
+* [B]
+    Kak Long: B. # outcome:scammed
+    -> END`);
+    expect(() => compileScenario(src, 'f1.ink')).toThrow(/scammed/);
+  });
+
+  it('rejects untung, rugi or hutang in a scam scenario', () => {
+    for (const o of ['untung', 'rugi', 'hutang']) {
+      const src = scam(`Encik X: Kerja senang, RM300 sehari! # flag:greed:RM300 sehari
+* [Ok]
+    Encik X: Bagus. # outcome:${o}
+    -> END
+* [Tak nak]
+    Encik X: Ok bye. # outcome:safe
+    -> END`);
+      expect(() => compileScenario(src, 't1.ink'), o).toThrow(new RegExp(o));
+    }
+  });
+
+  it('rejects curiga in a scam scenario and rugi in a legit scenario', () => {
+    const scamSrc = scam(`Encik X: Kerja senang, RM300 sehari! # flag:greed:RM300 sehari
+* [Hmm]
+    Encik X: Ok. # outcome:curiga
+    -> END
+* [Tak nak]
+    Encik X: Ok bye. # outcome:safe
+    -> END`);
+    expect(() => compileScenario(scamSrc, 't1.ink')).toThrow(/curiga/);
+    const legitSrc = `# id:t2
+# type:legit
+# family:bank
+# tactics:
+# contact:BankKu
+BankKu: Transaksi RM89.90. Bukan anda? Hubungi nombor di belakang kad.
+* [Ok]
+    BankKu: Terima kasih. # outcome:safe
+    -> END
+* [Abaikan]
+    BankKu: Ok. # outcome:curiga
+    -> END
+* [Lain]
+    BankKu: Hmm. # outcome:rugi
+    -> END`;
+    expect(() => compileScenario(legitSrc, 't2.ink')).toThrow(/rugi/);
+  });
+
+  it('rejects effect:labur without a product', () => {
+    const src = finance(`Kak Long: Pilih.
+* [A]
+    Kak Long: A. # effect:labur:+200 # outcome:untung
+    -> END
+* [B]
+    Kak Long: B. # outcome:rugi
+    -> END`);
+    expect(() => compileScenario(src, 'f1.ink')).toThrow(ContentError);
+    expect(() => compileScenario(src, 'f1.ink')).toThrow(/labur/);
+  });
+
+  it('rejects a finance scenario with no concepts', () => {
+    const src = ['# id:f1', '# type:finance', '# family:budget', '# contact:Kak Long', `Kak Long: Pilih.
+* [A]
+    Kak Long: A. # outcome:untung
+    -> END
+* [B]
+    Kak Long: B. # outcome:rugi
+    -> END`].join('\n');
+    expect(() => compileScenario(src, 'f1.ink')).toThrow(/concept/);
+  });
+});
+
 describe('enumeratePaths', () => {
   it('fails when there are more paths than the limit', () => {
     const c = compileScenario(kerjaSambilan, 'kerja_sambilan.ink');

@@ -18,11 +18,12 @@ import { useScenario } from './useScenario';
 
 const SPRING = { type: 'spring', stiffness: 300, damping: 28 } as const;
 
-/** Placeholder for the BankKu transfer and fake page (Task 12 replaces it). */
+/** Placeholder for the BankKu transfer, fake page and Kalkulator hook (later tasks replace it). */
 function UiCard({ ui, onOpen }: { ui: UiDirective; onOpen(): void }) {
   const t = useT();
   const link = ui.kind === 'link';
   const Icon = link ? Link2 : ArrowLeftRight;
+  const detail = ui.kind === 'link' ? ui.url : ui.kind === 'transfer' ? formatRM(ui.amount) : ui.preset;
   return (
     <div className="flex items-center gap-3 rounded-2xl bg-paper p-3 ring-1 ring-indigo-soft">
       <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-indigo-soft text-indigo">
@@ -31,7 +32,7 @@ function UiCard({ ui, onOpen }: { ui: UiDirective; onOpen(): void }) {
       <span className="min-w-0 flex-1">
         <span className="block text-base font-semibold text-ink">{t(link ? 'sembang.ui.link' : 'sembang.ui.transfer')}</span>
         <span className={`block truncate text-base ${link ? 'text-indigo underline' : 'font-mono font-semibold text-ink'}`}>
-          {link ? ui.url : formatRM(ui.amount)}
+          {detail}
         </span>
       </span>
       <button type="button" onClick={onOpen} className="min-h-12 shrink-0 rounded-2xl bg-ink px-4 text-base font-semibold text-paper active:scale-[.98]">

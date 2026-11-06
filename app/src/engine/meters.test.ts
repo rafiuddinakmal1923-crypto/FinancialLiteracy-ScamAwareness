@@ -1,10 +1,12 @@
 import { describe, it, expect } from 'vitest';
 import { BALANCE } from './balance';
-import { TACTICS, type Outcome, type ScenarioMeta, type Tactic } from './types';
+import { CONCEPTS, TACTICS, type Outcome, type ScenarioMeta, type Tactic } from './types';
 import { initialMeters, applyEffect, applyOutcome, applyFlagFound, applyXp, isRight } from './meters';
 
-const scam: ScenarioMeta = { id: 's', type: 'scam', family: 'job', tactics: ['greed', 'urgency'], contact: 'x', ui: 'chat', apaPatut: [] };
+const scam: ScenarioMeta = { id: 's', type: 'scam', family: 'job', tactics: ['greed', 'urgency'], concepts: [], contact: 'x', ui: 'chat', apaPatut: [] };
 const legit: ScenarioMeta = { ...scam, id: 'l', type: 'legit', tactics: [] };
+const finance: ScenarioMeta = { ...scam, id: 'f', type: 'finance', family: 'budget', tactics: [], concepts: ['bajet', 'kecemasan'] };
+const crypto: ScenarioMeta = { ...scam, id: 'crypto_naga', family: 'investment', tactics: ['greed', 'social', 'urgency'], concepts: ['risiko', 'semak'] };
 
 function mulberry32(a: number) {
   return () => {
@@ -78,11 +80,10 @@ describe('meters', () => {
   it('XP never below 0', () => {
     expect(applyXp({ ...initialMeters(), xp: 5 }, BALANCE.xp.hint).xp).toBe(0);
   });
-  it('legit curiga is not right; scam safe is right', () => {
-    expect(isRight('legit', 'curiga')).toBe(false);
-    expect(isRight('scam', 'safe')).toBe(true);
-    expect(isRight('legit', 'safe')).toBe(true);
-    expect(isRight('scam', 'scammed')).toBe(false);
+  it('isRight: safe and untung are right, everything else wrong (SDS 5.4)', () => {
+    expect(isRight('safe')).toBe(true);
+    expect(isRight('untung')).toBe(true);
+    for (const o of ['scammed', 'mule', 'frozen', 'curiga', 'rugi', 'hutang'] as Outcome[]) expect(isRight(o), o).toBe(false);
   });
   it('Imuniti stays within 0-100 after any sequence', () => {
     const rnd = mulberry32(42);
@@ -97,5 +98,99 @@ describe('meters', () => {
         expect(m.imuniti[t]).toBeLessThanOrEqual(100);
       }
     }
+  });
+});
+
+describe('meters: finance, Celik and Labur (D22-D24, D29, D30)', () => {
+  it('initialMeters starts every concept at 30 and both Labur pots at 0', () => {
+    const m = initialMeters();
+    for (const c of CONCEPTS) expect(m.celik[c]).toBe(BALANCE.start.celik);
+    expect(BALANCE.start.celik).toBe(30);
+    expect(m.labur).toEqual({ amanah: 0, ekuiti: 0 });
+  });
+  it('finance untung: +10 Celik per declared concept and +50 XP', () => {
+    const m = applyOutcome(initialMeters(), finance, 'untung');
+    expect(m.celik.bajet).toBe(40);
+    expect(m.celik.kecemasan).toBe(40);
+    expect(m.celik.kompaun).toBe(30);
+    expect(m.xp).toBe(BALANCE.xp.financeRight);
+    expect(m.xp).toBe(50);
+    expect(m.imuniti).toEqual(initialMeters().imuniti);
+  });
+  it('finance safe counts as right too', () => {
+    const m = applyOutcome(initialMeters(), finance, 'safe');
+    expect(m.celik.bajet).toBe(40);
+    expect(m.xp).toBe(50);
+  });
+  it('finance rugi, hutang and curiga: -10 Celik per declared concept and +20 XP', () => {
+    for (const o of ['rugi', 'hutang', 'curiga'] as Outcome[]) {
+      const m = applyOutcome(initialMeters(), finance, o);
+      expect(m.celik.bajet, o).toBe(20);
+      expect(m.celik.kecemasan, o).toBe(20);
+      expect(m.celik.hutang, o).toBe(30);
+      expect(m.xp, o).toBe(BALANCE.xp.financeWrong);
+      expect(m.xp, o).toBe(20);
+    }
+  });
+  it('finance with a scam outcome throws', () => {
+    expect(() => applyOutcome(initialMeters(), finance, 'scammed')).toThrow();
+  });
+  it('untung, rugi and hutang are invalid for scam and legit scenarios', () => {
+    for (const o of ['untung', 'rugi', 'hutang'] as Outcome[]) {
+      expect(() => applyOutcome(initialMeters(), scam, o), o).toThrow();
+      expect(() => applyOutcome(initialMeters(), legit, o), o).toThrow();
+    }
+  });
+  it('a crypto-style scam with concepts moves Imuniti and Celik, XP once (D30)', () => {
+    const safe = applyOutcome(initialMeters(), crypto, 'safe');
+    expect(safe.imuniti.greed).toBe(40);
+    expect(safe.imuniti.social).toBe(40);
+    expect(safe.celik.risiko).toBe(40);
+    expect(safe.celik.semak).toBe(40);
+    expect(safe.celik.bajet).toBe(30);
+    expect(safe.xp).toBe(BALANCE.xp.safe);
+    const fell = applyOutcome(initialMeters(), crypto, 'scammed');
+    expect(fell.imuniti.greed).toBe(15);
+    expect(fell.celik.risiko).toBe(20);
+    expect(fell.celik.semak).toBe(20);
+    expect(fell.xp).toBe(BALANCE.xp.fell);
+  });
+  it('a scam without concepts leaves Celik alone', () => {
+    expect(applyOutcome(initialMeters(), scam, 'safe').celik).toEqual(initialMeters().celik);
+  });
+  it('a legit scenario with concepts moves Celik; XP stays the legit XP', () => {
+    const withC: ScenarioMeta = { ...legit, concepts: ['semak'] };
+    const s = applyOutcome(initialMeters(), withC, 'safe');
+    expect(s.celik.semak).toBe(40);
+    expect(s.xp).toBe(BALANCE.xp.safe);
+    const c = applyOutcome(initialMeters(), withC, 'curiga');
+    expect(c.celik.semak).toBe(20);
+    expect(c.xp).toBe(0);
+  });
+  it('labur effect changes only its product and floors at 0', () => {
+    const m = applyEffect(initialMeters(), { kind: 'labur', product: 'amanah', delta: 200 });
+    expect(m.labur).toEqual({ amanah: 200, ekuiti: 0 });
+    expect(m.duit).toBe(initialMeters().duit);
+    expect(applyEffect(m, { kind: 'labur', product: 'amanah', delta: -500 }).labur.amanah).toBe(0);
+    expect(applyEffect(m, { kind: 'labur', product: 'ekuiti', delta: -1 }).labur).toEqual({ amanah: 200, ekuiti: 0 });
+  });
+  it('Celik stays within 0-100 after any sequence', () => {
+    const rnd = mulberry32(7);
+    let m = initialMeters();
+    const outcomes: Outcome[] = ['untung', 'safe', 'rugi', 'hutang', 'curiga'];
+    for (let i = 0; i < 60; i++) {
+      const concepts = [CONCEPTS[Math.floor(rnd() * 6)], CONCEPTS[Math.floor(rnd() * 6)]];
+      m = applyOutcome(m, { ...finance, concepts }, outcomes[Math.floor(rnd() * outcomes.length)]);
+      for (const c of CONCEPTS) {
+        expect(m.celik[c]).toBeGreaterThanOrEqual(0);
+        expect(m.celik[c]).toBeLessThanOrEqual(100);
+      }
+    }
+    let hi = initialMeters();
+    for (let i = 0; i < 12; i++) hi = applyOutcome(hi, finance, 'untung');
+    expect(hi.celik.bajet).toBe(100);
+    let lo = initialMeters();
+    for (let i = 0; i < 12; i++) lo = applyOutcome(lo, finance, 'rugi');
+    expect(lo.celik.bajet).toBe(0);
   });
 });

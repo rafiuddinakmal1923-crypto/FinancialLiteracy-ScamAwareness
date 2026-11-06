@@ -4,7 +4,7 @@ import type { CompiledScenario, ScenarioMeta } from './types';
 
 function scenario(meta: Partial<ScenarioMeta> & { id: string }, flags: CompiledScenario['flags']): CompiledScenario {
   return {
-    meta: { type: 'scam', family: 'job', tactics: [], contact: 'X', ui: 'chat', apaPatut: [], ...meta },
+    meta: { type: 'scam', family: 'job', tactics: [], concepts: [], contact: 'X', ui: 'chat', apaPatut: [], ...meta },
     json: '',
     flags,
   };
@@ -30,5 +30,10 @@ describe('deriveCards', () => {
   it('legit scenarios give no cards', () => {
     const legit = scenario({ id: 'l', type: 'legit', family: 'job' }, [{ tactic: 'greed', phrase: 'gaji' }]);
     expect(deriveCards([legit])).toEqual([]);
+  });
+
+  it('finance scenarios give no Red Flag cards', () => {
+    const fin = scenario({ id: 'f', type: 'finance', family: 'loan', concepts: ['hutang'] }, [{ tactic: 'greed', phrase: 'kadar rendah' }]);
+    expect(deriveCards([fin])).toEqual([]);
   });
 });

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { animate, motion } from 'framer-motion';
-import { CircleQuestionMark, Flag, Lock, MessageCircle, Network, RotateCcw, ShieldCheck, ShieldX, type LucideIcon } from 'lucide-react';
+import { CircleQuestionMark, Flag, Lock, MessageCircle, Network, RotateCcw, ShieldCheck, ShieldX, TrendingDown, TrendingUp, Wallet, type LucideIcon } from 'lucide-react';
 import { BALANCE } from '../../engine/balance';
 import type { Outcome } from '../../engine/types';
 import { useT } from '../../shell/i18n';
@@ -18,6 +18,10 @@ const HERO: Record<Outcome, { icon: LucideIcon; bg: string; badge: string; title
   frozen: { icon: Lock, bg: 'bg-danger-soft', badge: 'bg-danger text-paper', title: 'text-danger' },
   safe: { icon: ShieldCheck, bg: 'bg-safe-soft', badge: 'bg-safe text-paper', title: 'text-safe' },
   curiga: { icon: CircleQuestionMark, bg: 'bg-kancil-soft', badge: 'bg-kancil text-ink', title: 'text-ink' },
+  // Finance outcomes (D23); their screens are designed in a later task.
+  untung: { icon: TrendingUp, bg: 'bg-safe-soft', badge: 'bg-safe text-paper', title: 'text-safe' },
+  rugi: { icon: TrendingDown, bg: 'bg-kancil-soft', badge: 'bg-kancil text-ink', title: 'text-ink' },
+  hutang: { icon: Wallet, bg: 'bg-danger-soft', badge: 'bg-danger text-paper', title: 'text-danger' },
 };
 
 /** Counts from `from` to `to` once (ease-in-out); jumps straight there with reduced motion. */

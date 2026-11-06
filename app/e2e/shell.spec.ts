@@ -31,7 +31,7 @@ test('splash -> onboarding -> home', async ({ page }) => {
   // Home.
   await expect(page).toHaveURL(/#\/home$/);
   await expect(page.getByRole('img', { name: /Imuniti/ })).toBeVisible();
-  await expect(page.getByText('Mangsa', { exact: true }).first()).toBeVisible();
+  await expect(page.getByText('Pemula', { exact: true }).first()).toBeVisible();
   await expect(page.getByText('Minggu 1 daripada 12')).toBeVisible();
   for (const app of ['Sembang', 'BankKu', 'Dompet', 'Kad', 'Latihan']) {
     await expect(page.getByRole('button', { name: app, exact: true })).toBeVisible();

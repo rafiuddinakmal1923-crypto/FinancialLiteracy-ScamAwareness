@@ -4,12 +4,13 @@ import { useGame, initialGame } from './game';
 import { settingsData, useSettings } from './settings';
 import { initialMeters } from '../engine/meters';
 import { BALANCE } from '../engine/balance';
-import type { ScenarioMeta } from '../engine/types';
+import { CONCEPTS, type ScenarioMeta } from '../engine/types';
 
 const scamMeta: ScenarioMeta = {
-  id: 's1', type: 'scam', family: 'job', tactics: ['greed', 'urgency'],
+  id: 's1', type: 'scam', family: 'job', tactics: ['greed', 'urgency'], concepts: [],
   contact: 'X', ui: 'chat', apaPatut: [],
 };
+const financeMeta: ScenarioMeta = { ...scamMeta, id: 'f1', type: 'finance', family: 'budget', tactics: [], concepts: ['bajet', 'kecemasan'] };
 const legitMeta: ScenarioMeta = { ...scamMeta, id: 'l1', type: 'legit' };
 
 beforeEach(() => { useGame.getState().reset(); useSettings.getState().hydrate(null); });
@@ -86,7 +87,7 @@ describe('game store', () => {
     const s = useGame.getState();
     expect(s.results).toEqual([{
       id: 'l1', outcome: 'curiga', right: false, flagsFound: 0, flagsTotal: 0,
-      tactics: legitMeta.tactics, family: 'job',
+      tactics: legitMeta.tactics, family: 'job', concepts: [],
     }]);
     expect(s.active).toBeNull();
   });
@@ -97,6 +98,15 @@ describe('game store', () => {
     const s = useGame.getState();
     expect(s.results[0].right).toBe(true);
     expect(s.meters.xp).toBe(initialMeters().xp + BALANCE.xp.safe);
+  });
+
+  it('finishScenario for finance records concepts, marks untung right and moves Celik', () => {
+    useGame.getState().startScenario('f1');
+    useGame.getState().finishScenario(financeMeta, 'untung', 0, 0);
+    const s = useGame.getState();
+    expect(s.results[0]).toMatchObject({ id: 'f1', outcome: 'untung', right: true, family: 'budget', concepts: ['bajet', 'kecemasan'] });
+    expect(s.meters.celik.bajet).toBe(BALANCE.start.celik + BALANCE.celik.right);
+    expect(s.meters.xp).toBe(BALANCE.xp.financeRight);
   });
 
   it('foundFlag raises imuniti and adds the card once', () => {
@@ -157,6 +167,62 @@ describe('ended scenario (consequence, flag hunt, debrief)', () => {
     expect(useGame.getState().active?.id).toBe('s1');
     useGame.getState().hydrate({ ...initialGame(), meters: dirty, active: null, lastEnded: ended });
     expect(useGame.getState().lastEnded).toBeNull();
+  });
+});
+
+describe('hydrate an older save (Review Focus 5)', () => {
+  // A literal milestone-2 save: meters without celik/labur, results without concepts.
+  const m2Meters = {
+    duit: 1600, simpanan: 0, tekanan: 35, xp: 70,
+    imuniti: { greed: 15, urgency: 15, authority: 30, fear: 30, secrecy: 30, social: 30, payfirst: 15 },
+    akaun: 'Aktif', rekod: 'Bersih',
+  };
+  const m2Save = {
+    character: 'amir', name: 'Amir', week: 1, meters: m2Meters, budget: null,
+    results: [{ id: 'kerja_sambilan', outcome: 'scammed', right: false, flagsFound: 2, flagsTotal: 5, tactics: ['greed', 'urgency', 'payfirst'], family: 'job' }],
+    cards: ['greed-job'], badges: [], swipe: { best: 0, streak: 0, lastPlayed: null },
+    actions: [], incomeTotal: 0, active: null, lastEnded: null, transcripts: {},
+  };
+
+  it('hydrate of a milestone-2 save fills celik and labur defaults', () => {
+    useGame.getState().hydrate(structuredClone(m2Save) as never);
+    const s = useGame.getState();
+    for (const c of CONCEPTS) expect(s.meters.celik[c], c).toBe(BALANCE.start.celik);
+    expect(s.meters.labur).toEqual({ amanah: 0, ekuiti: 0 });
+    expect(s.meters.duit).toBe(1600);
+    expect(s.meters.imuniti.greed).toBe(15);
+    expect(s.meters.xp).toBe(70);
+    expect(s.results[0].concepts).toEqual([]);
+    expect(s.results[0].outcome).toBe('scammed');
+    expect(s.cards).toEqual(['greed-job']);
+    expect(s.name).toBe('Amir');
+  });
+
+  it('fills the snapshot of an older save cut off mid-chat', () => {
+    const save = { ...structuredClone(m2Save), meters: { ...m2Meters, duit: 1 }, active: { id: 's1', snapshot: m2Meters, hintUsed: false } };
+    useGame.getState().hydrate(save as never);
+    const s = useGame.getState();
+    expect(s.meters.duit).toBe(1600);
+    expect(s.meters.celik.bajet).toBe(BALANCE.start.celik);
+    expect(s.meters.labur).toEqual({ amanah: 0, ekuiti: 0 });
+    expect(s.active).toBeNull();
+  });
+
+  it('fills an older active snapshot kept with its ended chat', () => {
+    const ended = { id: 's1', outcome: 'scammed', transcript: [], found: [], huntDone: false };
+    const save = { ...structuredClone(m2Save), active: { id: 's1', snapshot: m2Meters, hintUsed: false }, lastEnded: ended };
+    useGame.getState().hydrate(save as never);
+    const s = useGame.getState();
+    expect(s.meters.celik.semak).toBe(BALANCE.start.celik);
+    expect(s.active!.snapshot.celik.semak).toBe(BALANCE.start.celik);
+    expect(s.active!.snapshot.labur).toEqual({ amanah: 0, ekuiti: 0 });
+  });
+
+  it('keeps saved celik and labur values', () => {
+    const meters = { ...initialMeters(), celik: { ...initialMeters().celik, kompaun: 80 }, labur: { amanah: 120, ekuiti: 40 } };
+    useGame.getState().hydrate({ ...initialGame(), meters });
+    expect(useGame.getState().meters.celik.kompaun).toBe(80);
+    expect(useGame.getState().meters.labur).toEqual({ amanah: 120, ekuiti: 40 });
   });
 });
 

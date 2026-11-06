@@ -56,6 +56,32 @@ describe('parseLineTags', () => {
     expect(() => parseLineTags(['bogus:1'])).toThrow(TagError);
     expect(() => parseLineTags(['flag:magic:abc'])).toThrow(TagError);
   });
+  it('parses the finance outcomes (D23)', () => {
+    for (const o of ['untung', 'rugi', 'hutang'] as const) expect(parseLineTags([`outcome:${o}`]).outcome).toBe(o);
+  });
+  it('parses effect:labur with a product (D29)', () => {
+    expect(parseLineTags(['effect:labur:amanah:+200']).effects).toEqual([{ kind: 'labur', product: 'amanah', delta: 200 }]);
+    expect(parseLineTags(['effect:labur:ekuiti:-50']).effects).toEqual([{ kind: 'labur', product: 'ekuiti', delta: -50 }]);
+  });
+  it('rejects effect:labur without a product or with a bad amount', () => {
+    expect(() => parseLineTags(['effect:labur:+200'])).toThrow(TagError);
+    expect(() => parseLineTags(['effect:labur:+200'])).toThrow(/amanah\|ekuiti/);
+    expect(() => parseLineTags(['effect:labur:saham:+200'])).toThrow(TagError);
+    expect(() => parseLineTags(['effect:labur:amanah:1.5'])).toThrow(TagError);
+  });
+  it('parses ui:calc with a tab and preset (D21)', () => {
+    expect(parseLineTags(['ui:calc:pulangan:naga30w']).ui).toEqual({ kind: 'calc', tab: 'pulangan', preset: 'naga30w' });
+    expect(parseLineTags(['ui:calc:masa:simpan-50']).ui).toEqual({ kind: 'calc', tab: 'masa', preset: 'simpan-50' });
+    expect(parseLineTags(['ui:calc:kos:bnpl_1000']).ui).toEqual({ kind: 'calc', tab: 'kos', preset: 'bnpl_1000' });
+  });
+  it('rejects ui:calc with a bad tab or preset', () => {
+    expect(() => parseLineTags(['ui:calc:untung:naga30w'])).toThrow(TagError);
+    expect(() => parseLineTags(['ui:calc:pulangan'])).toThrow(TagError);
+    expect(() => parseLineTags(['ui:calc:pulangan:Naga 30'])).toThrow(TagError);
+  });
+  it('ignores the concepts global key on lines', () => {
+    expect(parseLineTags(['concepts:bajet', 'type:finance'])).toEqual({ flags: [], effects: [] });
+  });
 });
 
 describe('parseMeta', () => {
@@ -72,6 +98,7 @@ describe('parseMeta', () => {
       contact: 'Kak Mira (HR)', number: '011-0000 0123', ui: 'chat',
       hint: 'Syarikat sebenar tak minta bayaran untuk mula kerja.',
       apaPatut: ['Semak syarikat dengan SSM sebelum setuju.'],
+      concepts: [],
     });
   });
   it('handles ui:call, repeated apa_patut, optional fields', () => {
@@ -91,5 +118,37 @@ describe('parseMeta', () => {
     expect(() => parseMeta(sample.map((t) => (t.startsWith('family') ? 'family:zzz' : t)))).toThrow(TagError);
     expect(() => parseMeta(sample.map((t) => (t.startsWith('type') ? 'type:maybe' : t)))).toThrow(TagError);
     expect(() => parseMeta(sample.filter((t) => !t.startsWith('id:')))).toThrow(TagError);
+  });
+  it('rejects a scam scenario with no tactics', () => {
+    expect(() => parseMeta(sample.map((t) => (t.startsWith('tactics') ? 'tactics:' : t)))).toThrow(/tactic/);
+  });
+});
+
+describe('parseMeta: finance and concepts (D23)', () => {
+  const finance = ['id:dompet_minggu0', 'type:finance', 'family:budget', 'concepts:bajet,kecemasan', 'contact:Kak Long'];
+  it('parses type:finance and concepts without tactics', () => {
+    const m = parseMeta(finance);
+    expect(m.type).toBe('finance');
+    expect(m.family).toBe('budget');
+    expect(m.concepts).toEqual(['bajet', 'kecemasan']);
+    expect(m.tactics).toEqual([]);
+  });
+  it('accepts the new families budget and pay (D33)', () => {
+    expect(parseMeta(finance.map((t) => (t.startsWith('family') ? 'family:pay' : t))).family).toBe('pay');
+  });
+  it('a finance scenario must declare at least one concept', () => {
+    expect(() => parseMeta(finance.filter((t) => !t.startsWith('concepts')))).toThrow(/concept/);
+    expect(() => parseMeta(finance.map((t) => (t.startsWith('concepts') ? 'concepts:' : t)))).toThrow(/concept/);
+  });
+  it('rejects an unknown concept', () => {
+    expect(() => parseMeta(finance.map((t) => (t.startsWith('concepts') ? 'concepts:bajet,saham' : t)))).toThrow(/saham/);
+  });
+  it('accepts concepts on a scam scenario (D30)', () => {
+    const m = parseMeta(['id:crypto_naga', 'type:scam', 'family:investment', 'tactics:greed,social,urgency', 'concepts:risiko,semak', 'contact:Abang Rizal']);
+    expect(m.tactics).toEqual(['greed', 'social', 'urgency']);
+    expect(m.concepts).toEqual(['risiko', 'semak']);
+  });
+  it('scam and legit still require the tactics tag', () => {
+    expect(() => parseMeta(['id:a', 'type:legit', 'family:bank', 'contact:Bank'])).toThrow(/tactics/);
   });
 });

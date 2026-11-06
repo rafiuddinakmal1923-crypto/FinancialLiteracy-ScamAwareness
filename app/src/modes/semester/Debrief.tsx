@@ -1,5 +1,6 @@
 import { Flag } from 'lucide-react';
 import { cardId } from '../../engine/cards';
+import { isRight } from '../../engine/meters';
 import type { Tactic } from '../../engine/types';
 import { useT } from '../../shell/i18n';
 import { navigate } from '../../shell/router';
@@ -32,8 +33,8 @@ export function Debrief({ params }: { params: Record<string, string> }) {
   const flagsFound = targets.filter((x) => ended.found.includes(x)).length;
   const scam = meta.type === 'scam';
   const tone = outcomeTone(ended.outcome);
-  const praise = ended.outcome === 'safe';
-  const mood: KancilMood = ended.outcome === 'safe' ? 'proud' : tone === 'warning' ? 'smile' : 'worried';
+  const praise = isRight(ended.outcome);
+  const mood: KancilMood = praise ? 'proud' : tone === 'warning' ? 'smile' : 'worried';
   // Cards this chat offers, in the order the flags appear (found ones collected, the rest still locked).
   const cardTactics: Tactic[] = scam ? targets : [];
 

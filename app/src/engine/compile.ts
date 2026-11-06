@@ -3,7 +3,11 @@ import { Compiler } from 'inkjs/compiler/Compiler';
 import { Story } from 'inkjs';
 import { ContentError } from './schemas';
 import { parseLineTags, parseMeta, TagError } from './tags';
-import type { CompiledScenario, Flag, Outcome, Tactic } from './types';
+import { OUTCOMES_BY_TYPE, type CompiledScenario, type Flag, type Outcome, type Tactic } from './types';
+
+/** Finance right calls and wrong calls (SDS 5.4). */
+const FINANCE_RIGHT: readonly Outcome[] = ['safe', 'untung'];
+const FINANCE_WRONG: readonly Outcome[] = ['rugi', 'hutang', 'curiga'];
 
 /** One line of output on a path through a scenario. */
 export interface WalkLine { text: string; tags: string[] }
@@ -82,7 +86,7 @@ export function enumeratePaths(json: string, limit = 200): { outcome?: Outcome; 
   });
 }
 
-/** Compiles one scenario and checks it against the content rules (SDS 4.2, D14-D16). */
+/** Compiles one scenario and checks it against the content rules (SDS 4.2, D14-D16, D23, D29). */
 export function compileScenario(source: string, file: string): CompiledScenario {
   // No CompilerOptions: giving a sourceFilename makes inkjs demand a FileHandler.
   const compiler = new Compiler(stripBom(source));
@@ -139,6 +143,11 @@ export function compileScenario(source: string, file: string): CompiledScenario 
       }
     });
     if (!outcome) throw new ContentError(`${file}: path ${route} ends without an outcome tag`);
+    if (!OUTCOMES_BY_TYPE[meta.type].includes(outcome)) {
+      throw new ContentError(
+        `${file}: outcome "${outcome}" is not allowed in a ${meta.type} scenario (${route}); use ${OUTCOMES_BY_TYPE[meta.type].join(', ')}`,
+      );
+    }
     outcomes.add(outcome);
   }
 
@@ -149,9 +158,16 @@ export function compileScenario(source: string, file: string): CompiledScenario 
       throw new ContentError(`${file}: tactics listed but never flagged: ${missing.join(', ')}`);
     }
     if (!outcomes.has('safe')) throw new ContentError(`${file}: a scam scenario needs at least one safe path`);
-  } else {
+  } else if (meta.type === 'legit') {
     for (const need of ['safe', 'curiga'] as const) {
       if (!outcomes.has(need)) throw new ContentError(`${file}: a legit scenario needs a ${need} path`);
+    }
+  } else {
+    if (!FINANCE_RIGHT.some((o) => outcomes.has(o))) {
+      throw new ContentError(`${file}: a finance scenario needs at least one right path (${FINANCE_RIGHT.join(' or ')})`);
+    }
+    if (!FINANCE_WRONG.some((o) => outcomes.has(o))) {
+      throw new ContentError(`${file}: a finance scenario needs at least one wrong path (${FINANCE_WRONG.join(', ')})`);
     }
   }
 
