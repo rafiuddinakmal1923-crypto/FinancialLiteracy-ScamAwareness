@@ -5,7 +5,7 @@
 # contact:BayarNanti
 # hint:"Tiada faedah" tak bermakna percuma. Tanya jumlah keseluruhan yang akan dibayar, bukan hanya ansuran sebulan.
 # apa_patut:Sebelum ambil bayar-kemudian, tanya jumlah keseluruhan yang akan dibayar dan bandingkan dengan harga tunai.
-# apa_patut:Kalau ansuran dah menyesakkan bajet, hubungi agensi kaunseling kredit (AKPK) untuk nasihat percuma.
+# apa_patut:Kalau ansuran dah menyesakkan bajet, hubungi agensi kaunseling kredit yang diiktiraf untuk nasihat percuma.
 
 // Scenario 6 (W9, finance): a legal "buy now pay later" offer that costs more than it looks. Not a scam, so there is no
 // scam language and no flags: BayarNanti is polite and answers honestly when asked. The cost is in the fees.

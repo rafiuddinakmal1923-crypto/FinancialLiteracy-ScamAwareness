@@ -9,8 +9,6 @@
 # apa_patut:Jangan percaya pulangan tetap yang tinggi, tangkapan skrin keuntungan atau desakan "slot tutup". Semua itu mudah direka.
 # apa_patut:Kalau dah terbayar, simpan bukti, beritahu bank kamu dan telefon NSRC 997 dengan segera.
 
-VAR ui_ok = false
-
 // Scenario 5 (W8): fake crypto group. Greed (30% a week), social proof (500 students), urgency (slot closes tonight).
 // The Semak Pulangan calculator shows why 30% a week is impossible; the player can still choose to pay, which is the point.
 // REVIEW: Telegram-style group with a hype member ("Syaz") planted by the admin; check against reported campus investment-group scams.
