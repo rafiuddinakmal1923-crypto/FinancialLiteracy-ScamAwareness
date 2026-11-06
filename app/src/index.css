@@ -77,3 +77,21 @@ html[data-reduced-motion] *, html[data-reduced-motion] *::before, html[data-redu
 }
 html[data-reduced-motion] .active\:scale-95:active,
 html[data-reduced-motion] .active\:scale-\[\.98\]:active { transform: none; }
+
+/* Sembang chat wallpaper: a faint indigo songket lattice on paper. */
+.sembang-wall {
+  background-color: var(--color-paper);
+  background-image:
+    linear-gradient(45deg, transparent 47%, rgb(45 42 110 / 0.05) 47%, rgb(45 42 110 / 0.05) 53%, transparent 53%),
+    linear-gradient(-45deg, transparent 47%, rgb(45 42 110 / 0.05) 47%, rgb(45 42 110 / 0.05) 53%, transparent 53%);
+  background-size: 32px 32px;
+}
+
+/* Typing dots: a slow bob; still dots under reduced motion (no fast looping). */
+@keyframes typing-dot {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.45; }
+  30% { transform: translateY(-4px); opacity: 1; }
+}
+.typing-dot { animation: typing-dot 1.2s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .typing-dot { animation: none !important; opacity: 0.7; } }
+html[data-reduced-motion] .typing-dot { animation: none !important; opacity: 0.7; }

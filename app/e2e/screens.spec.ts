@@ -50,6 +50,7 @@ for (const vp of VIEWPORTS) {
         await page.goto(`/#${route.path}`);
         await expect(page.locator(`[data-screen="${route.name}"]`)).toBeVisible();
         if (route.name === 'splash') await expect(page.getByRole('button', { name: 'Mula' })).toBeVisible();
+        if (route.waitFor) await expect(page.getByText(route.waitFor)).toBeVisible({ timeout: 15_000 });
         await page.evaluate(() => document.fonts.ready);
         await page.waitForTimeout(300);
         await page.screenshot({ path: `e2e/screens/${vp.width}x${vp.height}/${route.name}.png` });

@@ -2,6 +2,8 @@
 // home tiles pointing at a path with no entry show an "Akan datang" toast instead.
 import type { ComponentType } from 'react';
 import type { KancilMood } from '../ui/Kancil';
+import { ChatList } from '../modes/semester/ChatList';
+import { ChatThread } from '../modes/semester/ChatThread';
 import { ComingSoon } from './ComingSoon';
 import { HomeScreen } from './HomeScreen';
 import { Onboarding } from './Onboarding';
@@ -27,6 +29,8 @@ export const ROUTE_TABLE: RouteDef[] = [
   { pattern: '/onboarding', name: 'onboarding', component: Onboarding, tip: 'side.tip.onboarding', mood: 'neutral' },
   { pattern: '/home', name: 'home', component: HomeScreen, statusBar: 'dark', needsGame: true, tip: 'side.tip.home', mood: 'smile' },
   { pattern: '/settings', name: 'settings', component: Settings, statusBar: 'light', tip: 'side.tip.settings', mood: 'neutral' },
+  { pattern: '/sembang', name: 'sembang', component: ChatList, statusBar: 'light', needsGame: true, tip: 'side.tip.sembang', mood: 'neutral' },
+  { pattern: '/sembang/:id', name: 'chat', component: ChatThread, statusBar: 'light', needsGame: true, tip: 'side.tip.chat', mood: 'worried' },
   { pattern: '/demo/:scene', name: 'demo', component: ComingSoon, statusBar: 'light', tip: 'side.tip.demo', mood: 'neutral' },
 ];
 
