@@ -175,7 +175,7 @@ in brackets for the team).
 
 ### S10 Debrief (Sang Kancil)
 - CoachSheet expanded: "Taktik yang digunakan: Terlalu Lumayan + Bayar Dulu", 2 bullet tips, "Apa patut buat"
-  (what to do: check SSM, don't pay to work, report to 997 if money was sent).
+  (what to do: check the company is registered, don't pay to work, report to 997 if money was sent).
 
 ### S11 Kad (Red Flag collection)
 - Header: "12 / 16 kad" progress. The total is computed from content: one card per (tactic, family) pair flagged in a scenario.
