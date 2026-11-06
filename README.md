@@ -7,13 +7,14 @@ Tagline: **Bijak duit, kebal scam** (money-smart, scam-proof). "Celik" is the Ma
 (financial literacy). Note: avoid the full phrase "Celik Kewangan" as a product name; Prudential already uses it for a programme.
 
 ## Idea in one line
-An offline phone-simulator game where first-year university students live through their first semester's money
-decisions and scam attempts (part-time job scams, mule-account offers, fake investments, authority calls),
-play the scammer to learn the tricks, and finish with real protective actions (997, Semak Mule).
+An offline phone-simulator game where university students live through a semester of real money decisions
+(budgeting, emergency fund, first pay, how money grows, realistic returns, cost of debt) with scams as the
+high-stakes events inside it (job scams, mule-account offers, fake investments, authority calls). A Kalkulator,
+a daily 2-minute Cek Harian and orientation-week class battles keep them coming back. Direction: docs/DECISIONS.md D18.
 
 ## Target user
-First-year IPT students (about 18-21), many B40, often opening their first bank account and looking for
-part-time income.
+IPT undergraduates, about 18-24, entered through first year (orientation week); many B40, often managing a lump
+sum (PTPTN or scholarship) and a first bank account alone for the first time.
 
 ## Documents
 | File | What it is | Live doc |
@@ -24,6 +25,8 @@ part-time income.
 | docs/claude-code-prompt.md | Build prompt: stack, MVP, content list, milestones, tests | - |
 | docs/DECISIONS.md | Resolved conflicts between the docs (wins over all of them) | - |
 | docs/claude-code-prompt.md | Full build prompt for Claude Code | - |
+| docs/DECISIONS.md | Decisions log (wins over every other doc) | - |
+| docs/pivot-delta-prompt.md | Prompt to give Claude Code for the hybrid pivot | - |
 | research/problem-statement.md | Problem statement and evidence | - |
 | research/gamification-benchmark.md | Gamification benchmark of 10 products and the new mechanics | - |
 

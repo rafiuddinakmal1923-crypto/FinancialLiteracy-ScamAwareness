@@ -1,11 +1,11 @@
 > Originally a snapshot of https://claude.ai/artifact/Dt1cRrzkLVjn5vriotwdtX . Since 6 Nov 2026 this file is the source of truth; docs/DECISIONS.md wins over it.
-> Related: docs/SRS.md (requirements), docs/UI-SPEC.md (screens and components).
+> Version 2, 6 Nov 2026 evening: hybrid direction (decisions D18-D28). Related: docs/SRS.md (requirements), docs/UI-SPEC.md (screens and components).
 
 # Celik — Software Design Specification (SDS)
 
 ## 1. Overview and tech stack
 
-Celik is a 2D, offline-first web app (PWA) that simulates a phone; stories are written in the ink narrative language, and all game rules run on the device with no server.
+Celik is a 2D, offline-first web app (PWA) that simulates a phone; stories are written in the ink narrative language, and all game rules (including the Kalkulator maths) run on the device with no server. Financial literacy is the core loop; scams are the high-stakes events inside it (D18).
 
 | Layer | Choice | Why |
 | --- | --- | --- |
@@ -14,10 +14,11 @@ Celik is a 2D, offline-first web app (PWA) that simulates a phone; stories are w
 | Animation | framer-motion | Chat bubbles, swipe cards, consequence timelines |
 | Branching stories | ink + inkjs (MIT licence) | Writers author scenarios as plain text in the free Inky editor; the runtime plays them and tracks choices |
 | State | zustand | Meters, inventory, settings |
-| Content validation | zod | Swipe cards, tactics and Sindiket cards checked at load |
+| Content validation | zod | Swipe and money cards, tactics, concepts, calculator presets and Sindiket cards checked at load |
 | Storage | Dexie (IndexedDB) | Progress, cards, best scores on the device |
 | Offline | vite-plugin-pwa (Workbox) | Precache everything; installable |
-| Share card | html-to-image | Renders the Imuniti result card as a PNG |
+| Share card (stretch) | html-to-image | Renders the result card as a PNG |
+| Charts | Hand-written SVG | Mesin Masa growth line; no chart library (size budget) |
 | Icons and fonts | lucide-react, @fontsource (bundled) | Works offline |
 | Tests | Vitest, Playwright | Scoring and engine tests; end-to-end flows on phone viewports |
 | Hosting (download only) | GitHub Pages or Netlify | Free static hosting |
@@ -26,7 +27,7 @@ No 3D, no backend and no AI at run time in the MVP.
 
 ## 2. Architecture
 
-Scenarios and cards are written and reviewed centrally, shipped once with the app, and every mode then runs on the phone with no connection.
+Scenarios, cards, concepts and calculator presets are written and reviewed centrally, shipped once with the app, and every mode then runs on the phone with no connection.
 
 ```text
  CENTRAL (team, before release)                 ON THE PHONE (offline after first load)
@@ -34,43 +35,45 @@ Scenarios and cards are written and reviewed centrally, shipped once with the ap
  | Content authoring         |                  | Service worker (precached app + content)         |
  | Inky (.ink scenarios),    |                  +--------------------------------------------------+
  | cards / tactics JSON,     |                  | Phone shell                                       |
- | content review checklist  |                  |  Home | Sembang (chat) | BankKu | Dompet | Kad   |
+ | content review checklist  |                  |  Home | Sembang | BankKu | Dompet | Kalkulator | Kad|
  +-------------+-------------+                  +--------------------------------------------------+
                |                                | Modes                                             |
-               v                                |  Semester Pertama | Mod Sindiket |                |
- +---------------------------+   one download   |  Sahih atau Scam  | Mod Kelas (+ Latihan drills)  |
+               v                                |  Semester Pertama | Cek Harian | Mod Kelas        |
+ +---------------------------+   one download   |  Latihan drills   | (Mod Sindiket: stretch)       |
  | Build + hosting           | ---------------> +--------------------------------------------------+
  | ink -> JSON, zod check,   |                  | Engines                                           |
- | Vite PWA build, static    |                  |  inkjs story | scheduler | meters | adaptive      |
+ | Vite PWA build, static    |                  |  inkjs story | scheduler | meters | finance      |
  | host (GitHub Pages)       |                  +--------------------------------------------------+
  +---------------------------+                  | Storage: Dexie (IndexedDB) progress, cards, scores|
                                                 +--------------------------------------------------+
 ```
 
-All four modes share the same engines and the same seven-tactic Imuniti record, so progress in one mode changes what the others show. The phone shell is the part players see and judges will remember.
+All modes share the same engines and two score records, Celik Kewangan (6 finance concepts) and Imuniti (7 scam tactics), so progress in one mode changes what the others show. The phone shell is the part players see and judges will remember.
 
 ## 3. Module design
 
-Twelve modules sit in three layers: the phone shell shows things, the engines decide things, and storage remembers things.
+Fourteen modules sit in three layers: the phone shell shows things, the engines decide things, and storage remembers things.
 
 | Module | Responsibility | Key parts | Covers |
 | --- | --- | --- | --- |
 | Phone shell | Fake OS: home screen, status bar, notifications, app switcher | `PhoneFrame`, `HomeScreen`, `Notification`, `AppTile` | FR-02 |
-| Story engine | Wraps inkjs: loads a scenario, returns lines and choices, reads tags for flags and effects | `useStory`, `tagParser` | FR-06 |
+| Story engine | Wraps inkjs: loads a scenario, returns lines and choices, reads tags for flags, effects and calculator hooks | `useStory`, `tagParser` | FR-06, FR-11 |
 | Event scheduler | Builds the 12-week semester; picks each week's events, scam/legit mix and adaptive weighting | `scheduleSemester`, `pickNextEvent` | FR-03, FR-04, FR-72 |
-| Meters and economy | Duit, Imuniti per tactic, Tekanan, Status Akaun, Rekod; applies effects from story tags | `useMeters`, `applyEffect` | FR-07, FR-10 |
-| Dompet | Week-0 budget split, weekly costs, BNPL and loan offers | `BudgetSplit`, `WeeklyCosts` | FR-20 to FR-23 |
+| Meters and economy | Duit, Labur, Celik Kewangan per concept, Imuniti per tactic, Tekanan, Status Akaun, Rekod; applies effects from story tags | `useMeters`, `applyEffect` | FR-07, FR-10 |
+| Dompet | Week-0 budget split, weekly costs, Labur pot (fixed-price fund and equity unit trust), emergency-fund bar, net worth | `BudgetSplit`, `WeeklyCosts`, `LaburPot` | FR-20 to FR-24, FR-29 |
+| Kalkulator | Phone app with Mesin Masa, Semak Pulangan and Kos Sebenar tabs; opened from scenarios with presets | `Kalkulator`, `GrowthChart`, `useCalcPreset` | FR-11, FR-25 to FR-28 |
+| Finance engine | Pure maths and scoring for money: future value, annualised rate, loan cost, Labur growth, money health | `finance.ts` | FR-25 to FR-27, NFR-16 |
 | Consequence player | Plays "Apa jadi seterusnya" timelines, including the mule money-chain animation | `ConsequenceTimeline`, `MoneyChain` | FR-07, FR-08 |
 | Flag hunt | Lets players tap tagged phrases in messages; awards Red Flag cards | `FlagHunt`, `cardAward` | FR-09, FR-71 |
-| Sindiket | Card builder, persona reaction model, badges, debrief, twist ending | `SyndicateDesk`, `personaModel`, `Debrief` | FR-30 to FR-34 |
-| Swipe game | Sahih atau Scam card stack, timer, explanations, streak | `SwipeDeck`, `streak` | FR-40 to FR-42 |
+| Sindiket (stretch) | Card builder, persona reaction model, badges, debrief, twist ending | `SyndicateDesk`, `personaModel`, `Debrief` | FR-30 to FR-34 |
+| Cek Harian and swipe | Daily 5-card booster (swipe + money cards), date-seeded deck, streak with weekly freeze; 60-second Sahih atau Scam round | `DailyCheck`, `SwipeDeck`, `MoneyCard`, `streak` | FR-40 to FR-43 |
 | Drills | 997 call drill, Semak Mule simulation, real-action checklist | `Drill997`, `SemakSim`, `ActionChecklist` | FR-50 to FR-52 |
-| Class mode | Projector layout, teams, one-tap answers, scoreboard | `ClassLobby`, `TeamBoard` | FR-60, FR-61 |
+| Class mode | Projector layout, teams, one-tap answers, scoreboard; scam and money cards | `ClassLobby`, `TeamBoard` | FR-60, FR-61 |
 | Storage and share | Dexie progress, card book, best scores; PNG share card | `db`, `ShareCard` | FR-73, FR-74 |
 
 ## 4. Content and data design
 
-Every scenario, card and badge is tagged with the same seven tactics, so the game can measure which tricks each player falls for.
+Scam content is tagged with seven tactics and finance content with six concepts, so the game can measure both which tricks each player falls for and which money ideas they have mastered.
 
 ### 4.1 Tactic taxonomy
 
@@ -83,6 +86,19 @@ Every scenario, card and badge is tagged with the same seven tactics, so the gam
 | `secrecy` | Rahsiakan | Isolates the victim from advice | "Jangan beritahu sesiapa" |
 | `social` | Bukti Palsu | Fake testimonials, fake friends | "500 pelajar dah join!" |
 | `payfirst` | Bayar Dulu | Asks for a fee, top-up or account access first | "Top-up RM100 untuk tugasan 2" |
+
+### 4.1b Finance concept taxonomy (D23)
+
+| Code | BM name | What it teaches | Kad Ilmu "where to check" line |
+| --- | --- | --- | --- |
+| `bajet` | Bajet | Split money into needs, wants and savings before spending | Guide amounts such as KWSP's Belanjawanku |
+| `kecemasan` | Dana Kecemasan | Keep an emergency fund before investing | - |
+| `kompaun` | Kuasa Kompaun | Small regular amounts grow over time | - |
+| `risiko` | Risiko vs Pulangan | Higher return means higher risk; nobody can guarantee a high return | SC Investor Alert List |
+| `hutang` | Kos Hutang | Flat rates and fees cost more than they look | AKPK for debt help |
+| `semak` | Semak Lesen | Check a product and its seller are licensed before paying | SC licence register, BNM Financial Consumer Alert List |
+
+Real scheme and agency names appear only in `content/concepts.json` (D27).
 
 ### 4.2 Scenario format (ink)
 
@@ -116,13 +132,39 @@ Kak Mira (HR): Tugasan 1 dapat RM30. Tugasan 2 perlu top-up RM100 dulu ya. # fla
 
 Ink treats `//` as a comment, so in-game links never include `http://`: write `kurierkilat-bayar.test/alamat`. Fake numbers use `01X-0000 0NNN`. A line the writer is unsure of gets an ink comment `// REVIEW`.
 
-### 4.3 Swipe card (JSON)
+Finance scenarios use the same format with `# type:finance`, `# concepts:` instead of `# tactics:`, the outcomes `untung`, `rugi` and `hutang`, and an optional calculator hook:
+
+```text
+# id:crypto_naga
+# type:scam
+# family:investment
+# tactics:greed,social,urgency
+# concepts:risiko,semak
+
+Abang Rizal: Group CryptoNaga bagi 30% seminggu, confirm! # flag:greed:30% seminggu
+* [Masuk RM500 sekarang]
+    ...
+* [Kira dulu berapa setahun] # ui:calc:pulangan:naga30w
+    ...
+```
+
+`# ui:calc:<tab>:<preset-id>` opens the Kalkulator on that tab with the preset from `content/calc-presets.json` (D21). Using it counts as a found `greed` flag when the result is above `finance.unrealisticAbove`.
+
+### 4.3 Swipe card and money card (JSON)
 
 ```json
 { "id": "c014", "sender": "BankKu", "text": { "ms": "Transaksi RM89.90 di KedaiOnline. Bukan anda? Hubungi nombor di belakang kad.", "en": "..." }, "answer": "legit", "tactics": [], "why": { "ms": "Tiada pautan, tiada OTP diminta, minta anda guna nombor rasmi sendiri." } }
 ```
 
-### 4.4 Sindiket cards
+Money card (`content/money-cards.json`, D25):
+
+```json
+{ "id": "m007", "kind": "truefalse", "concept": "kompaun", "text": { "ms": "RM50 sebulan selama 10 tahun pada 5% setahun jadi lebih RM7,700.", "en": "..." }, "answer": true, "why": { "ms": "Simpan RM6,000, pertumbuhan kompaun tambah lebih RM1,700. Contoh sahaja." } }
+```
+
+A `"kind": "pick"` card has two `options` and the index of the better one.
+
+### 4.4 Sindiket cards (stretch)
 
 - **Hook:** job offer, investment, parcel, romance, authority call
 - **Tactic:** one of the 7 codes (each earns its badge when first used); the MVP ships greed, urgency and authority
@@ -134,6 +176,10 @@ Ink treats `//` as a comment, so in-game links never include `http://`: write `k
 | Field | Type | Example |
 | --- | --- | --- |
 | imuniti | map of tactic → 0–100 | { urgency: 70, authority: 40 } |
+| celik | map of concept → 0–100 | { kecemasan: 60, kompaun: 40 } |
+| kadIlmu | list of concept codes | ["bajet", "kompaun"] |
+| labur | pot balances | { amanah: 200, ekuiti: 0 } |
+| harian | streak, freeze used this week, last played date, best score | 6 days, false, 2026-11-08, 5/5 |
 | cards | list of card IDs | ["greed-job", "payfirst-job"] |
 | badges | list of tactic codes | ["urgency", "authority"] |
 | semesters | list of reports | grade, money left, scams avoided |
@@ -148,15 +194,17 @@ All numbers below are starting values for playtesting; they live in one `balance
 
 | Meter | Range | Start | Changes when |
 | --- | --- | --- | --- |
-| Duit (money) | RM | RM2,000 (fictional PTPTN/scholarship) + RM400 part-time per month | Costs, scams, legit income |
+| Duit (money) | RM | RM2,000 (fictional PTPTN/scholarship) + RM400 part-time pay in weeks 4, 8 and 12 | Costs, scams, legit income |
 | Imuniti per tactic | 0–100 | 30 each | Safe choices, flags found, swipe answers |
+| Celik Kewangan per concept | 0–100 | 30 each | Right or wrong finance decisions, money cards |
+| Labur | RM, two products | 0 | Moves at week intros; grows per SDS 5.8; not spendable |
 | Tekanan (stress) | 0–100 | 20 | Losses and low money push it up; high stress makes desperate offers more tempting |
 | Status Akaun | Aktif / Disekat / Ditutup | Aktif | Lending the account or scam transfers |
 | Rekod | Bersih / Disiasat / Didakwa | Bersih | Only from accepting a mule-account offer |
 
-Desperation effect: if Simpanan is below RM100 at a week intro, Tekanan +10. When Tekanan is 60 or more, desperate offers (job, mule, loan) show an urgency cue.
+Desperation effect: if Simpanan is below RM100 at a week intro, Tekanan +10. When Tekanan is 60 or more, desperate offers (job, mule, loan) show an urgency cue. Moving money into Labur while Simpanan is below `finance.emergencyTarget` (RM300) adds Tekanan +5 and shows the "dana kecemasan dulu" tip (D22).
 
-### 5.2 Imuniti and XP rules
+### 5.2 Imuniti, Celik Kewangan and XP rules
 
 | Event | Imuniti (that tactic) | XP |
 | --- | --- | --- |
@@ -168,42 +216,49 @@ Desperation effect: if Simpanan is below RM100 at a week intro, Tekanan +10. Whe
 | Drill completed | none | +40 |
 | Real action ticked | none | +25 |
 | Tanya Kancil hint | none | −10 (XP never goes below 0) |
+| Right finance decision (`untung`, or `safe` in a finance scenario) | +10 Celik for each declared concept | +50 |
+| Wrong finance decision (`rugi`, `hutang`) | −10 Celik for each declared concept | +20 |
+| Money card correct / wrong | +3 / −5 Celik for its concept | +5 / 0 |
+| Kalkulator used inside a scenario (once per scenario) | none | +10 |
+| Kad Ilmu earned | none | +10 |
 
 Rejecting a legitimate offer costs the missed income and shows a "Terlalu curiga?" (too suspicious?) tip, but no Imuniti penalty. Judgement accuracy is tracked separately.
 
-**Levels by XP:** Mangsa 0–199 · Waspada 200–499 · Bijak 500–899 · Penjaga 900–1,399 · Wira Anti-Scam 1,400+.
+**Levels by XP (D24):** Pemula 0–199 · Berjimat 200–499 · Bijak 500–899 · Pelabur 900–1,399 · Celik 1,400+.
 
-### 5.3 Adaptive engine
+### 5.3 Semester order and adaptive engine
 
-The semester has 10 story scenarios (6 scam, 4 legit) on 12 weeks. The MVP uses the fixed order in `content/semester.json`:
+The semester has 10 story scenarios (4 scam, 6 finance or legit) on 12 weeks (D20). The MVP uses the fixed order in `content/semester.json`:
 
-| Week | Scenario | Type | Family |
+| Week | Scenario | Type | Family or concepts |
 | --- | --- | --- | --- |
 | 1 | kerja_sambilan | scam | job |
-| 2 | yuran_kelas | legit | payment |
+| 2 | dompet_minggu0 | finance | bajet, kecemasan |
 | 3 | sewa_akaun (hostel fees due) | scam | mule |
-| 4 | kerja_kafe | legit | job |
-| 5 | parcel_kurier | scam | parcel |
+| 4 | gaji_pertama (first pay, campus cafe job) | finance | bajet, kompaun |
+| 5 | kawan_labur (fictional licensed unit trust) | finance | risiko, semak |
 | 6 | alert_bankku | legit | bank |
-| 7 | mid-semester break, no scenario | - | - |
-| 8 | crypto_naga | scam | investment |
-| 9 | pinjam_cepat | scam | loan |
+| 7 | mid-semester break: Mesin Masa reflection, no scenario | - | - |
+| 8 | crypto_naga ("Kira dulu" opens Semak Pulangan) | scam | investment; risiko, semak |
+| 9 | bayar_nanti (legal but costly BNPL; Kos Sebenar) | finance | hutang |
 | 10 | buku_terpakai | legit | marketplace |
 | 11 | panggilan_mahkamah | scam | authority |
 | 12 | exams, report card | - | - |
 
-Adaptive engine (stretch): each tactic gets a weight of (100 − its Imuniti) + 10. For weeks 4-11 the scheduler picks the unplayed scenario whose tactics have the highest total weight, keeping the scam share between 55% and 65% and never two scenarios of the same family in a row.
+Adaptive engine (stretch): each tactic and concept gets a weight of (100 − its score) + 10. For weeks 4–11 the scheduler picks the unplayed scenario with the highest total weight, keeping the scam share between 35% and 45% and never two scenarios of the same family in a row. kawan_labur always comes before crypto_naga.
 
 ### 5.4 Semester grade
 
-Score = 40% judgement accuracy + 30% overall Imuniti + 20% money kept + 10% flags found. A ≥ 85, B ≥ 70, C ≥ 55, D below. A Rekod other than Bersih caps the grade at C.
+Score = 30% judgement accuracy + 25% Celik Kewangan + 20% Imuniti + 15% money health + 10% flags found (D24). A ≥ 85, B ≥ 70, C ≥ 55, D below. A Rekod other than Bersih caps the grade at C.
 
-- Judgement accuracy = right calls / all decisions × 100 (avoiding a scam and accepting a legit offer are right calls)
-- Overall Imuniti = mean of the 7 tactic scores
-- Money kept = final Duit / (starting money + all income) × 100, clamped to 0–100
+- Judgement accuracy = right calls / all decisions × 100 (`safe` and `untung` are right; `scammed`, `mule`, `frozen`, `curiga`, `rugi` and `hutang` are wrong)
+- Celik Kewangan = mean of the 6 concept scores; Imuniti = mean of the 7 tactic scores
+- Money health = 50% money kept + 25% emergency fund + 25% invested, where money kept = (final Duit + Labur) / (starting money + all income) × 100 clamped to 0–100, emergency fund = Simpanan at week 12 / RM300 × 100 capped at 100, invested = 100 if Labur > 0 at week 12, else 0
 - Flags found = flags found / flags in the scenarios played × 100
 
-### 5.5 Sindiket reaction model
+Example: judgement 80, Celik 60, Imuniti 60, money health 50, flags 70 → 65.5 → C.
+
+### 5.5 Sindiket reaction model (stretch)
 
 Success (0–100) = how well the Hook matches the persona's need + the sum of each Tactic × that persona's susceptibility, from a fixed table. The meter rises as tactics stack, which makes the manipulation visible; the debrief then shows the matching red flags.
 
@@ -215,6 +270,28 @@ Success (0–100) = how well the Hook matches the persona's need + the sum of ea
 | `mule` | Victim's money → your account → syndicate → bank freezes your account → police trace to you → Penal Code 424A–424D explained |
 | `frozen` | Account frozen → can't pay hostel or food → Tekanan rises |
 | `safe` | Kancil coach congratulates; red flags revealed for collection |
+| `untung` | Money grows or is protected → Mesin Masa shows the long-term effect → Kad Ilmu awarded |
+| `rugi` | What the choice cost this semester → what would have happened with the other choice |
+| `hutang` | Instalments eat the weekly budget → Kos Sebenar shows the total cost → where to get help (AKPK, `TODO-VERIFY`) |
+
+### 5.7 Kalkulator formulas (`finance.ts`, D21)
+
+All results round to the nearest sen. Rates are yearly decimals.
+
+| Tab | Formula | Unit-test example |
+| --- | --- | --- |
+| Mesin Masa | FV = P0 × (1 + i)^n + PMT × ((1 + i)^n − 1) / i, with i = r / 12 and n = months; total contributed = P0 + PMT × n | PMT RM50, r 5%, 10 years → RM7,764.11 (contributed RM6,000); 19 to 30 (132 months) → RM8,775.28; 19 to 55 (432 months) → RM60,324.80 |
+| Semak Pulangan | yearly = (1 + p)^(periods per year) − 1, with 365 days, 52 weeks or 12 months | 10% a month → 213.8% a year; 30% a week → far above `unrealisticAbove` (flag) |
+| Kos Sebenar | total = P × (1 + flat × months / 12); instalment = total / months; effective yearly rate = 12 × monthly IRR solved by bisection | RM1,000, flat 18%, 12 months → total RM1,180.00, instalment RM98.33, effective about 31.7% a year |
+
+`balance.ts` keeps `finance.bands` (illustrative yearly ranges for savings, fixed deposits, fixed-price funds and unit trusts, each `TODO-VERIFY` with its source and year), `finance.unrealisticAbove` (start at 0.2, meaning a guaranteed 20% a year or more is flagged) and `finance.emergencyTarget` (RM300).
+
+### 5.8 Labur products (fictional, D22)
+
+| Product | Type | Weekly change (MVP) | What it teaches |
+| --- | --- | --- | --- |
+| Amanah Cempaka | Fixed-price fund | Illustrative 4% a year, credited weekly (4% / 52) | Low risk, slow, steady |
+| Dana Ekuiti Cempaka | Equity unit trust | Scripted path in `balance.ts` (small gains, −6% in week 8, recovery by week 11) | Prices go up and down; don't panic-sell |
 
 ## 6. Folders, build plan and testing
 
@@ -228,29 +305,32 @@ FinancialLiteracy-ScamAwareness/
   app/           Vite + React source
     src/
       shell/       fake phone OS, i18n
-      engine/      story (inkjs), scheduler, meters, adaptive, balance.ts
-      modes/       semester, sindiket, swipe, drills, classmode
+      engine/      story (inkjs), scheduler, meters, finance, adaptive, balance.ts
+      modes/       semester, kalkulator, harian (Cek Harian + swipe), drills, classmode, sindiket (stretch)
       ui/          shared components (ChatBubble, MeterBar, CardTile...)
       storage/     Dexie, share card
-  content/       scenarios/*.ink, cards.json, sindiket.json (hooks, tactics, asks, personas), tactics.json,
-                 drills.json, semester.json, banned-names.txt
+  content/       scenarios/*.ink, cards.json, money-cards.json, concepts.json, calc-presets.json, tactics.json,
+                 drills.json, semester.json, banned-names.txt, allowed-real-names.txt,
+                 sindiket.json (stretch)
   assets/        illustrations, sounds, fonts
   video/, submission/
 ```
 
-### 6.2 Build plan (Fri afternoon to Mon)
+### 6.2 Build plan (milestone 2 done; Fri night to Mon)
 
-| Day | Shell dev (phone UI) | Engine dev (story + meters) | Modes dev (swipe, Sindiket, class) | Content + video lead |
+Milestones after the pivot (D26): M3 money + mule → M4 Kalkulator → M5 Cek Harian + Mod Kelas → M6 full semester → M7 stretch.
+
+| Day | Shell dev (phone UI) | Engine dev (story + meters + finance) | Modes dev | Content + video lead |
 | --- | --- | --- | --- | --- |
-| Fri 6 Nov (pm) | Scaffold, PWA, phone frame, home screen, Chat app | inkjs wrapper, tag parser, meters store | Swipe deck with 10 placeholder cards | Write the job-scam and mule ink scenarios |
-| Sat 7 Nov | BankKu, Dompet, consequence timeline, money-chain animation | Scheduler, effects, flag hunt, report card | Sindiket desk with 3 tactics + debrief; class mode | 4 more scam + 2 legit scenarios; 30 swipe cards; recruit 20 testers |
-| Sun 8 Nov | Polish, Kancil coach, share card | Adaptive engine, balance tuning, offline test | Drills (997, Semak sim, checklist) | Pre/post test with UTP first-years; film the demo |
+| Fri 6 Nov (night) | BankKu, Dompet with 4 pots | `finance.ts` with tests; `labur` meter; new outcomes and tags; `balance.ts` and test updates | Kalkulator screen skeleton | Write dompet_minggu0 and sewa_akaun; concepts.json |
+| Sat 7 Nov | Consequence and money-chain animation; Kad book with Kad Ilmu | Scheduler (35–45% band), grade, `ui:calc` directive | Kalkulator 3 tabs + Mesin Masa chart; Cek Harian | gaji_pertama, kawan_labur, crypto_naga, bayar_nanti; calc presets; 20 money cards; recruit testers |
+| Sun 8 Nov | Week intros, report card, Kancil coach polish | Offline test, balance tuning | Mod Kelas with money cards; drills | alert_bankku, buku_terpakai, panggilan_mahkamah; 30 swipe cards; verify example rates; pre/post test; film the demo |
 | Mon 9 Nov | Bug fixes | Bug fixes | Bug fixes | Edit the video, write form answers, submit by morning |
 
 ### 6.3 Testing
 
-- **Vitest:** Imuniti and XP rules, grade formula, adaptive pick, persona model, tag parser, zod schemas
-- **Playwright:** full mule scenario, one Sindiket round, swipe round, class mode with 2 teams, airplane mode, screenshots at 360×800, 412×915 and 1920×1080
-- **Content check (`npm run check:content`):** no real brand names (content/banned-names.txt), no URL except `*.test` and semakmule.rmp.gov.my, no phone number except 997 and `01X-0000 0NNN`
+- **Vitest:** Imuniti, Celik Kewangan and XP rules, grade formula (including the 65.5 example), Kalkulator formulas (SDS 5.7 examples), Labur growth and the emergency-fund rule, scheduler scam share 35–45%, date-seeded Cek Harian deck and streak freeze, tag parser (`concepts`, `ui:calc`, `effect:labur`), zod schemas, persona model (stretch)
+- **Playwright:** full mule scenario, crypto_naga with "Kira dulu" into Semak Pulangan, Dompet Labur move, a Cek Harian round, class mode with 2 teams, airplane mode, screenshots at 360×800, 412×915 and 1920×1080
+- **Content check (`npm run check:content`):** no real brand names (content/banned-names.txt) except names in content/allowed-real-names.txt inside content/concepts.json only, no URL except `*.test` and semakmule.rmp.gov.my, no phone number except 997 and `01X-0000 0NNN`, every rate in concepts.json and balance.ts bands marked `TODO-VERIFY` or sourced
 - **Content review:** every scenario checked for fictional brands, correct real-world actions and no victim-blaming copy
 - **Playtest:** 5 students per day; record where they get confused

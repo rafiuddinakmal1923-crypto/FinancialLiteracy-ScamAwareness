@@ -1,5 +1,11 @@
 # Celik: build prompt for Claude Code
 
+> **Update 6 Nov 2026 evening:** the product moved to a hybrid direction (financial literacy core, scams inside
+> it). docs/DECISIONS.md D18-D28 override sections 3-6 of this prompt: new scenario list and order (D20), Kalkulator
+> (D21), Labur (D22), finance concepts and Kad Ilmu (D23), scoring and levels (D24), Cek Harian (D25), Mod Sindiket
+> moved to stretch and the new milestone order (D26), real-name rule (D27). See docs/pivot-delta-prompt.md.
+
+
 Open Claude Code in `D:\FinancialLiteracy-ScamAwareness` and paste the short prompt from the chat, or everything
 below the line.
 

@@ -66,3 +66,35 @@ the gap Celik fills.
 - Visa, Mind Your Ringgit launch: https://www.visa.com.my/about-visa/newsroom/press-releases/visa-launches-mind-your-ringgit-web-game-to-help-young-malaysians-achieve-financial-empowerment.html
 - Marketing-Interactive, Mind Your Ringgit themes: https://www.marketing-interactive.com/visa-turns-financial-literacy-into-web-game-for-young-malaysians
 - SPF anti-scam games: https://www.police.gov.sg/media-hub/news/2022/20220625_conclusion_of_22_edition_of_delta_league_and_launch_of_spf_two_new_anti-scam_games
+
+## 5. Financial literacy and retention benchmark (added 6 Nov 2026 evening, decision D18)
+
+| Product | Target user | Core mechanic | What brings users back | Evidence | Weakness |
+| --- | --- | --- | --- | --- | --- |
+| Mind Your Ringgit (Visa MY) | Young Malaysians | One-year web sim, a money decision each month | Monthly decisions | Pilot then public launch; no outcome data found | Generic adults; scams one topic of many; no student context |
+| Belanjawanku (KWSP) | Working adults | Budget tracker with an expense guide | Real tracking (a chore) | About 12,000 downloads by May 2023 | Useful but not fun; low uptake |
+| InvestSmart (SC) | Retail investors | Fairs, talks, free financial planning sessions | Yearly events | 12th annual InvestSmart Fest in 2025 | Event-based, not a daily product |
+| Versa (MY investing app) | Young investors | Real saving and investing with "Versa Quest" | Real money and returns | 300,000+ users | Commercial; teaches using a product, not judgement |
+| Zogo (US) | Gen Z | Bite-sized lessons, points redeemable for rewards | Rewards paid by partner banks and credit unions | ~15M lessons, ~1M users (2021) | Needs partners to fund rewards |
+| Duolingo (pattern) | Learners | Short daily lessons | Streaks | Going from a 1- to 2-day streak is a big jump in retention | Not finance |
+| #XiamTheScams (SG) | Public | Life sim, 90 storylines over 3 months | Prizes, leaderboard, new storylines | 519k players | Retention bought with S$55,000 prizes; time-limited |
+| Bad News (UK) | Public | Play the manipulator | None (one play) | Works, but decays within 2 months without boosters | One-time use |
+
+### What this changes
+
+- **Retention comes from mechanics, not topic breadth**: streaks (Duolingo), real rewards (Zogo, #XiamTheScams),
+  fresh content seasons (#XiamTheScams) and institutional channels (Zogo via credit unions). Broad financial
+  literacy tools in Malaysia (Belanjawanku, Mind Your Ringgit) have not shown strong uptake on their own.
+- **Celik's gap now**: the student money moment + real vs fake investing side by side (kawan_labur vs
+  crypto_naga) + scams as the consequence of low financial literacy + a daily booster (Cek Harian) + an
+  institutional channel that repeats every intake (Mod Kelas at orientation).
+
+Sources:
+- Campaign Asia, Mind Your Ringgit: https://campaignasia.com/article/visa-gamifies-financial-literacy-in-malaysia/464627
+- Fintech News MY, Belanjawanku: https://fintechnews.my/36711/personal-finance-mgt-pfm/epf-launches-belanjawanku-app-and-guide-to-help-malaysians-be-financially-savvy/
+- SC, InvestSmart Fest 2025: https://www.sc.com.my/resources/media/media-release/scs-investsmart-fest-to-foster-greater-investor-education
+- Malay Mail, Versa: https://www.malaymail.com/news/money/2025/08/26/malaysias-versa-cracks-forbes-asias-100-to-watch-list-of-hottest-startups/188947
+- CU Insight, Zogo 2021 review: https://www.cuinsight.com/press-release/2021-zogo-year-in-review/
+- Duolingo streaks (Lenny's Podcast summary): https://www.recall.it/summary/lennys-podcast/behind-the-product-duolingo-streaks-or-jackson-shuttleworth-group-pm-retention-team
+- Asia News Network, #XiamTheScams: https://asianews.network/anti-scam-game-offers-more-than-200000-worth-of-prizes-including-55000-in-cash/
+- Maertens et al. 2021: https://www.psy.ox.ac.uk/people/rakoen-maertens/publication_modal/1564291

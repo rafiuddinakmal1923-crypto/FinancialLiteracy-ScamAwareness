@@ -1,6 +1,6 @@
 # Celik: UI specification
 
-Version 1.0, 6 Nov 2026. Companion to docs/SRS.md and docs/SDS.md. Product name: **Celik** ("celik" = literate, as in celik kewangan, financial literacy).
+Version 2.0, 6 Nov 2026 evening (hybrid direction, D18-D28; new screens S19-S21). Companion to docs/SRS.md and docs/SDS.md. Product name: **Celik** ("celik" = literate, as in celik kewangan, financial literacy).
 Tagline: **Bijak duit, kebal scam** (money-smart, scam-proof). Secondary catchphrase used in scam debriefs: "Kenali jerat sebelum terjerat".
 
 ## 0. Design principles
@@ -67,8 +67,8 @@ All fonts bundled with @fontsource (offline). Class mode body text at least 32 p
 - Illustrations: flat, warm, friendly; Malaysian campus details (hostel, mamak, bus stop, library).
 - Mascot: **Sang Kancil**, a small mouse-deer with a backpack and a phone, appearing as the coach in a bottom
   sheet. Expressions needed: neutral, smiling, worried, proud, shocked.
-- Fictional app icons: Sembang (chat, speech bubble), BankKu (bank, coin), Dompet (budget, wallet), Kad (cards,
-  flag), Latihan (drills, shield).
+- Fictional app icons: Sembang (chat, speech bubble), BankKu (bank, coin), Dompet (budget, wallet), Kalkulator
+  (calculator with a small upward arrow), Kad (cards, flag and lightbulb), Latihan (drills, shield).
 
 ### 1.5 Sound (optional, off in class mode by default)
 
@@ -127,10 +127,11 @@ in brackets for the team).
 
 ### S03 Home (fake phone home screen)
 - Status bar.
-- Hero card: ImunitiRing (left) + level name + XP bar (right); below it "Minggu 3 daripada 12".
-- App grid (2 rows): Sembang (badge count), BankKu, Dompet, Kad, Latihan.
-- Mode dock (bottom, large tiles): **Semester Pertama** (continue), **Mod Sindiket**, **Sahih atau Scam?**
-  (shows streak flame and today's status), **Mod Kelas**.
+- Hero card: two small rings side by side, **Celik Kewangan** (amber) and **Imuniti** (indigo), + level name
+  (Pemula, Berjimat, Bijak, Pelabur, Celik) + XP bar; below it "Minggu 3 daripada 12" and net worth (Duit + Labur).
+- App grid (2 rows): Sembang (badge count), BankKu, Dompet, Kalkulator, Kad, Latihan.
+- Mode dock (bottom, large tiles): **Semester Pertama** (continue), **Cek Harian** (streak flame and "hari ini: belum"
+  / "selesai"), **Mod Kelas**. Mod Sindiket appears as a locked tile "Akan datang" until the stretch build.
 - CoachSheet peeks with a daily tip.
 
 ### S04 Week intro
@@ -177,24 +178,35 @@ in brackets for the team).
 - CoachSheet expanded: "Taktik yang digunakan: Terlalu Lumayan + Bayar Dulu", 2 bullet tips, "Apa patut buat"
   (what to do: check the company is registered, don't pay to work, report to 997 if money was sent).
 
-### S11 Kad (Red Flag collection)
-- Header: "12 / 16 kad" progress. The total is computed from content: one card per (tactic, family) pair flagged in a scenario.
-- Tabs by tactic (7). Grid of CardTiles (3 columns); locked cards show a silhouette and "???".
+### S11 Kad (Red Flag and Kad Ilmu collection)
+- Two top tabs: **Bendera Merah** and **Kad Ilmu**.
+- Bendera Merah: header "12 / 16 kad" progress, total computed from content (one card per (tactic, family) pair
+  flagged in a scenario); sub-tabs by tactic (7). Grid of CardTiles (3 columns); locked cards show a silhouette and "???".
+- Kad Ilmu: 6 cards, one per concept, amber frame and a lightbulb icon (see S21).
 - Card detail sheet: big card art, example message, how to spot, what to do.
 
-### S12 Dompet (budget)
+### S12 Dompet (budget and Labur)
 - Week 0: three sliders (Keperluan / Kehendak / Simpanan) with a donut chart and RM values; Sang Kancil suggests a
   starting split but the player decides.
-- Weekly view: list of costs ticking off; Simpanan pot shown as a jar filling or emptying.
+- Weekly view: list of costs ticking off; Simpanan pot shown as a jar filling or emptying, with an **emergency fund
+  bar** to RM300 ("Dana kecemasan: RM180 / RM300").
+- **Labur pot** (fourth card): two fictional products, Amanah Cempaka (fixed price, steady) and Dana Ekuiti Cempaka
+  (goes up and down; small sparkline). **Pindah** (move) buttons are active only at week intros; otherwise a note
+  "Boleh pindah pada awal minggu". Moving money in while the emergency bar is not full shows the CoachSheet
+  "Dana kecemasan dulu" with **Tetap labur** / **Batal**.
+- Net worth line at the top: "Nilai bersih RM2,140 (Duit RM1,940 + Labur RM200)".
+- Button **Lihat 10 tahun lagi** opens S19 Mesin Masa with the player's own monthly amount.
 - Offer cards (BNPL, fast loan): show the tempting headline first; after the choice, the card flips to show the true cost.
 
 ### S13 Semester report card
 - Grade letter in a big stamp (A-D), character illustration (happy/worried).
-- Rows: money left, scams avoided / fell for, flags collected, judgement accuracy, Imuniti per tactic (7 small bars).
-- "Taktik paling lemah anda: Menyamar Pihak Berkuasa" with a button **Latih taktik ini** (play a scenario for it).
-- **Kongsi kad Imuniti** generates the share image (1080 x 1350): character, grade, Imuniti ring, tagline, "DEMO" mark.
+- Rows: money left, Labur value, emergency fund reached (yes/no), scams avoided / fell for, flags collected,
+  judgement accuracy, Celik Kewangan per concept (6 amber bars), Imuniti per tactic (7 indigo bars).
+- "Paling perlu dilatih: Kos Hutang" (weakest concept or tactic) with a button **Latih ini** (opens a related Cek
+  Harian set or replays the scenario).
+- **Kongsi keputusan** (stretch) generates the share image (1080 x 1350): character, grade, both rings, tagline, "DEMO" mark.
 
-### S14 Mod Sindiket (play the scammer)
+### S14 Mod Sindiket (play the scammer) - finalist stretch
 - Dark theme (--sindiket-bg, neon accent), satirical "Pejabat Sindiket" (syndicate office) header with a fictional
   boss avatar.
 - Top: target persona card (fictional name, age, traits like "perlukan duit", "percaya polis", "sibuk").
@@ -206,7 +218,7 @@ in brackets for the team).
 - Twist ending: police raid animation, "Akaun keldai pelatih dikesan" (the interns' mule accounts are traced), then
   a summary: badges earned and "Sekarang anda kenal 3 taktik sindiket."
 
-### S15 Sahih atau Scam?
+### S15 Sahih atau Scam? (60-second round; also reached from Cek Harian results)
 - Top: timer bar (60 s) and score.
 - Centre: card stack; each card shows a message as it would appear (SMS, chat or email style).
 - Swipe left = Scam (red), right = Sahih (green); buttons below for non-swipe use.
@@ -220,12 +232,14 @@ in brackets for the team).
 - **Semak simulation:** generic search box (not styled like the official portal), enter a fictional account from the
   story, see "Dilaporkan dalam 3 kes" (reported in 3 cases). A clear button **Buka Semak Mule sebenar** opens
   https://semakmule.rmp.gov.my in the browser. SimulasiBanner visible.
-- **Action checklist:** save 997 in contacts, bookmark Semak Mule, turn on bank transaction alerts, tell your family
+- **Action checklist:** save 997 in contacts, bookmark Semak Mule, turn on bank transaction alerts, set a real
+  savings goal, check an investment's licence before paying (link text only: "SC licence register"), tell your family
   about the game; each tick gives stars and a confetti burst. Self-reported, with a gentle honesty note.
 
 ### S17 Mod Kelas (projector)
-- Lobby: facilitator sets 2-6 teams (names and colours), picks a card set, presses **Mula**.
-- Round: huge message card in the centre; team answer row at the bottom with SAHIH / SCAM toggles per team;
+- Lobby: facilitator sets 2-6 teams (names and colours), picks a card set (Scam, Duit or Campur / mixed), presses **Mula**.
+- Round: huge card in the centre; team answer row at the bottom with SAHIH / SCAM toggles per team (or BETUL / SALAH
+  and A / B for money cards);
   **Dedahkan** (reveal) button.
 - Reveal: correct answer, reason, points flying to team cards.
 - Scoreboard between rounds; winner screen with confetti after 10 rounds.
@@ -234,17 +248,53 @@ in brackets for the team).
 ### S18 Settings
 - Language, sound, reduced motion, DEMO watermark, reset progress (with confirmation), credits and sources.
 
+### S19 Kalkulator (phone app, three tabs)
+- Header "Kalkulator" with a segmented control: **Mesin Masa** | **Semak Pulangan** | **Kos Sebenar**. A yellow
+  strip on every tab: "Contoh sahaja, bukan nasihat pelaburan" (examples only, not investment advice).
+- **Mesin Masa:** inputs as large steppers: Simpan sebulan (RM), Pulangan setahun (%, with chips for the example
+  bands), Mula umur (19), Hingga umur (30 / 55 chips). Output: big number "RM8,775" in JetBrains Mono, below it
+  "Anda simpan RM6,600, pertumbuhan RM2,175". SVG line chart with two areas (contributed vs growth, indigo and
+  amber), axis labels by age. Kancil line: "Mula awal, walaupun sedikit."
+- **Semak Pulangan:** inputs: Janji pulangan (%), Setiap (hari / minggu / bulan / tahun). Output: "= 213.8% setahun"
+  and a horizontal band chart: grey bars for the example ranges (simpanan, simpanan tetap, dana harga tetap, unit
+  amanah), a red pin for the promised rate off the end of the scale with "Terlalu Lumayan" flag chip and the line
+  "Tiada pelaburan sah boleh jamin pulangan begini." Below: "Semak dulu: SC Investor Alert List" (text only).
+- **Kos Sebenar:** inputs: Jumlah (RM), Kadar rata (% setahun) or Yuran (RM), Tempoh (bulan). Output cards:
+  Ansuran sebulan, Jumlah bayar balik, Kos sebenar (red), Kadar berkesan setahun (with a one-line explanation of why
+  it is higher than the flat rate).
+- Opened from a scenario ("Kira dulu"): inputs pre-filled from the preset, a **Kembali ke perbualan** button at the
+  bottom, and a toast "+10 XP: Kira dulu" on first use.
+
+### S20 Cek Harian (daily booster)
+- Header: streak flame with the day count, "Cek Harian · 5 kad · ~2 minit", and a snowflake icon showing whether
+  this week's freeze is still available.
+- Card stack of 5: three message cards (swipe like S15) and two money cards. True/false money cards use **BETUL** /
+  **SALAH** buttons; pick cards show two option tiles (A / B).
+- After each answer: the card flips with a one-line reason; no timer.
+- Results: "4 / 5", streak +1 animation, the concept or tactic each miss belongs to, and two buttons: **Main 60 saat**
+  (S15) and **Selesai**. If already played today: "Datang lagi esok" with a countdown and the streak calendar.
+
+### S21 Kad Ilmu (knowledge card detail)
+- Amber-framed card with the concept icon and BM name (e.g. "Kuasa Kompaun").
+- Sections: **Apa itu** (2 sentences), **Contoh** (a worked example with numbers, labelled "contoh"),
+  **Di dunia sebenar** (real scheme names allowed here only, D27, e.g. "Contoh produk: simpanan tetap, unit
+  amanah, dana harga tetap seperti ASB"; no logos), **Cara semak** (where to check, text only), and the footer
+  "Kad ini menerangkan, bukan mengesyorkan." Any figure shows its year and source.
+
 ## 5. Screen flow
 
 ```text
 S01 Splash -> S02 Onboarding -> S03 Home
 S03 Home -> Semester Pertama: S04 Week intro -> S05/S06 chats, S07 calls, S08 BankKu
           -> S09 Consequence -> S06 flag hunt -> S10 Debrief -> next event ... -> S13 Report card
-S03 Home -> S14 Mod Sindiket (rounds -> debrief -> twist ending)
-S03 Home -> S15 Sahih atau Scam? -> results
+S03 Home -> S20 Cek Harian -> results -> (optional) S15 Sahih atau Scam?
+S06 chat ("Kira dulu") -> S19 Kalkulator -> back to S06
+S12 Dompet ("Lihat 10 tahun lagi") -> S19 Mesin Masa
+S11 Kad -> S21 Kad Ilmu detail
+S03 Home -> S14 Mod Sindiket (stretch: rounds -> debrief -> twist ending)
 S03 Home -> S16 Latihan Tindakan (997 drill, Semak sim, checklist)
 S03 Home -> S17 Mod Kelas (projector)
-S03 Home -> S11 Kad, S12 Dompet, S18 Settings
+S03 Home -> S11 Kad, S12 Dompet, S19 Kalkulator, S18 Settings
 ```
 
 ## 6. Content style guide
@@ -255,11 +305,15 @@ S03 Home -> S11 Kad, S12 Dompet, S18 Settings
 - **Legit voice:** official but plain; legit messages never ask for OTP, never push links to pay, give a way to verify.
 - **Sang Kancil voice:** short, warm, clever, a little cheeky. Max 2 sentences per tip.
 - **Consequence voice:** factual and kind: "Ini yang biasanya berlaku..." (this is what usually happens...), then what to do.
+- **Money voice (finance scenarios, Kad Ilmu, money cards):** plain and encouraging; explain with one worked number;
+  always say "contoh" for rates; never say "beli" (buy) or recommend a product; say what to check instead.
 - **Never:** real bank or company names or logos, real people, real phone numbers, real URLs (except the official
-  Semak Mule portal and 997 as correct actions), victim-blaming words like "bodoh" (stupid).
-- **Fictional entities list:** Universiti Cempaka Raya (UCR), BankKu, Bank Merpati, KurierKilat (courier),
-  Bintang Digital Sdn Bhd (fake job company), CryptoNaga (fake investment), PinjamCepat (illegal lender),
-  Sembang (chat app).
+  Semak Mule portal and 997 as correct actions) in scenarios and cards; real scheme names only in Kad Ilmu and
+  "where to check" lines (D27); victim-blaming words like "bodoh" (stupid).
+- **Fictional entities list:** Universiti Cempaka Raya (UCR), BankKu, Bank Merpati, Bintang Digital Sdn Bhd (fake
+  job company), CryptoNaga (fake investment), BayarNanti (legal but costly BNPL), Kafe Cempaka (campus cafe job),
+  Amanah Cempaka (fictional fixed-price fund), Dana Ekuiti Cempaka (fictional unit trust), Sembang (chat app).
+  Reserved for the stretch and later content: KurierKilat (courier), PinjamCepat (illegal lender).
 
 ## 7. Accessibility
 
@@ -275,8 +329,9 @@ S03 Home -> S11 Kad, S12 Dompet, S18 Settings
 | --- | --- | --- |
 | Sang Kancil expressions | 5 | SVG, under 20 KB each |
 | Character portraits (Aina, Amir) | 2 x 3 moods | SVG |
-| Fictional app icons | 5 | SVG |
+| Fictional app icons | 6 (incl. Kalkulator) | SVG |
 | Contact avatars | 10 | Simple illustrated faces or initials |
-| Red Flag card art | 7 tactic icons + 6 scam family frames | Combine at runtime |
-| Sindiket badges | 7 | Hexagon SVGs |
+| Red Flag card art | 7 tactic icons + 4 scam family frames (MVP) | Combine at runtime |
+| Kad Ilmu concept icons | 6 | SVG, amber frame |
+| Sindiket badges (stretch) | 7 | Hexagon SVGs |
 | Sounds | 6 | OGG/MP3, under 30 KB each |
