@@ -1,5 +1,8 @@
-# Real Malaysian brand names that must never appear in content (Hard rule 1).
+# Real Malaysian brand and agency names that must never appear in content (Hard rule 1).
 # One name per line, matched case-insensitively as whole words. Lines starting with # are comments.
+# Spaces, apostrophes (straight or curly) and hyphens inside a name are optional when matching,
+# so "Ninja Van" also catches "NinjaVan" and "Touch 'n Go" catches "Touch ’n Go".
+# NSRC is not listed: the scanner allows it only next to 997 ("NSRC 997", "997 (NSRC)").
 # This file itself is exempt from the content scan.
 # Left out on purpose because they are everyday words in BM/EN chat: Boost, Grab, Setel, Yes, TM, UPS, Fave.
 
@@ -78,3 +81,17 @@ ABX Express
 Shopee
 Shopee Express
 Lazada
+
+# Agencies (real agencies are banned like brands; 997 and Semak Mule are the only real items)
+Bukit Aman
+PDRM
+SSM
+Suruhanjaya Syarikat Malaysia
+Bank Negara
+Bank Negara Malaysia
+BNM
+MCMC
+LHDN
+KWSP
+EPF
+PTPTN

@@ -5,7 +5,7 @@
 # contact:Kak Mira (HR)
 # number:011-0000 0123
 # hint:Syarikat sebenar tak minta bayaran untuk mula kerja.
-# apa_patut:Semak nama syarikat dengan SSM sebelum setuju apa-apa.
+# apa_patut:Semak sendiri sama ada syarikat itu berdaftar sebelum setuju apa-apa.
 # apa_patut:Jangan bayar yuran, top-up atau deposit untuk dapat kerja. Kerja sebenar bayar kamu, bukan sebaliknya.
 # apa_patut:Kalau dah terbayar, telefon NSRC 997 dengan segera dan beritahu bank kamu.
 
@@ -17,7 +17,7 @@ Kak Mira (HR): Kerja senang je, like & share post produk kat media sosial. Boleh
 Kak Mira (HR): Tak perlu pengalaman, buat dari bilik hostel pun boleh 👍
 Kak Mira (HR): Tapi slot tinggal 3 je hari ni tau, ramai dah daftar. Nak akak simpan satu utk adik? # flag:urgency:slot tinggal 3 je hari ni
 * [Minat! Macam mana nak mula?] -> mula
-* [Syarikat apa ni? Boleh saya semak dengan SSM dulu?] -> tanya
+* [Syarikat apa ni? Boleh saya semak syarikat ni berdaftar?] -> tanya
 * [Abaikan mesej ni] -> abaikan
 
 === mula ===
@@ -43,8 +43,8 @@ Kak Mira (HR): Cepat sikit ya dik, tugasan VIP ni tutup pukul 6 petang. # flag:u
     -> END
 
 === tanya ===
-// REVIEW: recruiter dodging the SSM question; is this how real recruiters respond?
-Kak Mira (HR): Eh SSM tu tak payah la dik, kami syarikat online, tengah proses lagi 😅
+// REVIEW: recruiter dodging the registration question; is this how real recruiters respond?
+Kak Mira (HR): Eh tak payah semak la dik, kami syarikat online, pendaftaran tengah proses lagi 😅
 Kak Mira (HR): Adik nak ke tak? Akak boleh bagi slot ni kat orang lain je.
 * [Takpe kak, saya tak jadi. Terima kasih.]
     Kak Mira (HR): Ok, rugi la adik. Bye. # outcome:safe

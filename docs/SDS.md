@@ -78,7 +78,7 @@ Every scenario, card and badge is tagged with the same seven tactics, so the gam
 | --- | --- | --- | --- |
 | `greed` | Terlalu Lumayan | Promises easy, outsized money | "RM300 sehari, kerja dari rumah" |
 | `urgency` | Desakan Masa | Rushes the decision | "Slot tinggal 3 hari ni!" |
-| `authority` | Menyamar Pihak Berkuasa | Pretends to be police, court, bank | "Saya Inspektor dari Bukit Aman" |
+| `authority` | Menyamar Pihak Berkuasa | Pretends to be police, court, bank | "Saya Inspektor dari ibu pejabat polis" |
 | `fear` | Ugutan | Threatens arrest, fines, blocked accounts | "Akaun anda akan dibekukan" |
 | `secrecy` | Rahsiakan | Isolates the victim from advice | "Jangan beritahu sesiapa" |
 | `social` | Bukti Palsu | Fake testimonials, fake friends | "500 pelajar dah join!" |
@@ -96,12 +96,12 @@ Scenarios live in `content/scenarios/*.ink` (one scenario per file), compiled to
 # contact:Kak Mira (HR)
 # number:011-0000 0123
 # hint:Syarikat sebenar tak minta bayaran untuk mula kerja.
-# apa_patut:Semak syarikat dengan SSM sebelum setuju.
+# apa_patut:Semak sendiri sama ada syarikat itu berdaftar sebelum setuju.
 
 Kak Mira (HR): Salam! Ada kerja part-time like & share, RM300 sehari. # flag:greed:RM300 sehari
 Kak Mira (HR): Minat? Slot tinggal 3 je hari ni! # flag:urgency:Slot tinggal 3
 * [Minat! Macam mana nak mula?] -> mula
-* [Syarikat apa ni? Boleh saya semak SSM?] -> tanya
+* [Syarikat apa ni? Boleh saya semak syarikat ni berdaftar?] -> tanya
 * [Abaikan] -> abaikan
 === mula ===
 Kak Mira (HR): Tugasan 1 dapat RM30. Tugasan 2 perlu top-up RM100 dulu ya. # flag:payfirst:top-up RM100

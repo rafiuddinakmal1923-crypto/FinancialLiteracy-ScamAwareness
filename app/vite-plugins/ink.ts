@@ -39,14 +39,39 @@ export function readBannedNames(path: string): string[] {
     .filter((l) => l && !l.startsWith('#'));
 }
 
-const URL_RE = /\b[\w-]+\.(?!test\b)[a-z]{2,}(?:\.[a-z]{2,})*\b/g;
-const URL_ALLOWED = new Set(['semakmule.rmp.gov.my']);
+// Dotted tokens such as "kedai.com.my", "bayar.kurierkilat.test" or "RM1.50"; judged by isRealDomain.
+const DOTTED_RE = /[\w-]+(?:\.[\w-]+)+/g;
+const URL_ALLOWED = 'semakmule.rmp.gov.my';
 const SCHEME_RE = /https?:\/\//gi;
-const PHONE_RE = /\b0\d{1,2}-?\d{3,4}\s?\d{4}\b/g;
+const SCHEME_ALLOWED = /^https:\/\/semakmule\.rmp\.gov\.my\/?(?![\w./-])/i;
+// Mobile and landline numbers, with or without +6 / 6 and any of "-", " ", "." between groups.
+const PHONE_RE = /(?<![\d+])(?:\+?6)?0\d{1,2}[-\s.]?\d{3,4}[-\s.]?\d{4}(?!\d)/g;
+// 1-300 / 1-800 hotlines.
+const HOTLINE_RE = /(?<!\d)1[-\s]?[38]00[-\s]?\d{2}[-\s]?\d{4}(?!\d)/g;
 const PHONE_ALLOWED = /^01\d-0000 0\d{3}$/;
+// NSRC is only allowed right next to 997 ("NSRC 997", "997 (NSRC)").
+const NSRC_RE = /(?<![\p{L}\p{N}_])NSRC(?![\p{L}\p{N}_])/giu;
+const NSRC_WINDOW = 8;
+// Separators inside banned names that writers may vary: spaces, straight/curly apostrophes, hyphens.
+const NAME_SEP = /[\s'‘’`-]+/;
+const NAME_SEP_RE = "[\\s'\\u2018\\u2019`\\-]*";
 
 function escapeRe(s: string): string {
   return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+/** A dotted token is a real-world domain when a label after the first is alphabetic, unless it is a .test host. */
+function isRealDomain(token: string): boolean {
+  const t = token.toLowerCase();
+  if (t === URL_ALLOWED) return false;
+  const labels = t.split('.');
+  if (labels[labels.length - 1] === 'test') return false;
+  return labels.slice(1).some((l) => /^[a-z]{2,}$/.test(l));
+}
+
+function nameRegex(name: string): RegExp {
+  const body = name.split(NAME_SEP).filter(Boolean).map(escapeRe).join(NAME_SEP_RE);
+  return new RegExp(`(?<![\\p{L}\\p{N}_])${body}(?![\\p{L}\\p{N}_])`, 'giu');
 }
 
 function lineOf(text: string, index: number): number {
@@ -61,17 +86,22 @@ export function scanText(text: string, file: string, banned: string[]): string[]
   const add = (index: number, what: string, found: string) =>
     problems.push(`${file}:${lineOf(text, index)}: ${what} "${found}"`);
 
-  for (const m of text.matchAll(SCHEME_RE)) add(m.index, 'URL scheme not allowed (use name.test/path)', m[0]);
-  for (const m of text.matchAll(URL_RE)) {
-    if (!URL_ALLOWED.has(m[0])) add(m.index, 'real-looking domain not allowed (use name.test/path)', m[0]);
+  for (const m of text.matchAll(SCHEME_RE)) {
+    if (!SCHEME_ALLOWED.test(text.slice(m.index))) add(m.index, 'URL scheme not allowed (use name.test/path)', m[0]);
+  }
+  for (const m of text.matchAll(DOTTED_RE)) {
+    if (isRealDomain(m[0])) add(m.index, 'real-looking domain not allowed (use name.test/path)', m[0]);
   }
   for (const m of text.matchAll(PHONE_RE)) {
     if (!PHONE_ALLOWED.test(m[0])) add(m.index, 'phone number not allowed (use 01X-0000 0NNN)', m[0]);
   }
+  for (const m of text.matchAll(HOTLINE_RE)) add(m.index, 'hotline number not allowed', m[0]);
+  for (const m of text.matchAll(NSRC_RE)) {
+    const around = text.slice(Math.max(0, m.index - NSRC_WINDOW), m.index + m[0].length + NSRC_WINDOW);
+    if (!around.includes('997')) add(m.index, 'NSRC is only allowed together with 997', m[0]);
+  }
   for (const name of banned) {
-    const body = name.split(/\s+/).map(escapeRe).join('\\s+');
-    const re = new RegExp(`(?<![\\p{L}\\p{N}_])${body}(?![\\p{L}\\p{N}_])`, 'giu');
-    for (const m of text.matchAll(re)) add(m.index, `real brand "${name}" not allowed`, m[0]);
+    for (const m of text.matchAll(nameRegex(name))) add(m.index, `real name "${name}" not allowed`, m[0]);
   }
   return problems;
 }
