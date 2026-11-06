@@ -213,7 +213,7 @@ export function FlagHunt({ params }: { params: Record<string, string> }) {
         </span>
       </div>
 
-      <div role="log" aria-label={t('sembang.logLabel', { name })} className="sembang-wall min-h-0 flex-1 overflow-y-auto px-3 pb-3">
+      <div role="log" aria-label={t('sembang.logLabel', { name })} className="sembang-wall relative min-h-0 flex-1 overflow-y-auto px-3 pb-3">
         {/* Instruction stays pinned while the transcript scrolls underneath (a paper strip hides the gap above it). */}
         <div className="sticky top-0 z-10 -mx-3 mb-1 bg-paper/95 px-3 pb-2 pt-3">
           <div className="flex items-start gap-2 rounded-2xl bg-kancil-soft p-3 shadow-[0_2px_8px_rgba(28,27,58,.08)] ring-1 ring-kancil/40">

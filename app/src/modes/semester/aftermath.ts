@@ -17,13 +17,16 @@ export function outcomeTone(o: Outcome): TimelineTone {
 }
 
 /**
- * Consequence steps from the copy keys `akibat.<outcome>.<n>.{icon,time,text}` (n = 1..5, stops at the first
+ * Consequence steps from the copy keys `<prefix>.<n>.{icon,time,text}` (prefix defaults to `akibat.<outcome>`;
+ * see consequenceBase; n = 1..5, stops at the first
  * missing text). A step whose text still has an unfilled `{var}` (e.g. no `missed` amount) is left out.
  */
-export function consequenceSteps(t: (key: string, vars?: Vars) => string, outcome: Outcome, vars: Vars): TimelineStep[] {
+export function consequenceSteps(
+  t: (key: string, vars?: Vars) => string, outcome: Outcome, vars: Vars, prefix = `akibat.${outcome}`,
+): TimelineStep[] {
   const out: TimelineStep[] = [];
   for (let n = 1; n <= MAX_STEPS; n++) {
-    const base = `akibat.${outcome}.${n}`;
+    const base = `${prefix}.${n}`;
     const text = t(`${base}.text`, vars);
     if (text === `${base}.text`) break;
     if (/\{\w+\}/.test(text)) continue;
@@ -49,4 +52,21 @@ export function useEnded(id: string): { ended: EndedScenario | null; scenario: C
     fn();
   }, []);
   return { ended: ok ? ended : null, scenario: ok ? scenario : null, leave };
+}
+
+/**
+ * Copy prefix for a consequence: a scenario's own variant `akibat.<id>.<outcome>` when it has a title (e.g.
+ * sewa_akaun's early report, a `frozen` that followed the right action), otherwise `akibat.<outcome>`.
+ */
+export function consequenceBase(t: (key: string) => string, id: string, outcome: Outcome): string {
+  const variant = `akibat.${id}.${outcome}`;
+  return t(`${variant}.title`) === `${variant}.title` ? `akibat.${outcome}` : variant;
+}
+
+const TONES: readonly TimelineTone[] = ['danger', 'safe', 'warning'];
+
+/** A variant may soften its tone with `<prefix>.tone` (danger, safe or warning); otherwise outcomeTone. */
+export function consequenceTone(t: (key: string) => string, prefix: string, outcome: Outcome): TimelineTone {
+  const tone = t(`${prefix}.tone`) as TimelineTone;
+  return TONES.includes(tone) ? tone : outcomeTone(outcome);
 }

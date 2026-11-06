@@ -10,7 +10,7 @@ import { useSettings } from '../../state/settings';
 import { ConsequenceTimeline } from '../../ui/ConsequenceTimeline';
 import { formatRM } from '../../ui/format';
 import { huntTactics } from './flagText';
-import { consequenceSteps, outcomeTone, useEnded } from './aftermath';
+import { consequenceBase, consequenceSteps, consequenceTone, useEnded } from './aftermath';
 import { MoneyChain } from './MoneyChain';
 
 const HERO: Record<Outcome, { icon: LucideIcon; bg: string; badge: string; title: string }> = {
@@ -24,6 +24,9 @@ const HERO: Record<Outcome, { icon: LucideIcon; bg: string; badge: string; title
   rugi: { icon: TrendingDown, bg: 'bg-kancil-soft', badge: 'bg-kancil text-ink', title: 'text-ink' },
   hutang: { icon: Wallet, bg: 'bg-danger-soft', badge: 'bg-danger text-paper', title: 'text-danger' },
 };
+
+/** Hero colours for a variant with a softer tone (e.g. reported early): amber, not danger. */
+const SOFT = { bg: 'bg-kancil-soft', badge: 'bg-kancil text-ink', title: 'text-ink' };
 
 /** Counts from `from` to `to` once (ease-in-out); jumps straight there with reduced motion. */
 function useCount(from: number, to: number): number {
@@ -108,9 +111,15 @@ export function Consequence({ params }: { params: Record<string, string> }) {
   const { outcome } = ended;
   const before = snapshot ?? meters;
   const amount = formatRM(Math.max(0, before.duit - meters.duit));
-  const vars = { amount, balance: formatRM(meters.duit), missed: ended.missed !== undefined ? formatRM(ended.missed) : '{missed}' };
-  const steps = consequenceSteps(t, outcome, vars);
-  const hero = HERO[outcome];
+  const vars = {
+    amount, balance: formatRM(meters.duit), missed: ended.missed !== undefined ? formatRM(ended.missed) : '{missed}',
+    rekod: t(`rekod.${meters.rekod}`),
+  };
+  // A scenario may have its own copy for an outcome (sewa_akaun's early report) and a softer tone.
+  const base = consequenceBase(t, id, outcome);
+  const tone = consequenceTone(t, base, outcome);
+  const steps = consequenceSteps(t, outcome, vars, base);
+  const hero = tone === 'warning' && base !== `akibat.${outcome}` ? { ...HERO[outcome], ...SOFT } : HERO[outcome];
   const HeroIcon = hero.icon;
   const hasFlags = huntTactics(ended.transcript).length > 0;
 
@@ -139,7 +148,7 @@ export function Consequence({ params }: { params: Record<string, string> }) {
             transition={{ duration: 0.25 }}
             className={`mt-3 text-balance font-display text-[28px] font-extrabold leading-[1.15] ${hero.title}`}
           >
-            {t(`akibat.${outcome}.title`, vars)}
+            {t(`${base}.title`, vars)}
           </motion.h1>
           <p className="mt-1.5 text-base leading-snug text-ink">{t('akibat.lead')}</p>
           <div aria-label={t('akibat.changes')} role="group" className="mt-4 flex gap-2">
@@ -159,7 +168,7 @@ export function Consequence({ params }: { params: Record<string, string> }) {
         {(!mule || chainDone) && (
           <section className="px-4 pb-6 pt-5">
             <h2 className="mb-3 font-display text-xl font-bold text-ink">{t('akibat.timeline')}</h2>
-            <ConsequenceTimeline steps={steps} tone={outcomeTone(outcome)} label={t('akibat.timeline')} onDone={mule ? onTimelineDone : undefined} follow={mule} />
+            <ConsequenceTimeline steps={steps} tone={tone} label={t('akibat.timeline')} onDone={mule ? onTimelineDone : undefined} follow={mule} />
             {mule && timelineDone && <LegalNote />}
           </section>
         )}

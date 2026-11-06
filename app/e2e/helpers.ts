@@ -98,3 +98,18 @@ export async function acceptMuleOffer(page: Page, shot?: string): Promise<void> 
   await open.click();
   await expect(page.locator('[data-screen="bankku-transfer"]')).toBeVisible();
 }
+
+/**
+ * The SIMULASI banner sits below the phone status bar (y >= 48) and fully inside the viewport, and so does the
+ * screen's primary button. `toBeVisible()` alone passes even when a scrolled ancestor pushes the banner under the
+ * status bar.
+ */
+export async function expectBannerInView(page: Page, primary: string): Promise<void> {
+  const vh = page.viewportSize()!.height;
+  const banner = (await page.getByText('SIMULASI - bukan laman/aplikasi sebenar').boundingBox())!;
+  expect(banner.y, 'banner under the status bar').toBeGreaterThanOrEqual(48);
+  expect(banner.y + banner.height, 'banner inside the viewport').toBeLessThanOrEqual(vh);
+  const button = (await page.getByRole('button', { name: primary }).boundingBox())!;
+  expect(button.y, `${primary} inside the viewport`).toBeGreaterThanOrEqual(48);
+  expect(button.y + button.height, `${primary} inside the viewport`).toBeLessThanOrEqual(vh);
+}

@@ -7,7 +7,7 @@
 # hint:Kalau duit orang lain masuk akaun kamu dan kamu pindahkan keluar, akaun kamu sedang digunakan sebagai akaun keldai.
 # apa_patut:Jangan pinjam, sewa atau jual akaun bank kepada sesiapa, walaupun senior atau kawan rapat.
 # apa_patut:Kalau duit yang kamu tak kenal masuk ke akaun, jangan pindahkan. Hubungi bank kamu melalui nombor rasmi di belakang kad.
-# apa_patut:Kalau dah terlibat, berhenti segera, telefon NSRC 997 dan buat laporan di balai polis berhampiran.
+# apa_patut:Kalau dah terlibat, berhenti segera, telefon talian 997 dan buat laporan di balai polis berhampiran.
 
 VAR ui_ok = false
 

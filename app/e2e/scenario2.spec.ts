@@ -1,7 +1,7 @@
 // Scenario 2 (the video's hero): the sewa_akaun mule path from the demo preset to the debrief, then the same
 // path captured at the three target viewports for review.
 import { test, expect, type Page } from '@playwright/test';
-import { acceptMuleOffer } from './helpers';
+import { acceptMuleOffer, expectBannerInView } from './helpers';
 
 test.setTimeout(120_000);
 
@@ -83,7 +83,7 @@ test.describe('scenario 2 (sewa_akaun)', () => {
     await expect(page.getByText('Akaun anda telah dibekukan')).toBeVisible();
   });
 
-  test('Batal at the TAC still leaves a frozen account (the victim money already landed)', async ({ page }) => {
+  test('Batal at the transfer: reported early, a temporary freeze in a softer tone (the victim money already landed)', async ({ page }) => {
     await page.goto('/#/demo/mule');
     await acceptMuleOffer(page);
     await page.locator('[data-screen="bankku-transfer"]').getByRole('button', { name: 'Batal' }).click();
@@ -93,7 +93,13 @@ test.describe('scenario 2 (sewa_akaun)', () => {
     const next = page.getByRole('button', { name: 'Lihat apa jadi seterusnya' });
     await expect(next).toBeVisible({ timeout: 20_000 });
     await next.click();
-    await expect(page.locator('[data-screen="akibat"]').getByRole('heading', { level: 1 })).toHaveText('Akaun bank kamu dibekukan');
+    const akibat = page.locator('[data-screen="akibat"]');
+    // The early-report variant: factual, amber (not danger), and says why the freeze is temporary.
+    await expect(akibat.getByRole('heading', { level: 1 })).toHaveText('Kamu berhenti dan melapor awal');
+    await expect(akibat.getByRole('heading', { level: 1 })).not.toHaveCSS('color', 'rgb(229, 72, 77)');
+    await expect(akibat.getByText(/Kamu melapor awal, jadi bank menyekat sementara/)).toBeVisible({ timeout: 10_000 });
+    await page.waitForTimeout(3_000);
+    await page.screenshot({ path: 'e2e/screens/412x915/mule-akibat-lapor.png' });
   });
 
   test('an unknown demo scene goes home', async ({ page }) => {
@@ -101,6 +107,30 @@ test.describe('scenario 2 (sewa_akaun)', () => {
     await expect(page).toHaveURL(/#\/sembang\/sewa_akaun$/);
     await page.goto('/#/demo/tiada');
     await expect(page).toHaveURL(/#\/home$/);
+  });
+});
+
+test.describe('chat overlays at 360x800', () => {
+  test.use({ viewport: { width: 360, height: 800 } });
+
+  test('the BankKu transfer and TAC overlays keep the SIMULASI banner and the buttons in view', async ({ page }) => {
+    await page.goto('/#/demo/mule');
+    await acceptMuleOffer(page);
+    await expectBannerInView(page, 'Sahkan');
+    await page.getByRole('button', { name: 'Sahkan' }).click();
+    await expect(page.locator('[data-screen="bankku-tac"]')).toBeVisible();
+    await expectBannerInView(page, 'Hantar TAC');
+    // The phone's scroll area never scrolls under an overlay.
+    const scrolled = await page.locator('[data-screen="chat"]').evaluate((el) => el.parentElement!.scrollTop);
+    expect(scrolled).toBe(0);
+  });
+
+  test('the fake page keeps the SIMULASI banner and its button in view', async ({ page }) => {
+    await page.goto('/#/demo/mule');
+    await expect(page).toHaveURL(/#\/sembang\/sewa_akaun$/);
+    await page.goto('/#/laman/kurierkilat-bayar.test');
+    await expect(page.locator('[data-screen="fakepage"]')).toBeVisible();
+    await expectBannerInView(page, 'Bayar RM2.90');
   });
 });
 

@@ -145,7 +145,7 @@ function Thread({ id }: { id: string }) {
   const showHintChip = !!meta.hint && !hintText && !hintUsed && !!choices;
 
   return (
-    <div data-screen="chat" className="relative flex min-h-0 flex-1 flex-col">
+    <div data-screen="chat" className="relative flex min-h-0 flex-1 flex-col overflow-clip">
       <ThreadHeader name={name} />
       <DesperateCue family={meta.family} />
 
@@ -166,7 +166,7 @@ function Thread({ id }: { id: string }) {
         ref={logRef}
         role="log"
         aria-label={t('sembang.logLabel', { name })}
-        className="sembang-wall min-h-0 flex-1 overflow-y-auto px-3 pb-3 pt-4"
+        className="sembang-wall relative min-h-0 flex-1 overflow-y-auto px-3 pb-3 pt-4"
       >
         <p className="mx-auto mb-3 w-fit rounded-xl bg-white/80 px-3 py-1 text-base font-medium text-ink-soft">{t('sembang.today')}</p>
         <ol>
@@ -268,9 +268,9 @@ function ReadOnlyThread({ id }: { id: string }) {
   const name = meta.contact || meta.number || '';
   const senderOf = (m: ChatMessage) => (m.from === 'me' ? t('sembang.you') : m.speaker ?? name);
   return (
-    <div data-screen="chat" className="flex min-h-0 flex-1 flex-col">
+    <div data-screen="chat" className="relative flex min-h-0 flex-1 flex-col overflow-clip">
       <ThreadHeader name={name} />
-      <div role="log" aria-label={t('sembang.logLabel', { name })} className="sembang-wall min-h-0 flex-1 overflow-y-auto px-3 pb-3 pt-4">
+      <div role="log" aria-label={t('sembang.logLabel', { name })} className="sembang-wall relative min-h-0 flex-1 overflow-y-auto px-3 pb-3 pt-4">
         <ol>
           {messages.map((m, i) => {
             const same = sameRun(messages, i);
