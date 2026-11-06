@@ -81,11 +81,26 @@ export const ConceptsFileSchema = z.array(ConceptInfoSchema).superRefine((list, 
   }
 });
 
+/** One semester week (D20, SDS 5.3). `scenario` ids are not checked against existing scenarios here. */
+export const WeekDefSchema = z.object({
+  week: z.number().int().min(1).max(12),
+  scenario: z.string().min(1).nullable(),
+  context: LocalizedSchema,
+  costs: z.array(z.object({ label: LocalizedSchema, amount: z.number().nonnegative() })),
+});
+export type WeekDef = z.infer<typeof WeekDefSchema>;
+export const SemesterFileSchema = z.object({ weeks: z.array(WeekDefSchema).length(12) }).superRefine((f, ctx) => {
+  f.weeks.forEach((w, i) => {
+    if (w.week !== i + 1) ctx.addIssue({ code: 'custom', path: ['weeks', i, 'week'], message: `expected week ${i + 1}` });
+  });
+});
+
 /** Registry of content file name -> schema. Owner tasks register theirs here. */
 export const CONTENT_FILES: Record<string, ZodType> = {
   'tactics.json': TacticsFileSchema,
   'cards.json': CardsFileSchema,
   'concepts.json': ConceptsFileSchema,
+  'semester.json': SemesterFileSchema,
 };
 
 export function parseContent<T>(schema: ZodType<T>, data: unknown, file: string): T {

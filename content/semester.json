@@ -1,0 +1,280 @@
+{
+  "weeks": [
+    {
+      "week": 1,
+      "scenario": "kerja_sambilan",
+      "context": {
+        "ms": "Minggu pertama di kolej. Kawan serumah ajak makan di kantin, dan poket nipis."
+      },
+      "costs": [
+        {
+          "label": {
+            "ms": "Makan"
+          },
+          "amount": 80
+        },
+        {
+          "label": {
+            "ms": "Pengangkutan"
+          },
+          "amount": 20
+        },
+        {
+          "label": {
+            "ms": "Bil telefon"
+          },
+          "amount": 30
+        }
+      ]
+    },
+    {
+      "week": 2,
+      "scenario": "dompet_minggu0",
+      "context": {
+        "ms": "Kelas mula padat. Kamu cuba atur duit supaya cukup sampai hujung bulan."
+      },
+      "costs": [
+        {
+          "label": {
+            "ms": "Makan"
+          },
+          "amount": 80
+        },
+        {
+          "label": {
+            "ms": "Pengangkutan"
+          },
+          "amount": 20
+        }
+      ]
+    },
+    {
+      "week": 3,
+      "scenario": "sewa_akaun",
+      "context": {
+        "ms": "Yuran asrama perlu dibayar Jumaat ini. Duit simpanan sekarang sangat berguna."
+      },
+      "costs": [
+        {
+          "label": {
+            "ms": "Makan"
+          },
+          "amount": 80
+        },
+        {
+          "label": {
+            "ms": "Pengangkutan"
+          },
+          "amount": 20
+        },
+        {
+          "label": {
+            "ms": "Yuran asrama"
+          },
+          "amount": 600
+        }
+      ]
+    },
+    {
+      "week": 4,
+      "scenario": "gaji_pertama",
+      "context": {
+        "ms": "Gaji pertama dari kerja di kafe kampus masuk minggu ini. Seronoknya!"
+      },
+      "costs": [
+        {
+          "label": {
+            "ms": "Makan"
+          },
+          "amount": 80
+        },
+        {
+          "label": {
+            "ms": "Pengangkutan"
+          },
+          "amount": 20
+        }
+      ]
+    },
+    {
+      "week": 5,
+      "scenario": "kawan_labur",
+      "context": {
+        "ms": "Seorang senior cerita tentang cara dia mengembangkan duit. Kamu mula ingin tahu."
+      },
+      "costs": [
+        {
+          "label": {
+            "ms": "Makan"
+          },
+          "amount": 80
+        },
+        {
+          "label": {
+            "ms": "Pengangkutan"
+          },
+          "amount": 20
+        },
+        {
+          "label": {
+            "ms": "Baiki laptop"
+          },
+          "amount": 150
+        }
+      ]
+    },
+    {
+      "week": 6,
+      "scenario": "alert_bankku",
+      "context": {
+        "ms": "Tugasan bertimbun, tetapi kamu masih sempat lepak dengan kawan-kawan di pondok bas."
+      },
+      "costs": [
+        {
+          "label": {
+            "ms": "Makan"
+          },
+          "amount": 80
+        },
+        {
+          "label": {
+            "ms": "Pengangkutan"
+          },
+          "amount": 20
+        }
+      ]
+    },
+    {
+      "week": 7,
+      "scenario": null,
+      "context": {
+        "ms": "Cuti pertengahan semester. Masa yang sesuai untuk berhenti sekejap dan buat refleksi bersama Mesin Masa: apa yang sudah kamu belajar tentang duit?"
+      },
+      "costs": [
+        {
+          "label": {
+            "ms": "Makan"
+          },
+          "amount": 80
+        },
+        {
+          "label": {
+            "ms": "Pengangkutan"
+          },
+          "amount": 20
+        }
+      ]
+    },
+    {
+      "week": 8,
+      "scenario": "crypto_naga",
+      "context": {
+        "ms": "Gaji kafe masuk lagi. Ada kawan sibuk bercerita tentang cara cepat kaya di media sosial."
+      },
+      "costs": [
+        {
+          "label": {
+            "ms": "Makan"
+          },
+          "amount": 80
+        },
+        {
+          "label": {
+            "ms": "Pengangkutan"
+          },
+          "amount": 20
+        }
+      ]
+    },
+    {
+      "week": 9,
+      "scenario": "bayar_nanti",
+      "context": {
+        "ms": "Buku rujukan baharu diperlukan untuk projek kumpulan. Kamu mengira semula belanja."
+      },
+      "costs": [
+        {
+          "label": {
+            "ms": "Makan"
+          },
+          "amount": 80
+        },
+        {
+          "label": {
+            "ms": "Pengangkutan"
+          },
+          "amount": 20
+        },
+        {
+          "label": {
+            "ms": "Buku rujukan"
+          },
+          "amount": 120
+        }
+      ]
+    },
+    {
+      "week": 10,
+      "scenario": "buku_terpakai",
+      "context": {
+        "ms": "Pasar lambak kampus dibuka. Ramai pelajar menjual barang terpakai dengan harga mesra poket."
+      },
+      "costs": [
+        {
+          "label": {
+            "ms": "Makan"
+          },
+          "amount": 80
+        },
+        {
+          "label": {
+            "ms": "Pengangkutan"
+          },
+          "amount": 20
+        }
+      ]
+    },
+    {
+      "week": 11,
+      "scenario": "panggilan_mahkamah",
+      "context": {
+        "ms": "Minggu peperiksaan hampir tiba. Kepala penuh, telefon pula tidak berhenti berbunyi."
+      },
+      "costs": [
+        {
+          "label": {
+            "ms": "Makan"
+          },
+          "amount": 80
+        },
+        {
+          "label": {
+            "ms": "Pengangkutan"
+          },
+          "amount": 20
+        }
+      ]
+    },
+    {
+      "week": 12,
+      "scenario": null,
+      "context": {
+        "ms": "Minggu terakhir semester. Mari lihat bagaimana kamu mengurus duit dan menjaga diri."
+      },
+      "costs": [
+        {
+          "label": {
+            "ms": "Makan"
+          },
+          "amount": 80
+        },
+        {
+          "label": {
+            "ms": "Pengangkutan"
+          },
+          "amount": 20
+        }
+      ]
+    }
+  ]
+}

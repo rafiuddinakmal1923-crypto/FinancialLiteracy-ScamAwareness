@@ -2,7 +2,7 @@ import 'fake-indexeddb/auto';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { useGame, initialGame } from './game';
 import { settingsData, useSettings } from './settings';
-import { initialMeters } from '../engine/meters';
+import { initialMeters, netWorth } from '../engine/meters';
 import { BALANCE } from '../engine/balance';
 import { CONCEPTS, type ScenarioMeta } from '../engine/types';
 
@@ -320,5 +320,61 @@ describe('milestone-2 review fixes (M2, M6)', () => {
     useGame.getState().retryScenario();
     useGame.getState().startScenario('s1');
     expect(useGame.getState().meters.duit).toBe(BALANCE.start.duit);
+  });
+});
+
+describe('week intro and Labur actions (Task 13)', () => {
+  const week = (n: number) => ({ week: n, scenario: null, context: { ms: 'x' }, costs: [{ label: { ms: 'Makan' }, amount: 80 }] });
+
+  it('setBudget stores the split and sets simpanan', () => {
+    useGame.getState().setBudget({ needs: 50, wants: 30, savings: 20 });
+    const s = useGame.getState();
+    expect(s.budget).toEqual({ needs: 50, wants: 30, savings: 20 });
+    expect(s.meters.simpanan).toBe(400);
+    expect(() => useGame.getState().setBudget({ needs: 50, wants: 30, savings: 30 })).toThrow(RangeError);
+  });
+
+  it('beginWeek advances the week, applies the intro, opens it and tracks income', () => {
+    useGame.getState().set({ week: 3 });
+    const sum = useGame.getState().beginWeek(week(4));
+    const s = useGame.getState();
+    expect(s.week).toBe(4);
+    expect(s.weekIntroOpen).toBe(true);
+    expect(sum!.income).toBe(400);
+    expect(s.incomeTotal).toBe(400);
+    expect(s.meters.duit).toBe(2000 + 400 - 80);
+  });
+
+  it('beginWeek is a no-op returning null at week 12 or while an intro is open', () => {
+    useGame.getState().set({ week: 12 });
+    expect(useGame.getState().beginWeek(week(12))).toBeNull();
+    expect(useGame.getState().week).toBe(12);
+    useGame.getState().set({ week: 1, weekIntroOpen: true });
+    expect(useGame.getState().beginWeek(week(2))).toBeNull();
+  });
+
+  it('closeWeekIntro closes it', () => {
+    useGame.getState().beginWeek(week(1));
+    useGame.getState().closeWeekIntro();
+    expect(useGame.getState().weekIntroOpen).toBe(false);
+  });
+
+  it('moveLabur works only while the intro is open and never changes net worth', () => {
+    expect(useGame.getState().moveLabur('amanah', 100)).toEqual({ error: 'not-week-intro' });
+    useGame.getState().beginWeek(week(1));
+    const before = netWorth(useGame.getState().meters);
+    const r = useGame.getState().moveLabur('amanah', 500);
+    expect('error' in r).toBe(false);
+    const m = useGame.getState().meters;
+    expect(m.labur.amanah).toBe(500);
+    expect(netWorth(m)).toBe(before);
+    expect(useGame.getState().moveLabur('amanah', 99999)).toEqual({ error: 'insufficient' });
+    expect(useGame.getState().meters).toEqual(m);
+  });
+
+  it('hydrate defaults weekIntroOpen to false for old saves', () => {
+    const { weekIntroOpen: _w, ...old } = initialGame();
+    useGame.getState().hydrate(old as never);
+    expect(useGame.getState().weekIntroOpen).toBe(false);
   });
 });

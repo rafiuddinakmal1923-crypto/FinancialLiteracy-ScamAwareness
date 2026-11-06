@@ -1,8 +1,9 @@
 import { create } from 'zustand';
 import { BALANCE } from '../engine/balance';
 import { cardId } from '../engine/cards';
+import { applyBudget, applyWeekIntro, moveLabur as engineMoveLabur, type BudgetSplit, type IntroSummary, type MoveResult, type WeekDef } from '../engine/week';
 import { applyEffect, applyFlagFound, applyOutcome, applyXp, initialMeters, isRight } from '../engine/meters';
-import type { ChatMessage, Effect, EndedScenario, Family, Meters, Outcome, ScenarioMeta, ScenarioResult, Tactic } from '../engine/types';
+import type { ChatMessage, Effect, EndedScenario, Family, LaburProduct, Meters, Outcome, ScenarioMeta, ScenarioResult, Tactic } from '../engine/types';
 
 /**
  * Fills meter fields an older save does not have (milestone 2 saves have no `celik` or `labur`) from the
@@ -31,7 +32,7 @@ function fillGame(d: GameData): GameData {
 
 export interface GameData {
   character: 'aina' | 'amir'; name: string; week: number; meters: Meters;
-  budget: { needs: number; wants: number; savings: number } | null;
+  budget: BudgetSplit | null;
   results: ScenarioResult[]; cards: string[]; badges: Tactic[];
   swipe: { best: number; streak: number; lastPlayed: string | null };
   actions: string[]; incomeTotal: number;
@@ -40,6 +41,8 @@ export interface GameData {
   lastEnded: EndedScenario | null;
   /** Read-only transcripts of finished scenarios, by id (ruling R8: no replays from Sembang). */
   transcripts: Record<string, ChatMessage[]>;
+  /** True while the week intro is showing; Labur moves are allowed only then (D22). */
+  weekIntroOpen: boolean;
 }
 
 export interface GameActions {
@@ -58,6 +61,12 @@ export interface GameActions {
    */
   huntFlag(tactic: Tactic, meta: Pick<ScenarioMeta, 'type' | 'family'>): void;
   finishHunt(): void;
+  /** Week 0: stores the budget split and sets Simpanan. Throws RangeError on a bad split. */
+  setBudget(split: BudgetSplit): void;
+  /** Advances to the next week, applies its intro and opens it. Returns null (no-op) at week 12 or while an intro is open. `def` is that week's content. */
+  beginWeek(def: WeekDef): IntroSummary | null;
+  closeWeekIntro(): void;
+  moveLabur(product: LaburProduct, delta: number): MoveResult;
   hydrate(d: GameData | null): void;
   reset(): void;
   set(p: Partial<GameData>): void;
@@ -67,13 +76,13 @@ export function initialGame(): GameData {
   return {
     character: 'aina', name: 'Aina', week: 0, meters: initialMeters(), budget: null,
     results: [], cards: [], badges: [], swipe: { best: 0, streak: 0, lastPlayed: null },
-    actions: [], incomeTotal: 0, active: null, lastEnded: null, transcripts: {},
+    actions: [], incomeTotal: 0, active: null, lastEnded: null, transcripts: {}, weekIntroOpen: false,
   };
 }
 
 const DATA_KEYS: (keyof GameData)[] = [
   'character', 'name', 'week', 'meters', 'budget', 'results', 'cards', 'badges',
-  'swipe', 'actions', 'incomeTotal', 'active', 'lastEnded', 'transcripts',
+  'swipe', 'actions', 'incomeTotal', 'active', 'lastEnded', 'transcripts', 'weekIntroOpen',
 ];
 
 /** Picks only the persisted data fields (no actions) from the store state. */
@@ -151,6 +160,26 @@ export const useGame = create<GameData & GameActions>()((set, get) => ({
     const { meters, cards } = get();
     const id = cardId(tactic, family);
     set({ meters: applyFlagFound(meters, tactic), cards: cards.includes(id) ? cards : [...cards, id] });
+  },
+
+  setBudget: (split) => {
+    set({ meters: applyBudget(get().meters, split), budget: { ...split } });
+  },
+
+  beginWeek: (def) => {
+    const { week, weekIntroOpen, meters, incomeTotal } = get();
+    if (week >= BALANCE.semesterWeeks || weekIntroOpen) return null;
+    const summary = applyWeekIntro(meters, { ...def, week: week + 1 });
+    set({ week: week + 1, meters: summary.meters, incomeTotal: incomeTotal + summary.income, weekIntroOpen: true });
+    return summary;
+  },
+
+  closeWeekIntro: () => set({ weekIntroOpen: false }),
+
+  moveLabur: (product, delta) => {
+    const r = engineMoveLabur(get().meters, product, delta, get().weekIntroOpen);
+    if ('meters' in r) set({ meters: r.meters });
+    return r;
   },
 
   hydrate: (saved) => {
