@@ -12,7 +12,7 @@ export const DISCLAIMER_DELAY_MS = 1500;
 /** S01: logo, tagline, then the fictional-names disclaimer and Mula. */
 export function Splash() {
   const t = useT();
-  const onboarded = useGame((s) => s.week >= 1);
+  const onboarded = useGame((s) => s.onboarded);
   const [card, setCard] = useState(false);
   useEffect(() => {
     const id = setTimeout(() => setCard(true), DISCLAIMER_DELAY_MS);

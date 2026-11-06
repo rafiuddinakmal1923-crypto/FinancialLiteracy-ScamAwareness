@@ -372,6 +372,35 @@ describe('week intro and Labur actions (Task 13)', () => {
     expect(useGame.getState().meters).toEqual(m);
   });
 
+  it('a new game is not onboarded and starts in week 0', () => {
+    expect(initialGame().onboarded).toBe(false);
+    expect(initialGame().week).toBe(0);
+  });
+
+  it('hydrate of an older save without onboarded derives it from week >= 1', () => {
+    const { onboarded: _o, ...old } = initialGame();
+    useGame.getState().hydrate({ ...old, week: 1 } as never);
+    expect(useGame.getState().onboarded).toBe(true);
+    expect(useGame.getState().week).toBe(1);
+    useGame.getState().hydrate({ ...old, week: 0 } as never);
+    expect(useGame.getState().onboarded).toBe(false);
+  });
+
+  it('hydrate keeps a saved onboarded flag (onboarded in week 0, before the first intro)', () => {
+    useGame.getState().hydrate({ ...initialGame(), onboarded: true, week: 0 });
+    expect(useGame.getState().onboarded).toBe(true);
+    expect(useGame.getState().week).toBe(0);
+  });
+
+  it('after onboarding and the split, the first intro is week 1 and charges its costs', () => {
+    useGame.getState().set({ onboarded: true });
+    useGame.getState().setBudget({ needs: 50, wants: 30, savings: 20 });
+    const sum = useGame.getState().beginWeek(week(1));
+    expect(useGame.getState().week).toBe(1);
+    expect(sum!.costs.map((c) => c.amount)).toEqual(week(1).costs.map((c) => c.amount));
+    expect(useGame.getState().meters.duit).toBe(2000 - week(1).costs.reduce((n, c) => n + c.amount, 0));
+  });
+
   it('hydrate defaults weekIntroOpen to false for old saves', () => {
     const { weekIntroOpen: _w, ...old } = initialGame();
     useGame.getState().hydrate(old as never);

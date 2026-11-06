@@ -10,7 +10,8 @@ import { WeekIntro } from './WeekIntro';
 beforeEach(() => {
   useGame.getState().reset();
   useSettings.getState().hydrate({ lang: 'ms', sound: false, reducedMotion: true, demo: true });
-  useGame.getState().set({ week: 1 });
+  useGame.getState().set({ onboarded: true });
+  // Onboarded, budget split done, no week opened yet (week 0).
   useGame.getState().setBudget({ needs: 50, wants: 30, savings: 20 });
   window.location.hash = '#/semester/minggu';
 });
@@ -18,21 +19,22 @@ beforeEach(() => {
 afterEach(cleanup);
 
 describe('WeekIntro (S04)', () => {
-  it('opens the next week exactly once under StrictMode', async () => {
+  it('the first intro is Minggu 1: it charges Makan 80 + Pengangkutan 20 + Bil telefon 30, once under StrictMode', async () => {
     await act(async () => { render(<StrictMode><WeekIntro /></StrictMode>); });
-    expect(useGame.getState().week).toBe(2);
+    expect(useGame.getState().week).toBe(1);
     expect(useGame.getState().weekIntroOpen).toBe(true);
-    expect(useGame.getState().meters.duit).toBe(1900);
-    expect(screen.getByRole('heading', { name: 'Minggu 2' })).toBeTruthy();
-    expect(screen.getAllByRole('listitem')).toHaveLength(2);
+    expect(useGame.getState().meters.duit).toBe(2000 - 80 - 20 - 30);
+    expect(screen.getByRole('heading', { name: 'Minggu 1' })).toBeTruthy();
+    expect(screen.getAllByRole('listitem').map((li) => li.textContent)).toEqual(['Makan-RM80', 'Pengangkutan-RM20', 'Bil telefon-RM30']);
+    expect(screen.getByText(/Minggu pertama di kolej/)).toBeTruthy();
   });
 
   it('shows the open intro again without starting another week', async () => {
     await act(async () => { render(<WeekIntro />); });
     cleanup();
     await act(async () => { render(<WeekIntro />); });
-    expect(useGame.getState().week).toBe(2);
-    expect(screen.getByRole('heading', { name: 'Minggu 2' })).toBeTruthy();
+    expect(useGame.getState().week).toBe(1);
+    expect(screen.getByRole('heading', { name: 'Minggu 1' })).toBeTruthy();
   });
 
   it('warns when Tekanan is at the desperation cue', async () => {
@@ -50,7 +52,7 @@ describe('WeekIntro (S04)', () => {
     useGame.getState().set({ budget: null });
     await act(async () => { render(<WeekIntro />); });
     expect(window.location.hash).toBe('#/dompet');
-    expect(useGame.getState().week).toBe(1);
+    expect(useGame.getState().week).toBe(0);
   });
 
   it('after week 12 shows "Semester tamat"', async () => {

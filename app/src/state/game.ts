@@ -24,6 +24,8 @@ export function fillMeters(m: Partial<Meters> | undefined): Meters {
 function fillGame(d: GameData): GameData {
   return {
     ...initialGame(), ...d,
+    // Saves from before `onboarded` existed: onboarding then set week to 1, so week >= 1 meant a game existed.
+    onboarded: d.onboarded ?? (d.week ?? 0) >= 1,
     meters: fillMeters(d.meters),
     active: d.active ? { ...d.active, snapshot: fillMeters(d.active.snapshot) } : null,
     results: (d.results ?? []).map((r) => ({ ...r, concepts: r.concepts ?? [] })),
@@ -31,7 +33,11 @@ function fillGame(d: GameData): GameData {
 }
 
 export interface GameData {
-  character: 'aina' | 'amir'; name: string; week: number; meters: Meters;
+  character: 'aina' | 'amir'; name: string;
+  /** True once onboarding is finished (a game exists). Week stays 0 until the first week intro opens week 1. */
+  onboarded: boolean;
+  /** 0 before the first week intro, then 1..12. Labels show at least "Minggu 1". */
+  week: number; meters: Meters;
   budget: BudgetSplit | null;
   results: ScenarioResult[]; cards: string[]; badges: Tactic[];
   swipe: { best: number; streak: number; lastPlayed: string | null };
@@ -74,14 +80,14 @@ export interface GameActions {
 
 export function initialGame(): GameData {
   return {
-    character: 'aina', name: 'Aina', week: 0, meters: initialMeters(), budget: null,
+    character: 'aina', name: 'Aina', onboarded: false, week: 0, meters: initialMeters(), budget: null,
     results: [], cards: [], badges: [], swipe: { best: 0, streak: 0, lastPlayed: null },
     actions: [], incomeTotal: 0, active: null, lastEnded: null, transcripts: {}, weekIntroOpen: false,
   };
 }
 
 const DATA_KEYS: (keyof GameData)[] = [
-  'character', 'name', 'week', 'meters', 'budget', 'results', 'cards', 'badges',
+  'character', 'name', 'onboarded', 'week', 'meters', 'budget', 'results', 'cards', 'badges',
   'swipe', 'actions', 'incomeTotal', 'active', 'lastEnded', 'transcripts', 'weekIntroOpen',
 ];
 

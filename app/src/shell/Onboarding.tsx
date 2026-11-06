@@ -137,8 +137,8 @@ export function Onboarding() {
 
   const enter = () => {
     if (!choice) return;
-    const g = useGame.getState();
-    g.set({ character: choice, name: t(`character.${choice}`), week: Math.max(1, g.week) });
+    // Week stays 0: the first Semester Pertama week intro opens week 1 (FR-21: costs arrive every week).
+    useGame.getState().set({ character: choice, name: t(`character.${choice}`), onboarded: true });
     navigate('/home');
   };
   const last = step === STEPS - 1;

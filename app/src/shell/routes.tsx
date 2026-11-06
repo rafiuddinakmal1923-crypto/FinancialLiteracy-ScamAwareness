@@ -22,7 +22,7 @@ export interface RouteDef {
   component: ComponentType<{ params: Record<string, string> }>;
   /** Phone status bar style; null hides it (splash, onboarding). */
   statusBar?: 'dark' | 'light' | null;
-  /** Redirect to the splash when no game has started yet (week < 1). */
+  /** Redirect to the splash when no game has started yet (not onboarded). */
   needsGame?: boolean;
   /** i18n key for the desktop Kancil tip panel, and his mood there. */
   tip: string;

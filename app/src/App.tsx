@@ -38,7 +38,7 @@ export default function App() {
   const { path } = useRoute();
   const lang = useSettings((s) => s.lang);
   const reducedMotion = useSettings((s) => s.reducedMotion);
-  const onboarded = useGame((s) => s.week >= 1);
+  const onboarded = useGame((s) => s.onboarded);
 
   useEffect(() => {
     document.documentElement.lang = lang;

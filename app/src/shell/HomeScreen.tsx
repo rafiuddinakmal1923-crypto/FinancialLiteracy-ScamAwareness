@@ -136,7 +136,8 @@ function LockedTile({ title, icon }: { title: string; icon: LucideIcon }) {
 /** S03 v2: the fake phone home screen. */
 export function HomeScreen() {
   const t = useT();
-  const week = useGame((s) => s.week);
+  // Week 0 (before the first week intro) reads as week 1.
+  const week = useGame((s) => Math.max(1, s.week));
   const name = useGame((s) => s.name);
   const meters = useGame((s) => s.meters);
   const swipe = useGame((s) => s.swipe);
@@ -147,7 +148,7 @@ export function HomeScreen() {
   // Cek Harian (Task 20) brings its own streak and local date; until then the daily-round streak stands in.
   const today = new Date().toISOString().slice(0, 10);
   const playedToday = swipe.lastPlayed === today;
-  const tipIndex = (Math.max(1, week) - 1 + new Date().getDate()) % TIPS;
+  const tipIndex = (week - 1 + new Date().getDate()) % TIPS;
 
   return (
     <div data-screen="home" className="flex flex-1 flex-col">

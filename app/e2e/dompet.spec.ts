@@ -91,30 +91,35 @@ test('week intro: card, Labur moves with the emergency-fund check, Teruskan', as
   await seedGame(page);
   await confirmBudget(page);
   await page.goto('/#/home');
+  // Before the first intro the game is in week 0; labels still read week 1.
+  await expect(page.getByText('Minggu 1 daripada 12')).toBeVisible();
+  await expect(page.getByText('Isn, Minggu 1')).toBeVisible();
   const semester = page.getByRole('region', { name: 'Mod permainan' }).getByRole('button', { name: /^Semester Pertama/ });
   await semester.click();
   await expect(page).toHaveURL(/#\/semester\/minggu$/);
 
-  // Week 2 (onboarding starts the game in week 1): context, costs, Tekanan.
+  // The first intro after onboarding + split is week 1: its context and all three costs (RM130) apply.
   const card = page.locator('[data-screen="minggu"]');
-  await expect(card.getByRole('heading', { name: 'Minggu 2' })).toBeVisible();
-  await expect(card.getByText('Kelas mula padat. Kamu cuba atur duit supaya cukup sampai hujung bulan.')).toBeVisible();
+  await expect(card.getByRole('heading', { name: 'Minggu 1' })).toBeVisible();
+  await expect(card.getByText('Minggu pertama di kolej. Kawan serumah ajak makan di kantin, dan poket nipis.')).toBeVisible();
   const costs = card.getByRole('list', { name: 'Kos minggu ini' });
-  await expect(costs.getByRole('listitem')).toHaveCount(2);
+  await expect(costs.getByRole('listitem')).toHaveCount(3);
   await expect(costs.getByRole('listitem').filter({ hasText: 'Makan' })).toContainText('-RM80');
   await expect(costs.getByRole('listitem').filter({ hasText: 'Pengangkutan' })).toContainText('-RM20');
+  await expect(costs.getByRole('listitem').filter({ hasText: 'Bil telefon' })).toContainText('-RM30');
   await expect(card.getByText(/^Gaji sambilan/)).toHaveCount(0);
   await expect(card.getByRole('progressbar', { name: 'Tekanan' })).toBeVisible();
-  await expect(card.getByText('Baki Duit RM1,900')).toBeVisible();
+  await expect(card.getByText('Baki Duit RM1,870')).toBeVisible();
 
   // Reloading the open intro does not start another week.
   await page.reload();
-  await expect(card.getByRole('heading', { name: 'Minggu 2' })).toBeVisible();
+  await expect(card.getByRole('heading', { name: 'Minggu 1' })).toBeVisible();
+  await expect(card.getByText('Baki Duit RM1,870')).toBeVisible();
 
   // Buka Dompet: Labur moves are allowed during the intro.
   await page.getByRole('button', { name: 'Buka Dompet' }).click();
   await expect(page).toHaveURL(/#\/dompet$/);
-  await expect(page.getByText('Nilai bersih RM1,900 (Duit RM1,900 + Labur RM0)')).toBeVisible();
+  await expect(page.getByText('Nilai bersih RM1,870 (Duit RM1,870 + Labur RM0)')).toBeVisible();
   const labur = page.getByRole('region', { name: 'Labur' });
   await expect(labur.getByText('Boleh pindah pada awal minggu')).toHaveCount(0);
   await expect(labur.getByText('RM100', { exact: true })).toBeVisible();
@@ -128,12 +133,12 @@ test('week intro: card, Labur moves with the emergency-fund check, Teruskan', as
   await expect(sheet.getByRole('button', { name: 'Tetap labur' })).toBeVisible();
   await sheet.getByRole('button', { name: 'Batal' }).click();
   await expect(sheet).toHaveCount(0);
-  await expect(page.getByText('Nilai bersih RM1,900 (Duit RM1,900 + Labur RM0)')).toBeVisible();
+  await expect(page.getByText('Nilai bersih RM1,870 (Duit RM1,870 + Labur RM0)')).toBeVisible();
 
   // Tetap labur moves RM100; net worth is unchanged.
   await amanah.getByRole('button', { name: 'Masuk' }).click();
   await sheet.getByRole('button', { name: 'Tetap labur' }).click();
-  await expect(page.getByText('Nilai bersih RM1,900 (Duit RM1,800 + Labur RM100)')).toBeVisible();
+  await expect(page.getByText('Nilai bersih RM1,870 (Duit RM1,770 + Labur RM100)')).toBeVisible();
   await expect(amanah.getByText('RM100', { exact: true })).toBeVisible();
 
   // Taking out more than the pot holds: toast, nothing moves.
@@ -141,25 +146,32 @@ test('week intro: card, Labur moves with the emergency-fund check, Teruskan', as
   await expect(labur.getByText('RM110', { exact: true })).toBeVisible();
   await amanah.getByRole('button', { name: 'Keluar' }).click();
   await expect(page.getByRole('status').filter({ hasText: 'Baki Amanah Cempaka tak cukup' })).toBeVisible();
-  await expect(page.getByText('Nilai bersih RM1,900 (Duit RM1,800 + Labur RM100)')).toBeVisible();
+  await expect(page.getByText('Nilai bersih RM1,870 (Duit RM1,770 + Labur RM100)')).toBeVisible();
 
   // Back to the intro, Teruskan closes it and goes home.
   await page.getByRole('button', { name: 'Kembali' }).click();
   await expect(page).toHaveURL(/#\/semester\/minggu$/);
-  await expect(card.getByRole('heading', { name: 'Minggu 2' })).toBeVisible();
+  await expect(card.getByRole('heading', { name: 'Minggu 1' })).toBeVisible();
   await page.getByRole('button', { name: 'Teruskan' }).click();
   await expect(page).toHaveURL(/#\/home$/);
-  await expect(page.getByText('Minggu 2 daripada 12')).toBeVisible();
+  await expect(page.getByText('Minggu 1 daripada 12')).toBeVisible();
 
   // Outside the intro the Labur buttons lock again.
   await page.goto('/#/dompet');
   await expect(page.getByRole('region', { name: 'Labur' }).getByText('Boleh pindah pada awal minggu')).toBeVisible();
 
-  // Week 3: Labur growth on Amanah (RM100 x contoh 4% / 52 weeks).
+  // Week 2: Labur growth on Amanah (RM100 x contoh 4% / 52 weeks).
   await page.goto('/#/home');
   await semester.click();
-  await expect(card.getByRole('heading', { name: 'Minggu 3' })).toBeVisible();
+  await expect(card.getByRole('heading', { name: 'Minggu 2' })).toBeVisible();
   await expect(card.getByText('Labur +RM0.08')).toBeVisible();
+  await expect(costs.getByRole('listitem')).toHaveCount(2);
+  await page.getByRole('button', { name: 'Teruskan' }).click();
+  await expect(page.getByText('Minggu 2 daripada 12')).toBeVisible();
+
+  // Week 3: hostel fees.
+  await semester.click();
+  await expect(card.getByRole('heading', { name: 'Minggu 3' })).toBeVisible();
   await expect(costs.getByRole('listitem').filter({ hasText: 'Yuran asrama' })).toContainText('-RM600');
   await page.getByRole('button', { name: 'Teruskan' }).click();
 
