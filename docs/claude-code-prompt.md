@@ -95,6 +95,11 @@ safe path.
 | 6 | pinjam_cepat.ink | scam | When Tekanan is high, "PinjamCepat" ad: RM500 in 5 minutes, no documents; true cost revealed after | urgency, greed | scammed (debt) |
 | 7 | kerja_kafe.ink | legit | Campus cafe part-time job via the UCR career portal; asks for nothing upfront, interview on campus | none | rejecting it shows "Terlalu curiga?" |
 | 8 | yuran_kelas.ink | legit | Class rep collects lab-coat money in the official class group with a receipt from the faculty office | none | rejecting it shows "Terlalu curiga?" |
+| 9 | alert_bankku.ink | legit | BankKu alert about a RM89.90 card payment; asks you to call the number on the back of your card, no link, no OTP | none | rejecting it shows "Terlalu curiga?" |
+| 10 | buku_terpakai.ink | legit | A junior wants to buy your used textbook; meets at the library and pays cash | none | rejecting it shows "Terlalu curiga?" |
+
+Week order, families and the 60:40 mix are in SDS section 5.3 (`content/semester.json`). Links in scenarios use
+`*.test` with no `http://` (ink reads `//` as a comment); phone numbers use `01X-0000 0NNN`.
 
 Also write:
 - `content/cards.json`: 30 Sahih atau Scam cards (18 scam, 12 legit) across SMS, chat and email, each with a
@@ -104,6 +109,7 @@ Also write:
   example "Hafiz, 22, pelajar tahun akhir, perlukan duit" (high greed), "Mak Cik Senah, 60, percaya pihak
   berkuasa" (high authority), "Daniel, 27, sibuk bekerja" (high urgency).
 - `content/drills.json`: 997 drill steps and the action checklist.
+- `content/semester.json`: the week order and week-intro costs.
 
 Mark any line you are unsure is realistic with an ink comment `// REVIEW` so the content lead can check it.
 
@@ -120,7 +126,7 @@ modes/, content/) so the team can work in parallel.
    frozen account. Polish this first; it is the most important 30 seconds of the video.
 4. **Sahih atau Scam + Mod Kelas**: 30 cards, streak, projector mode with 2 teams.
 5. **Mod Sindiket**: 3 tactics, 3 personas, success meter, badges, debrief.
-6. **Full semester**: scheduler with the 60:40 mix, scenarios 3-8, week intros, report card, Latihan Tindakan,
+6. **Full semester**: scheduler with the 60:40 mix, scenarios 3-10, week intros, report card, Latihan Tindakan,
    Kad book.
 7. **Polish (stretch, by 18 Nov for finalists)**: adaptive engine, share card, Sindiket twist ending, English
    strings, sounds, performance and 8 MB budget check.
@@ -142,8 +148,8 @@ modes/, content/) so the team can work in parallel.
   - One Sindiket round, one swipe round, Mod Kelas with 2 teams
   - The whole app with the network offline
   - Screenshots of every screen at 360x800, 412x915 and 1920x1080
-- **Content check script** (`npm run check:content`): fails if any content file contains a phone number, a URL
-  other than semakmule.rmp.gov.my, or a word from a banned list of real brand names kept in
+- **Content check script** (`npm run check:content`): fails if any content file contains a phone number other
+  than 997 and the `01X-0000 0NNN` pattern, a URL other than `*.test` and semakmule.rmp.gov.my, or a word from a banned list of real brand names kept in
   `content/banned-names.txt` (start it with the major Malaysian banks, e-wallets, telcos and couriers).
 - Every screen used in the video shows the DEMO watermark (toggle in settings, on by default).
 

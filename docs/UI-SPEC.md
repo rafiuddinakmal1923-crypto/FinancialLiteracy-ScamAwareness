@@ -143,8 +143,8 @@ in brackets for the team).
 
 ### S06 Sembang: chat thread (main scenario screen)
 - Header: back, avatar, name/number, "dalam talian" (online). No "verified" tick ever (to avoid teaching that ticks mean safe).
-- Messages appear one by one with TypingIndicator. Fake links are underlined; tapping one opens a fake page
-  inside the game (never a real site).
+- Messages appear one by one with TypingIndicator. Fake links (always `*.test`, no `http://`) are underlined;
+  tapping one opens a fake page inside the game (never a real site).
 - ReplyChips appear when the story waits for a choice. A small **"Tanya Kancil"** (ask Kancil) chip costs 10 XP and
   gives a hint (limited to 1 per scenario).
 - After the outcome: **Flag hunt** mode. Overlay instruction: "Tekan 3 bendera merah dalam perbualan ini."
@@ -168,7 +168,8 @@ in brackets for the team).
 - Title in danger colour (or safe colour for good outcomes).
 - ConsequenceTimeline with 3-5 steps, each with an icon, one line and a time label ("5 minit kemudian", "2 minggu kemudian").
 - For mule outcomes: MoneyChain animation, then a Penal Code note: "Seksyen 424A-424D Kanun Keseksaan: membenarkan
-  akaun anda digunakan untuk penipuan adalah satu kesalahan." (Check the exact wording against official sources before release.)
+  akaun anda digunakan untuk penipuan adalah satu kesalahan." This is an i18n string marked `TODO-VERIFY` until checked
+  against the official Penal Code.
 - Meter changes animate (RM drop, Tekanan up, Imuniti change).
 - Buttons: **Kumpul bendera merah** (go to the flag hunt), **Cuba lagi** (retry the scenario).
 
@@ -177,7 +178,7 @@ in brackets for the team).
   (what to do: check SSM, don't pay to work, report to 997 if money was sent).
 
 ### S11 Kad (Red Flag collection)
-- Header: "34 / 49 kad" progress.
+- Header: "12 / 16 kad" progress. The total is computed from content: one card per (tactic, family) pair flagged in a scenario.
 - Tabs by tactic (7). Grid of CardTiles (3 columns); locked cards show a silhouette and "???".
 - Card detail sheet: big card art, example message, how to spot, what to do.
 
@@ -209,7 +210,7 @@ in brackets for the team).
 - Top: timer bar (60 s) and score.
 - Centre: card stack; each card shows a message as it would appear (SMS, chat or email style).
 - Swipe left = Scam (red), right = Sahih (green); buttons below for non-swipe use.
-- After each swipe the card flips for 1.5 s with a one-line reason.
+- After each swipe the card flips for 1.5 s with a one-line reason; the timer pauses during the flip.
 - Results: score, streak flame, missed cards list with explanations, **Main lagi**.
 
 ### S16 Latihan Tindakan (action drills)
@@ -249,7 +250,8 @@ S03 Home -> S11 Kad, S12 Dompet, S18 Settings
 ## 6. Content style guide
 
 - **Scammer voice:** realistic Malaysian texting: mixed BM-English, emojis, "Salam bos", "boleh PM", small typos,
-  pressure phrases. Always fictional names and numbers (use 011-XXXX patterns that are clearly fake, e.g. 011-0000 0000).
+  pressure phrases. Always fictional names and numbers: phone numbers use `01X-0000 0NNN` (e.g. 011-0000 0123),
+  links use the `.test` domain with no scheme (e.g. `kurierkilat-bayar.test/alamat`).
 - **Legit voice:** official but plain; legit messages never ask for OTP, never push links to pay, give a way to verify.
 - **Sang Kancil voice:** short, warm, clever, a little cheeky. Max 2 sentences per tip.
 - **Consequence voice:** factual and kind: "Ini yang biasanya berlaku..." (this is what usually happens...), then what to do.

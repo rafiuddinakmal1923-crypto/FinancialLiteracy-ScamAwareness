@@ -1,4 +1,4 @@
-> Snapshot of the live doc on 6 Nov 2026: https://claude.ai/artifact/3woKSQeWmxHZVgipLPpBmj . If they differ, the live doc wins.
+> Originally a snapshot of https://claude.ai/artifact/3woKSQeWmxHZVgipLPpBmj . Since 6 Nov 2026 this file is the source of truth; docs/DECISIONS.md wins over it.
 > Related: docs/SDS.md (design), docs/UI-SPEC.md (screens and components).
 
 # Celik — Software Requirements Specification (SRS)
@@ -34,6 +34,7 @@ This SRS defines what the Celik MVP must do for the Festival Idea Putrajaya 2026
 - Competition rules and rubric (organiser site)
 - Research notes: research/problem-statement.md and research/gamification-benchmark.md in the project folder
 - Celik Software Design Specification (SDS) and UI specification (docs/UI-SPEC.md)
+- Build prompt (docs/claude-code-prompt.md) and decisions log (docs/DECISIONS.md)
 
 ## 2. Overall description
 
@@ -43,7 +44,7 @@ Celik targets the gap no existing game covers: university students being recruit
 
 - Online scam losses rose from RM1.57 billion in 2024 to RM2.97 billion in 2025 ([Malay Mail](https://www.malaymail.com/amp/news/malaysia/2026/06/24/online-scam-losses-surge-to-rm297b-in-2025-says-home-ministry-as-fraud-trend-worsens-across-malaysia/225000)).
 - Ages 21–30 were the largest group of telecom-scam victims in Jan–Nov 2025 ([SAYS / PDRM](https://says.com/my/news/pdrm-most-telco-scam-victims-in-malaysia-this-year-are-aged-21-to-30)).
-- Syndicates offer students RM1,000–2,000 per mule account ([The Star](https://www.thestar.com.my/news/nation/2026/06/17/students-turn-mule-for-cash)); mule-account offences now have their own Penal Code sections, 424A–424D ([The Vibes](https://newswav.com/article/rm6-7-million-recovered-for-scam-victims-as-mule-account-crackdown-intensif-A2601_SiQ1gk)).
+- Syndicates offer students RM1,000–2,000 per mule account ([The Star](https://www.thestar.com.my/news/nation/2026/06/17/students-turn-mule-for-cash)); mule-account offences now have their own Penal Code sections, reported as 424A–424D; to be verified against the official Penal Code, and marked `TODO-VERIFY` in the app until then ([The Vibes](https://newswav.com/article/rm6-7-million-recovered-for-scam-victims-as-mule-account-crackdown-intensif-A2601_SiQ1gk)).
 - Malaysians aged 19–30 score below the national average on BNM's financial literacy index ([The Edge](https://theedgemalaysia.com/node/759356)).
 
 ### 2.2 Benchmark and what Celik borrows
@@ -92,8 +93,8 @@ Priority: **M** = must have for the video, **S** = should have, **C** = could ha
 | --- | --- | --- |
 | FR-01 | The player picks a character (Aina or Amir), a fictional university and a starting budget (PTPTN or scholarship money plus part-time income) | M |
 | FR-02 | The game runs as a fake phone: home screen, Chat app, BankKu (bank), Dompet (budget), Kad (red flags) | M |
-| FR-03 | A semester is 12 in-game weeks (about 15 minutes); each week delivers 2–4 events: chats, calls, ads, friend requests | M |
-| FR-04 | Events mix scams and legitimate offers (about 60:40) so players learn to judge, not to reject everything | M |
+| FR-03 | A semester is 12 in-game weeks (about 15 minutes). Each week opens with a week intro (costs) and delivers 1–3 events: a story scenario (chat, call or ad) on 10 of the 12 weeks, plus short events (a bill, a Dompet offer, a notification) | M |
+| FR-04 | Story scenarios mix scams and legitimate offers 60:40 (MVP: 6 scam + 4 legit) so players learn to judge, not to reject everything | M |
 | FR-05 | MVP scam families: part-time job / task scam, mule account rental, fake investment, parcel phishing link, Macau-style authority call, illegal loan / BNPL trap | M |
 | FR-06 | The player replies by choosing from 2–4 reply chips; each choice branches the story | M |
 | FR-07 | Every scam outcome shows "Apa jadi seterusnya" (what happens next): money lost, account frozen, police investigation, with a short plain-language reason | M |
@@ -108,7 +109,7 @@ Priority: **M** = must have for the video, **S** = should have, **C** = could ha
 | FR-20 | At week 0 the player splits money into Needs, Wants and Savings (emergency fund) | M |
 | FR-21 | Real-life costs arrive weekly (food, transport, phone bill, a surprise expense) | M |
 | FR-22 | BNPL and fast-loan offers appear as temptations with their true cost shown afterwards | S |
-| FR-23 | No emergency fund makes desperate offers (job scams, mule rental) more tempting, shown as an urgency cue | S |
+| FR-23 | No emergency fund makes desperate offers (job scams, mule rental, fast loans) more tempting, shown as an urgency cue; the offers always appear, high Tekanan only adds the cue | S |
 
 ### 3.3 Mod Sindiket (play the scammer, inoculation)
 
@@ -125,7 +126,7 @@ Priority: **M** = must have for the video, **S** = should have, **C** = could ha
 | ID | Requirement | Priority |
 | --- | --- | --- |
 | FR-40 | Swipe left (scam) or right (legit) on 10 message cards in 60 seconds | M |
-| FR-41 | Each card shows a one-line explanation after the swipe | M |
+| FR-41 | Each card shows a one-line explanation after the swipe; the timer pauses while it shows | M |
 | FR-42 | A daily set builds a streak; the best score is saved on the device | S |
 
 ### 3.5 Latihan Tindakan (action drills)
@@ -149,7 +150,7 @@ Priority: **M** = must have for the video, **S** = should have, **C** = could ha
 | ID | Requirement | Priority |
 | --- | --- | --- |
 | FR-70 | XP and Imuniti levels: Mangsa → Waspada → Bijak → Penjaga → Wira Anti-Scam | M |
-| FR-71 | Red Flag card collection book (7 tactics × scam families) | M |
+| FR-71 | Red Flag card collection book: one card per (tactic, scam family) pair flagged in the content; the total is computed from content (16 in the MVP) | M |
 | FR-72 | Adaptive engine: the next scenario favours the tactic the player is weakest against | S |
 | FR-73 | Shareable Imuniti result card (image) for social media | S |
 | FR-74 | Progress saved on the device; no login | M |
@@ -160,7 +161,7 @@ Safety and ethics rules matter as much as speed here: a scam game must never bec
 
 | ID | Category | Requirement | How it is checked |
 | --- | --- | --- | --- |
-| NFR-01 | Ethics | Only fictional banks, apps, companies and people; no real logos, phone numbers or URLs except NSRC 997 and the official Semak Mule portal as correct actions | Content review checklist |
+| NFR-01 | Ethics | Only fictional banks, apps, companies and people; no real logos, phone numbers or URLs except NSRC 997 and the official Semak Mule portal as correct actions. In-game links use the `.test` domain; in-game numbers use `01X-0000 0NNN` | `npm run check:content` + content review checklist |
 | NFR-02 | Ethics | Scammer messages in Mod Sindiket are templated, fictional and always followed by a debrief; no free-text scam generator | Code and content review |
 | NFR-03 | Safety | The game never asks for real names, IC numbers, bank details, OTPs or passwords; fake inputs are pre-filled and labelled "simulasi" | Code review |
 | NFR-04 | Wellbeing | Losing is educational, not shaming: consequence screens explain and offer a retry; no victim-blaming copy | Copy review |
@@ -181,7 +182,7 @@ The MVP is done when a player can finish a short semester with the mule-account 
 
 ### 5.1 Release phases
 
-1. **MVP (by 9 Nov):** Semester Pertama with 6 scam + 2 legit scenarios, Dompet budget, Red Flag cards, report card; Sahih atau Scam with 30 cards; Mod Sindiket with 3 tactics; 997 and Semak Mule drills; Mod Kelas.
+1. **MVP (by 9 Nov):** Semester Pertama with 6 scam + 4 legit scenarios, Dompet budget, Red Flag cards, report card; Sahih atau Scam with 30 cards; Mod Sindiket with 3 tactics; 997 and Semak Mule drills; Mod Kelas.
 2. **Finalist polish (by 18 Nov):** all 7 Sindiket tactics and the twist ending, adaptive engine, share card, English, a pre/post test with 20–30 UTP first-years.
 3. **Roadmap:** online live mode for orientation halls, campus leaderboards, monthly scenario updates from new scam alerts (AI drafts, human review), partner rewards (banks, AKPK), anonymous university dashboard.
 
@@ -204,5 +205,5 @@ Run a 10-question scam-spotting test with UTP first-years before and after one p
 ### 5.4 Open questions
 
 - Can a UTP security or HEP officer review the scenarios for realism?
-- Should the fictional university be generic or a lightly disguised UTP?
+- ~~Should the fictional university be generic or a lightly disguised UTP?~~ Resolved: generic, Universiti Cempaka Raya (UCR).
 

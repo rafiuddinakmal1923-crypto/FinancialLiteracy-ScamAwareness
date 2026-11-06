@@ -21,14 +21,17 @@ part-time income.
 | docs/SRS.md | Requirements (FR / NFR, scope, acceptance) | https://claude.ai/artifact/3woKSQeWmxHZVgipLPpBmj |
 | docs/SDS.md | Design (stack, architecture, modules, data, game systems, build plan) | https://claude.ai/artifact/Dt1cRrzkLVjn5vriotwdtX |
 | docs/UI-SPEC.md | Design tokens, components, screens S01-S18, copy style | - |
+| docs/claude-code-prompt.md | Build prompt: stack, MVP, content list, milestones, tests | - |
+| docs/DECISIONS.md | Resolved conflicts between the docs (wins over all of them) | - |
 | docs/claude-code-prompt.md | Full build prompt for Claude Code | - |
 | research/problem-statement.md | Problem statement and evidence | - |
 | research/gamification-benchmark.md | Gamification benchmark of 10 products and the new mechanics | - |
 
-The md files in docs/ are snapshots of the live docs (6 Nov 2026). If they differ, the live docs win.
+The md files in docs/ are the source of truth from 6 Nov 2026 (see docs/DECISIONS.md). The live doc artifacts
+are older snapshots and do not include those decisions.
 
 ## Folder structure
-- docs/        SRS, SDS, UI spec, Claude Code prompt
+- docs/        SRS, SDS, UI spec, Claude Code prompt, decisions log
 - research/    problem statement, evidence, gamification benchmark
 - app/         source code (Vite + React PWA)
 - content/     ink scenarios, cards, Sindiket and tactic JSON

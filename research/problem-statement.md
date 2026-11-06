@@ -17,6 +17,7 @@ account, need a safe way to experience scam tactics before real scammers reach t
 - Job scams typically start as part-time job offers, then ask for a "top-up" to receive commission (Bukit Aman).
   https://www.thestar.com.my/news/nation/2026/04/07/easy-part-time-jobs-now-top-tactic-in-online-scam-wave-says-bukit-aman
 - 1 in 5 parents say their children aged 7-17 have been scammed (GASA State of Scams in Malaysia 2025).
+  Not for the pitch: outside the target group.
   https://www.thestar.com.my/news/nation/2025/08/28/kids---new-frontier-in-fraud
 
 ### Mule accounts

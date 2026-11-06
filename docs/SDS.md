@@ -1,4 +1,4 @@
-> Snapshot of the live doc on 6 Nov 2026: https://claude.ai/artifact/Dt1cRrzkLVjn5vriotwdtX . If they differ, the live doc wins.
+> Originally a snapshot of https://claude.ai/artifact/Dt1cRrzkLVjn5vriotwdtX . Since 6 Nov 2026 this file is the source of truth; docs/DECISIONS.md wins over it.
 > Related: docs/SRS.md (requirements), docs/UI-SPEC.md (screens and components).
 
 # Celik — Software Design Specification (SDS)
@@ -104,6 +104,8 @@ Kak Mira: Tugasan 1 dapat RM30. Tugasan 2 perlu top-up RM100 dulu ya. # flag:pay
     -> END
 ```
 
+Ink treats `//` as a comment, so in-game links never include `http://`: write `kurierkilat-bayar.test/alamat`. Fake numbers use `01X-0000 0NNN`. A line the writer is unsure of gets an ink comment `// REVIEW`.
+
 ### 4.3 Swipe card (JSON)
 
 ```json
@@ -113,7 +115,7 @@ Kak Mira: Tugasan 1 dapat RM30. Tugasan 2 perlu top-up RM100 dulu ya. # flag:pay
 ### 4.4 Sindiket cards
 
 - **Hook:** job offer, investment, parcel, romance, authority call
-- **Tactic:** one of the 7 codes (each earns its badge when first used)
+- **Tactic:** one of the 7 codes (each earns its badge when first used); the MVP ships greed, urgency and authority
 - **Ask:** transfer fee, "rent" your account, share OTP, click link
 - **Persona:** fictional target with traits (needs money, trusts authority, lonely, busy); the reaction model scores Hook × Tactic × Persona match
 
@@ -142,6 +144,8 @@ All numbers below are starting values for playtesting; they live in one `balance
 | Status Akaun | Aktif / Disekat / Ditutup | Aktif | Lending the account or scam transfers |
 | Rekod | Bersih / Disiasat / Didakwa | Bersih | Only from accepting a mule-account offer |
 
+Desperation effect: if Simpanan is below RM100 at a week intro, Tekanan +10. When Tekanan is 60 or more, desperate offers (job, mule, loan) show an urgency cue.
+
 ### 5.2 Imuniti and XP rules
 
 | Event | Imuniti (that tactic) | XP |
@@ -153,6 +157,7 @@ All numbers below are starting values for playtesting; they live in one `balance
 | Sindiket badge earned | +5 | +30 |
 | Drill completed | none | +40 |
 | Real action ticked | none | +25 |
+| Tanya Kancil hint | none | −10 (XP never goes below 0) |
 
 Rejecting a legitimate offer costs the missed income and shows a "Terlalu curiga?" (too suspicious?) tip, but no Imuniti penalty. Judgement accuracy is tracked separately.
 
@@ -160,11 +165,33 @@ Rejecting a legitimate offer costs the missed income and shows a "Terlalu curiga
 
 ### 5.3 Adaptive engine
 
-Each tactic gets a weight of (100 − its Imuniti) + 10. The scheduler picks the unplayed scenario whose tactics have the highest total weight, keeping a 60:40 scam-to-legit mix and never two scenarios of the same family in a row.
+The semester has 10 story scenarios (6 scam, 4 legit) on 12 weeks. The MVP uses the fixed order in `content/semester.json`:
+
+| Week | Scenario | Type | Family |
+| --- | --- | --- | --- |
+| 1 | kerja_sambilan | scam | job |
+| 2 | yuran_kelas | legit | payment |
+| 3 | sewa_akaun (hostel fees due) | scam | mule |
+| 4 | kerja_kafe | legit | job |
+| 5 | parcel_kurier | scam | parcel |
+| 6 | alert_bankku | legit | bank |
+| 7 | mid-semester break, no scenario | - | - |
+| 8 | crypto_naga | scam | investment |
+| 9 | pinjam_cepat | scam | loan |
+| 10 | buku_terpakai | legit | marketplace |
+| 11 | panggilan_mahkamah | scam | authority |
+| 12 | exams, report card | - | - |
+
+Adaptive engine (stretch): each tactic gets a weight of (100 − its Imuniti) + 10. For weeks 4-11 the scheduler picks the unplayed scenario whose tactics have the highest total weight, keeping the scam share between 55% and 65% and never two scenarios of the same family in a row.
 
 ### 5.4 Semester grade
 
 Score = 40% judgement accuracy + 30% overall Imuniti + 20% money kept + 10% flags found. A ≥ 85, B ≥ 70, C ≥ 55, D below. A Rekod other than Bersih caps the grade at C.
+
+- Judgement accuracy = right calls / all decisions × 100 (avoiding a scam and accepting a legit offer are right calls)
+- Overall Imuniti = mean of the 7 tactic scores
+- Money kept = final Duit / (starting money + all income) × 100, clamped to 0–100
+- Flags found = flags found / flags in the scenarios played × 100
 
 ### 5.5 Sindiket reaction model
 
@@ -186,7 +213,7 @@ Success (0–100) = how well the Hook matches the persona's need + the sum of ea
 ```text
 FinancialLiteracy-ScamAwareness/
   README.md, CLAUDE.md
-  docs/          SRS.md, SDS.md, UI-SPEC.md, Claude Code prompt
+  docs/          SRS.md, SDS.md, UI-SPEC.md, claude-code-prompt.md, DECISIONS.md
   research/      problem statement, gamification benchmark
   app/           Vite + React source
     src/
@@ -195,7 +222,8 @@ FinancialLiteracy-ScamAwareness/
       modes/       semester, sindiket, swipe, drills, classmode
       ui/          shared components (ChatBubble, MeterBar, CardTile...)
       storage/     Dexie, share card
-  content/       scenarios/*.ink, cards.json, sindiket.json, tactics.json
+  content/       scenarios/*.ink, cards.json, sindiket.json (hooks, tactics, asks, personas), tactics.json,
+                 drills.json, semester.json, banned-names.txt
   assets/        illustrations, sounds, fonts
   video/, submission/
 ```
@@ -212,6 +240,7 @@ FinancialLiteracy-ScamAwareness/
 ### 6.3 Testing
 
 - **Vitest:** Imuniti and XP rules, grade formula, adaptive pick, persona model, tag parser, zod schemas
-- **Playwright:** full mule scenario, one Sindiket round, swipe round, class mode with 2 teams, airplane mode, screenshots at 360×800 and 1920×1080
+- **Playwright:** full mule scenario, one Sindiket round, swipe round, class mode with 2 teams, airplane mode, screenshots at 360×800, 412×915 and 1920×1080
+- **Content check (`npm run check:content`):** no real brand names (content/banned-names.txt), no URL except `*.test` and semakmule.rmp.gov.my, no phone number except 997 and `01X-0000 0NNN`
 - **Content review:** every scenario checked for fictional brands, correct real-world actions and no victim-blaming copy
 - **Playtest:** 5 students per day; record where they get confused
