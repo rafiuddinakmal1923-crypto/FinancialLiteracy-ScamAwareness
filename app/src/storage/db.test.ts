@@ -1,0 +1,40 @@
+import 'fake-indexeddb/auto';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { __resetStorageForTests, loadSave, storageMode, writeSave, type SaveData } from './db';
+import { initialGame } from '../state/game';
+import { defaultSettings } from '../state/settings';
+
+const sample = (): SaveData => ({
+  version: 1,
+  game: { ...initialGame(), week: 3, cards: ['greed-job'] },
+  settings: { ...defaultSettings(), lang: 'en' },
+});
+
+describe('storage', () => {
+  beforeEach(() => __resetStorageForTests());
+
+  it('save round-trips', async () => {
+    expect(await loadSave()).toBeNull();
+    const s = sample();
+    await writeSave(s);
+    expect(await loadSave()).toEqual(s);
+    expect(storageMode()).toBe('indexeddb');
+  });
+
+  it('falls back to memory when IndexedDB is missing', async () => {
+    const saved = globalThis.indexedDB;
+    // @ts-expect-error simulate a browser without IndexedDB
+    delete globalThis.indexedDB;
+    try {
+      __resetStorageForTests();
+      expect(await loadSave()).toBeNull();
+      expect(storageMode()).toBe('memory');
+      const s = sample();
+      await writeSave(s);
+      expect(await loadSave()).toEqual(s);
+    } finally {
+      globalThis.indexedDB = saved;
+      __resetStorageForTests();
+    }
+  });
+});
