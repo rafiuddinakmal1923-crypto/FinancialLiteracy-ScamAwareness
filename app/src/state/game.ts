@@ -209,6 +209,7 @@ export const useGame = create<GameData & GameActions>()((set, get) => ({
     const transcript = lastEnded?.id === meta.id ? lastEnded.transcript : null;
     set({
       meters: applyOutcome(meters, meta, outcome), results: [...results, result], active: null, lastEnded: null, calcResume: null,
+      calcFlagged: get().calcFlagged.filter((k) => !k.startsWith(`${meta.id}:`)),
       transcripts: transcript ? { ...transcripts, [meta.id]: transcript } : transcripts,
     });
   },
@@ -228,9 +229,11 @@ export const useGame = create<GameData & GameActions>()((set, get) => ({
   },
 
   huntFlag: (tactic, meta) => {
-    const { lastEnded } = get();
+    const { lastEnded, calcFlagged } = get();
     if (!lastEnded || lastEnded.huntDone || lastEnded.found.includes(tactic)) return;
-    if (meta.type === 'scam') get().foundFlag(tactic, meta.family);
+    // A flag already counted by the Kalkulator (calcFlag) is not awarded twice; it still counts as found here.
+    const viaCalc = calcFlagged.includes(`${lastEnded.id}:${tactic}`);
+    if (meta.type === 'scam' && !viaCalc) get().foundFlag(tactic, meta.family);
     set({ lastEnded: { ...lastEnded, found: [...lastEnded.found, tactic] } });
   },
 
