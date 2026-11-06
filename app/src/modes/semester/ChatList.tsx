@@ -7,8 +7,17 @@ import { navigate } from '../../shell/router';
 import { useGame } from '../../state/game';
 import { Avatar } from '../../ui/Avatar';
 
-/** The scenario on offer until the week logic (Task 20) decides availability. */
+/** The scenario on offer until the week logic (Task 25) decides availability. */
 export const FIRST_SCENARIO = 'kerja_sambilan';
+
+/** The mule scenario (W3, D20) and the week it arrives. */
+const MULE_SCENARIO = 'sewa_akaun';
+const MULE_WEEK = 3;
+
+/** Chats on offer this week (simple rule until Task 25): sewa_akaun from week 3 (newest first), kerja_sambilan always. */
+export function availableChats(week: number): string[] {
+  return week >= MULE_WEEK ? [MULE_SCENARIO, FIRST_SCENARIO] : [FIRST_SCENARIO];
+}
 
 const previews = new Map<string, string>();
 
@@ -100,7 +109,8 @@ export function ChatList() {
   const results = useGame((s) => s.results);
   const activeId = useGame((s) => s.active?.id ?? null);
   const pending = useGame((s) => s.lastEnded?.id ?? null);
-  const ids = chatIds(results, activeId);
+  const week = useGame((s) => s.week);
+  const ids = chatIds(results, activeId, availableChats(week));
   const played = new Set(results.map((r) => r.id));
   return (
     <div data-screen="sembang" className="flex flex-1 flex-col pb-6">

@@ -79,11 +79,13 @@ function parseEffect(rest: string, tag: string): Effect {
 function parseUi(rest: string, tag: string): UiDirective {
   const [kind, value] = split(rest);
   if (kind === 'transfer') {
-    const amount = int(value, tag);
-    if (amount <= 0 || value.startsWith('+') || value.startsWith('-')) {
+    // ui:transfer:<RM>[:<recipient>]; the recipient (a fictional name) is shown as "Kepada" in BankKu.
+    const [raw, to] = split(value);
+    const amount = int(raw, tag);
+    if (amount <= 0 || raw.startsWith('+') || raw.startsWith('-')) {
       throw new TagError(`Transfer amount must be a positive integer in tag "${tag}"`);
     }
-    return { kind: 'transfer', amount };
+    return to ? { kind: 'transfer', amount, to } : { kind: 'transfer', amount };
   }
   if (kind === 'link') {
     if (!LINK_RE.test(value)) throw new TagError(`Link must be <name>.test/<path> with no scheme in tag "${tag}"`);

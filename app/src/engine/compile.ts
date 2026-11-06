@@ -35,13 +35,19 @@ function tagErr<T>(file: string, where: string, fn: () => T): T {
   }
 }
 
+/** True for a line that pauses for a ui overlay (`ui:transfer`, `ui:link`, `ui:calc`). */
+const isUiPause = (tags: string[]) => tags.some((t) => /^\s*ui\s*:/.test(t) && t.trim() !== 'ui:call');
+
 /**
  * Walks every path through a compiled story with a depth-first search. The story state is saved
- * before each choice and restored for the next sibling. Throws ContentError past `limit` paths.
+ * before each choice and restored for the next sibling. A ui pause in a story that declares `VAR ui_ok`
+ * forks too: once as Hantar TAC / the page's button (true), once as Batal (false), so both branches are checked.
+ * Throws ContentError past `limit` paths.
  */
 export function walkScenario(json: string, limit = 200): WalkPath[] {
   const story = new Story(json);
   const paths: WalkPath[] = [];
+  const hasUiOk = story.variablesState.GlobalVariableExistsWithName('ui_ok');
 
   const visit = (choices: number[], lines: WalkLine[]): void => {
     const here = [...lines];
@@ -49,6 +55,15 @@ export function walkScenario(json: string, limit = 200): WalkPath[] {
       const text = (story.Continue() ?? '').trim();
       const tags = [...(story.currentTags ?? [])];
       if (text || tags.length) here.push({ text, tags });
+      if (hasUiOk && isUiPause(tags)) {
+        const saved = story.state.ToJson();
+        for (const ok of [true, false]) {
+          story.state.LoadJson(saved);
+          story.variablesState.$('ui_ok', ok);
+          visit(choices, here);
+        }
+        return;
+      }
     }
     const options = story.currentChoices;
     if (options.length === 0) {

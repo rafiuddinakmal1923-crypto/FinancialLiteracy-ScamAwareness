@@ -44,6 +44,12 @@ describe('parseLineTags', () => {
     });
     expect(() => parseLineTags(['ui:transfer:0'])).toThrow(TagError);
   });
+  it('parses an optional transfer recipient (shown in BankKu as "Kepada")', () => {
+    expect(parseLineTags(['ui:transfer:1400:Teratai Emas Enterprise']).ui).toEqual({
+      kind: 'transfer', amount: 1400, to: 'Teratai Emas Enterprise',
+    });
+    expect(() => parseLineTags(['ui:transfer:abc:Teratai'])).toThrow(TagError);
+  });
   it('rejects ui:link without .test', () => {
     expect(() => parseLineTags(['ui:link:example.com/x'])).toThrow(TagError);
     expect(() => parseLineTags(['ui:link:https://a.test/x'])).toThrow(TagError);

@@ -52,6 +52,12 @@ export const BALANCE = {
   typing: { minMs: 600, maxMs: 1500 },
   /** After a chat ends: pause before "Lihat apa jadi seterusnya"; consequence step interval; flag hunt wrong taps. */
   aftermath: { endPauseMs: 800, stepMs: 900, stepMsReduced: 300, meterMs: 1000, wrongTaps: 3, flagSlopPx: 6 },
+  /**
+   * Mule consequence MoneyChain (UI-SPEC S09): pause before the first hop, each coin hop (600-1200 ms,
+   * ease-in-out), the police trace back to "Akaun anda", one slow pulse period (well under 3 flashes a second),
+   * and the stagger between fades with reduced motion (each fade under 200 ms).
+   */
+  moneyChain: { startMs: 500, hopMs: 1000, traceMs: 1600, pulseMs: 1800, reducedMs: 150 },
   persona: { hookMatch: 40, hookMiss: 10, max: 100 },
   kelas: { pointsCorrect: 100, rounds: 10, minTeams: 2, maxTeams: 6 },
 } as const;

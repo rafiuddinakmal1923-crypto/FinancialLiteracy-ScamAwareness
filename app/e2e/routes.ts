@@ -1,6 +1,6 @@
 // Routes captured by screens.spec.ts. Later tasks append their screens here.
 import type { Page } from '@playwright/test';
-import { patchSavedGame, playScenario1ToEnd, SAMPLE_TX } from './helpers';
+import { acceptMuleOffer, patchSavedGame, playScenario1ToEnd, SAMPLE_TX } from './helpers';
 
 /** Confirms the starting split (Simpanan 10%, RM200: under the RM300 emergency target). */
 async function confirmBudget(page: Page): Promise<void> {
@@ -45,4 +45,10 @@ export const ROUTES: ScreenRoute[] = [
   // BankKu home with sample transactions, then frozen (last: the frozen account stays for the rest of the run).
   { path: '/bankku', name: 'bankku', setup: (page) => patchSavedGame(page, { txLog: SAMPLE_TX }, '/bankku') },
   { path: '/bankku', name: 'bankku-beku', setup: (page) => patchSavedGame(page, { meters: { akaun: 'Disekat' } }, '/bankku') },
+  // In-game fake page on its own route (a link scenario opens the same page over the chat).
+  { path: '/laman/kurierkilat-bayar.test', name: 'laman', screen: 'fakepage' },
+  // The mule demo preset (resets the game): the chat with the urgency cue, then the BankKu transfer and its TAC.
+  { path: '/demo/mule', name: 'chat-mule', screen: 'chat', waitFor: 'Serius RM1,500? Ok, macam mana?' },
+  { path: '/demo/mule', name: 'bankku-transfer', setup: async (page) => { await page.goto('/#/demo/mule'); await acceptMuleOffer(page); } },
+  { path: '/demo/mule', name: 'bankku-tac', setup: (page) => page.getByRole('button', { name: 'Sahkan' }).click() },
 ];

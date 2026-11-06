@@ -129,6 +129,9 @@ export function FlagHunt({ params }: { params: Record<string, string> }) {
   if (!ended || !scenario) return null;
   const { meta } = scenario;
   const name = meta.contact || meta.number || '';
+  // A family can have its own hint (`bendera.hint.<family>`); otherwise the general one.
+  const familyHint = t(`bendera.hint.${meta.family}`);
+  const huntHint = familyHint === `bendera.hint.${meta.family}` ? t('bendera.hint') : familyHint;
 
   const tapFlag = (key: string, tactic: Tactic, el: HTMLElement) => {
     if (done || tapped.has(key)) return;
@@ -271,7 +274,7 @@ export function FlagHunt({ params }: { params: Record<string, string> }) {
             </button>
           </motion.div>
         ) : (
-          <p className="flex min-h-12 items-center text-base leading-snug text-ink-soft">{t('bendera.hint')}</p>
+          <p className="flex min-h-12 items-center text-base leading-snug text-ink-soft">{huntHint}</p>
         )}
       </div>
 

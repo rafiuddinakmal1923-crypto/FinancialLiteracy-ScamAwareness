@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { animate, motion } from 'framer-motion';
-import { CircleQuestionMark, Flag, Lock, MessageCircle, Network, RotateCcw, ShieldCheck, ShieldX, TrendingDown, TrendingUp, Wallet, type LucideIcon } from 'lucide-react';
+import { CircleQuestionMark, Flag, Lock, MessageCircle, Network, RotateCcw, Scale, ShieldCheck, ShieldX, TrendingDown, TrendingUp, Wallet, type LucideIcon } from 'lucide-react';
 import { BALANCE } from '../../engine/balance';
 import type { Outcome } from '../../engine/types';
 import { useT } from '../../shell/i18n';
@@ -11,6 +11,7 @@ import { ConsequenceTimeline } from '../../ui/ConsequenceTimeline';
 import { formatRM } from '../../ui/format';
 import { huntTactics } from './flagText';
 import { consequenceSteps, outcomeTone, useEnded } from './aftermath';
+import { MoneyChain } from './MoneyChain';
 
 const HERO: Record<Outcome, { icon: LucideIcon; bg: string; badge: string; title: string }> = {
   scammed: { icon: ShieldX, bg: 'bg-danger-soft', badge: 'bg-danger text-paper', title: 'text-danger' },
@@ -59,6 +60,36 @@ function MeterChange({ label, from, to, format, worse }: {
   );
 }
 
+/** Penal Code note after the mule timeline (UI-SPEC S09). The sentence is `legal.penalCode`, TODO-VERIFY. */
+function LegalNote() {
+  const t = useT();
+  const reduced = useSettings((s) => s.reducedMotion);
+  const ref = useRef<HTMLElement>(null);
+  useEffect(() => {
+    ref.current?.scrollIntoView?.({ behavior: reduced ? 'auto' : 'smooth', block: 'nearest' });
+  }, [reduced]);
+  return (
+    <motion.aside
+      ref={ref}
+      role="note"
+      aria-labelledby="legal-title"
+      initial={{ opacity: 0, y: reduced ? 0 : 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: reduced ? 0.15 : 0.45, ease: 'easeInOut' }}
+      className="mt-5 flex gap-3 rounded-2xl bg-indigo-soft p-4"
+    >
+      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-indigo text-paper">
+        <Scale aria-hidden size={22} strokeWidth={1.75} />
+      </span>
+      <div className="min-w-0 flex-1">
+        <h3 id="legal-title" className="font-display text-lg font-bold leading-tight text-ink">{t('legal.title')}</h3>
+        <p className="mt-1 text-base font-medium leading-snug text-ink">{t('legal.penalCode')}</p>
+        <p className="mt-1.5 text-base leading-snug text-ink-soft">{t('legal.unverified')}</p>
+      </div>
+    </motion.aside>
+  );
+}
+
 /** S09: "Apa jadi seterusnya". The outcome, meter changes and a timeline; then the flag hunt or Cuba lagi. */
 export function Consequence({ params }: { params: Record<string, string> }) {
   const id = params.id ?? '';
@@ -66,6 +97,12 @@ export function Consequence({ params }: { params: Record<string, string> }) {
   const { ended, scenario, leave } = useEnded(id);
   const snapshot = useGame((s) => (s.active?.id === id ? s.active.snapshot : null));
   const meters = useGame((s) => s.meters);
+  // Mule: the money chain plays first, then the timeline, then the Penal Code note.
+  const [chainDone, setChainDone] = useState(false);
+  const [timelineDone, setTimelineDone] = useState(false);
+  const onChainDone = useCallback(() => setChainDone(true), []);
+  const onTimelineDone = useCallback(() => setTimelineDone(true), []);
+  const mule = ended?.outcome === 'mule';
   if (!ended || !scenario) return null;
 
   const { outcome } = ended;
@@ -113,10 +150,19 @@ export function Consequence({ params }: { params: Record<string, string> }) {
           </div>
         </section>
 
-        <section className="px-4 pb-6 pt-5">
-          <h2 className="mb-3 font-display text-xl font-bold text-ink">{t('akibat.timeline')}</h2>
-          <ConsequenceTimeline steps={steps} tone={outcomeTone(outcome)} label={t('akibat.timeline')} />
-        </section>
+        {mule && (
+          <section aria-label={t('moneyChain.title')} className="px-4 pt-5">
+            <MoneyChain onDone={onChainDone} />
+          </section>
+        )}
+
+        {(!mule || chainDone) && (
+          <section className="px-4 pb-6 pt-5">
+            <h2 className="mb-3 font-display text-xl font-bold text-ink">{t('akibat.timeline')}</h2>
+            <ConsequenceTimeline steps={steps} tone={outcomeTone(outcome)} label={t('akibat.timeline')} onDone={mule ? onTimelineDone : undefined} follow={mule} />
+            {mule && timelineDone && <LegalNote />}
+          </section>
+        )}
       </div>
 
       <div className="relative z-10 flex shrink-0 flex-col gap-2 rounded-t-[24px] bg-white px-3 pb-3 pt-3 shadow-[0_-8px_24px_rgba(28,27,58,.12)]">

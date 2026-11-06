@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   BatteryLow, CircleCheck, Coins, CreditCard, Flag, House, Landmark, Lock, MessageCircleX, Network, Phone,
-  Search, Send, ShieldCheck, Clock, UserX, Users, Wallet, type LucideIcon,
+  Search, Send, ShieldCheck, ShieldUser, Clock, UserX, Users, Wallet, type LucideIcon,
 } from 'lucide-react';
 import { BALANCE } from '../engine/balance';
 import { useSettings } from '../state/settings';
@@ -11,7 +11,7 @@ import { useSettings } from '../state/settings';
 export const STEP_ICONS: Record<string, LucideIcon> = {
   send: Send, 'message-x': MessageCircleX, 'user-x': UserX, wallet: Wallet, phone: Phone, coins: Coins,
   network: Network, lock: Lock, landmark: Landmark, card: CreditCard, home: House, battery: BatteryLow,
-  'shield-check': ShieldCheck, users: Users, flag: Flag, search: Search, check: CircleCheck, clock: Clock,
+  'shield-check': ShieldCheck, police: ShieldUser, users: Users, flag: Flag, search: Search, check: CircleCheck, clock: Clock,
 };
 
 export interface TimelineStep { icon: string; time: string; text: string }
@@ -25,12 +25,20 @@ const NODE: Record<TimelineTone, string> = {
 const RAIL: Record<TimelineTone, string> = { danger: 'bg-danger/40', safe: 'bg-safe/40', warning: 'bg-kancil/60' };
 
 /** Vertical steps that appear one by one (600-1200 ms apart; quicker fades with reduced motion). */
-export function ConsequenceTimeline({ steps, tone, label, onDone }: {
+export function ConsequenceTimeline({ steps, tone, label, onDone, follow = false }: {
   steps: TimelineStep[]; tone: TimelineTone; label: string; onDone?: () => void;
+  /** Scrolls each new step into view (the mule consequence, where the money chain sits above the timeline). */
+  follow?: boolean;
 }) {
   const reduced = useSettings((s) => s.reducedMotion);
   const [shown, setShown] = useState(1);
   const every = reduced ? BALANCE.aftermath.stepMsReduced : BALANCE.aftermath.stepMs;
+  const listRef = useRef<HTMLOListElement>(null);
+
+  useEffect(() => {
+    if (!follow) return;
+    listRef.current?.lastElementChild?.scrollIntoView?.({ behavior: reduced ? 'auto' : 'smooth', block: 'nearest' });
+  }, [follow, shown, reduced]);
 
   useEffect(() => {
     if (shown >= steps.length) { onDone?.(); return; }
@@ -39,7 +47,7 @@ export function ConsequenceTimeline({ steps, tone, label, onDone }: {
   }, [shown, steps.length, every, onDone]);
 
   return (
-    <ol aria-label={label} className="relative">
+    <ol ref={listRef} aria-label={label} className="relative">
       {steps.slice(0, shown).map((s, i) => {
         const Icon = STEP_ICONS[s.icon] ?? Clock;
         const last = i === steps.length - 1;

@@ -51,7 +51,7 @@ async function smallTargets(page: Page): Promise<string[]> {
 
 for (const vp of VIEWPORTS) {
   test(`screens at ${vp.width}x${vp.height}`, async ({ page }) => {
-    test.setTimeout(60_000); // many routes, two of which play scenario 1 first
+    test.setTimeout(120_000); // many routes; some play scenario 1 or the mule chat first
     await page.setViewportSize(vp);
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await seedGame(page);

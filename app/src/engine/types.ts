@@ -39,7 +39,7 @@ export type Effect =
   | { kind: 'labur'; product: LaburProduct; delta: number };
 export interface Flag { tactic: Tactic; phrase: string }
 export type UiDirective =
-  | { kind: 'transfer'; amount: number } | { kind: 'link'; url: string }
+  | { kind: 'transfer'; amount: number; to?: string } | { kind: 'link'; url: string }
   | { kind: 'calc'; tab: CalcTab; preset: string };
 export interface ScenarioMeta {
   id: string; type: ScenarioType; family: Family; tactics: Tactic[];

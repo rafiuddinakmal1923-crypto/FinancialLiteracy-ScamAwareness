@@ -3,6 +3,11 @@ import { readFileSync } from 'node:fs';
 import { compileScenario, enumeratePaths } from './compile';
 import { ContentError } from './schemas';
 
+const sewaAkaun = readFileSync(
+  new URL('../../../content/scenarios/sewa_akaun.ink', import.meta.url),
+  'utf8',
+);
+
 const kerjaSambilan = readFileSync(
   new URL('../../../content/scenarios/kerja_sambilan.ink', import.meta.url),
   'utf8',
@@ -265,5 +270,49 @@ describe('enumeratePaths', () => {
   it('fails when there are more paths than the limit', () => {
     const c = compileScenario(kerjaSambilan, 'kerja_sambilan.ink');
     expect(() => enumeratePaths(c.json, 1)).toThrow(/too many paths/);
+  });
+});
+
+describe('ui_ok branches (Task 16)', () => {
+  const src = scam(`VAR ui_ok = false
+Encik X: Tolong pindah RM500, upah RM50. # flag:greed:upah RM50 # ui:transfer:500
+{ ui_ok:
+    Encik X: Terima kasih! # effect:duit:-500 # outcome:mule
+- else:
+    Encik X: Takpe la. # outcome:safe
+}
+-> END`);
+
+  it('walks both the Hantar TAC (ui_ok true) and the Batal (false) branch of a ui pause', () => {
+    const c = compileScenario(src, 't1.ink');
+    expect(enumeratePaths(c.json).map((p) => p.outcome).sort()).toEqual(['mule', 'safe']);
+  });
+
+  it('checks the content of the ui_ok true branch too', () => {
+    const bad = src.replace('# outcome:mule', '# outcome:menang');
+    expect(() => compileScenario(bad, 't1.ink')).toThrow(ContentError);
+  });
+});
+
+describe('sewa_akaun (Task 16)', () => {
+  const c = compileScenario(sewaAkaun, 'sewa_akaun.ink');
+
+  it('is the W3 mule scam with Abang Zul', () => {
+    expect(c.meta).toMatchObject({ id: 'sewa_akaun', type: 'scam', family: 'mule', contact: 'Abang Zul', number: '011-0000 0456' });
+    expect(c.meta.tactics).toEqual(['greed', 'secrecy', 'social']);
+    expect(c.meta.hint).toBeTruthy();
+    expect(c.meta.apaPatut.length).toBeGreaterThanOrEqual(2);
+  });
+
+  it('has at least one mule path and one safe path, and every path ends in an outcome', () => {
+    const paths = enumeratePaths(c.json);
+    expect(paths.filter((p) => p.outcome === undefined)).toEqual([]);
+    expect(paths.filter((p) => p.outcome === 'mule').length).toBeGreaterThanOrEqual(1);
+    expect(paths.filter((p) => p.outcome === 'safe').length).toBeGreaterThanOrEqual(1);
+  });
+
+  it('flags the exact phrases for greed, secrecy and social', () => {
+    const phrases = Object.fromEntries(c.flags.map((f) => [f.tactic, f.phrase]));
+    expect(phrases).toMatchObject({ greed: 'RM1,500', secrecy: 'jangan cerita kat orang', social: 'semua orang buat' });
   });
 });

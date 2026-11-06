@@ -1,7 +1,8 @@
-import { CircleCheck, Gavel, Lock, Search, ShieldX } from 'lucide-react';
+import { CircleCheck, Gauge, Gavel, Landmark, Lock, PiggyBank, ScrollText, Search, ShieldX, TrendingUp, Wallet } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { BALANCE } from '../engine/balance';
-import type { Akaun, Rekod } from '../engine/types';
+import { round2 } from '../engine/money';
+import { LABUR_PRODUCTS, type Akaun, type Rekod } from '../engine/types';
 import { useGame } from '../state/game';
 import { formatRM } from '../ui/format';
 import { Kancil, type KancilMood } from '../ui/Kancil';
@@ -24,10 +25,13 @@ function Panel({ children, className = '' }: { children: ReactNode; className?: 
   return <div className={`rounded-2xl bg-paper p-5 shadow-[0_2px_8px_rgba(28,27,58,.08)] ${className}`}>{children}</div>;
 }
 
-function StatusRow({ label, value, icon: Icon, cls }: { label: string; value: string; icon: typeof Lock; cls: string }) {
+function StatusRow({ label, lead: Lead, value, icon: Icon, cls }: { label: string; lead: typeof Lock; value: string; icon: typeof Lock; cls: string }) {
   return (
     <div className="flex items-center justify-between gap-3">
-      <span className="text-base font-medium text-ink">{label}</span>
+      <span className="flex items-center gap-2 text-base font-medium text-ink">
+        <Lead aria-hidden size={20} strokeWidth={1.75} className="text-ink-soft" />
+        {label}
+      </span>
       <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-base font-semibold ${cls}`}>
         <Icon aria-hidden size={18} strokeWidth={1.75} />
         {value}
@@ -50,11 +54,24 @@ export function TipPanel({ tipKey, mood }: { tipKey: string; mood: KancilMood })
   );
 }
 
-/** Desktop (>= 1280 px) only: live meters on the right. */
+function ValueRow({ icon: Icon, label, value }: { icon: typeof Lock; label: string; value: string }) {
+  return (
+    <div className="flex items-center justify-between gap-3">
+      <span className="flex items-center gap-2 text-base font-medium text-ink">
+        <Icon aria-hidden size={20} strokeWidth={1.75} className="text-ink-soft" />
+        {label}
+      </span>
+      <span className="font-mono text-base font-semibold text-ink">{value}</span>
+    </div>
+  );
+}
+
+/** Desktop (>= 1280 px) only: live meters on the right (Duit, Simpanan, Labur, Tekanan, Status Akaun, Rekod). */
 export function MetersPanel() {
   const t = useT();
   const m = useGame((s) => s.meters);
   const tk = tekananLevel(m.tekanan);
+  const labur = round2(LABUR_PRODUCTS.reduce((a, p) => a + m.labur[p], 0));
   const ak = AKAUN_STYLE[m.akaun];
   const rk = REKOD_STYLE[m.rekod];
   return (
@@ -62,18 +79,20 @@ export function MetersPanel() {
       <Panel>
         <p className="font-display text-xl font-bold text-ink">{t('side.metersTitle')}</p>
         <div className="mt-4 flex flex-col gap-4">
-          <MeterBar label={t('meter.duit')} value={m.duit} max={Math.max(BALANCE.start.duit, m.duit)} display={formatRM(m.duit)} tone="kancil" />
-          <div className="flex items-baseline justify-between">
-            <span className="text-base font-medium text-ink">{t('meter.simpanan')}</span>
-            <span className="font-mono text-base font-semibold text-ink">{formatRM(m.simpanan)}</span>
-          </div>
+          <MeterBar
+            label={t('meter.duit')} value={m.duit} max={Math.max(BALANCE.start.duit, m.duit)} display={formatRM(m.duit)} tone="kancil"
+            heading={<ValueRow icon={Wallet} label={t('meter.duit')} value={formatRM(m.duit)} />}
+          />
+          <ValueRow icon={PiggyBank} label={t('meter.simpanan')} value={formatRM(m.simpanan)} />
+          <ValueRow icon={TrendingUp} label={t('meter.labur')} value={formatRM(labur)} />
           <MeterBar
             label={t('meter.tekanan')} value={m.tekanan} max={100}
             display={`${m.tekanan} (${t(`status.tekanan.${tk}`)})`}
+            heading={<ValueRow icon={Gauge} label={t('meter.tekanan')} value={`${m.tekanan} (${t(`status.tekanan.${tk}`)})`} />}
             tone={tk === 'low' ? 'safe' : tk === 'mid' ? 'warning' : 'danger'}
           />
-          <StatusRow label={t('meter.akaun')} value={t(`akaun.${m.akaun}`)} icon={ak.icon} cls={ak.cls} />
-          <StatusRow label={t('meter.rekod')} value={t(`rekod.${m.rekod}`)} icon={rk.icon} cls={rk.cls} />
+          <StatusRow lead={Landmark} label={t('meter.akaun')} value={t(`akaun.${m.akaun}`)} icon={ak.icon} cls={ak.cls} />
+          <StatusRow lead={ScrollText} label={t('meter.rekod')} value={t(`rekod.${m.rekod}`)} icon={rk.icon} cls={rk.cls} />
         </div>
       </Panel>
     </aside>

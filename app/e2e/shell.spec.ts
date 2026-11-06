@@ -108,7 +108,10 @@ test('reset progress asks for confirmation and returns to the splash', async ({ 
   await expect(page).toHaveURL(/#\/onboarding$/);
 });
 
-test('demo scene route renders a placeholder', async ({ page }) => {
+test('an unknown demo scene goes home (the splash when there is no game yet)', async ({ page }) => {
   await page.goto('/#/demo/scam1');
-  await expect(page.getByText('Akan datang')).toBeVisible();
+  await expect(page).toHaveURL(/#\/$/);
+  await seedGame(page);
+  await page.goto('/#/demo/scam1');
+  await expect(page).toHaveURL(/#\/home$/);
 });

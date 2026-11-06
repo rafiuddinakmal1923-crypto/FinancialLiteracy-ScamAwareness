@@ -8,9 +8,10 @@ import { ChatThread } from '../modes/semester/ChatThread';
 import { Consequence } from '../modes/semester/Consequence';
 import { Debrief } from '../modes/semester/Debrief';
 import { Dompet } from '../modes/semester/Dompet';
+import { FakePageScreen } from '../modes/semester/FakePageScreen';
 import { FlagHunt } from '../modes/semester/FlagHunt';
 import { WeekIntro } from '../modes/semester/WeekIntro';
-import { ComingSoon } from './ComingSoon';
+import { DemoScene } from './DemoScene';
 import { HomeScreen } from './HomeScreen';
 import { Onboarding } from './Onboarding';
 import { setRouteTable } from './router';
@@ -43,7 +44,8 @@ export const ROUTE_TABLE: RouteDef[] = [
   { pattern: '/bankku', name: 'bankku', component: BankKuScreen, statusBar: 'dark', needsGame: true, tip: 'side.tip.bankku', mood: 'neutral' },
   { pattern: '/dompet', name: 'dompet', component: Dompet, statusBar: 'dark', needsGame: true, tip: 'side.tip.dompet', mood: 'smile' },
   { pattern: '/semester/minggu', name: 'minggu', component: WeekIntro, statusBar: 'dark', needsGame: true, tip: 'side.tip.minggu', mood: 'neutral' },
-  { pattern: '/demo/:scene', name: 'demo', component: ComingSoon, statusBar: 'light', tip: 'side.tip.demo', mood: 'neutral' },
+  { pattern: '/laman/:url', name: 'laman', component: FakePageScreen, statusBar: 'light', needsGame: true, tip: 'side.tip.laman', mood: 'worried' },
+  { pattern: '/demo/:scene', name: 'demo', component: DemoScene, statusBar: 'light', tip: 'side.tip.demo', mood: 'neutral' },
 ];
 
 export const FALLBACK_PATH = '/home';

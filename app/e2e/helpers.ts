@@ -74,3 +74,27 @@ export const SAMPLE_TX = [
   { id: 5, week: 4, label: 'bankku.tx.income', amount: 400 },
   { id: 6, week: 4, label: 'Tambah nilai telefon', amount: -10.5 },
 ];
+
+/**
+ * In the sewa_akaun chat (after `#/demo/mule`): accepts Abang Zul's offer and lends the account, waits for the
+ * transfer card, optionally screenshots the chat, then opens the BankKu transfer overlay.
+ */
+export async function acceptMuleOffer(page: Page, shot?: string): Promise<void> {
+  await expect(page).toHaveURL(/#\/sembang\/sewa_akaun$/);
+  const replies = page.getByRole('group', { name: 'Pilih balasan' });
+  const pick = async (name: string) => {
+    const chip = replies.getByRole('button', { name });
+    await expect(chip).toBeVisible({ timeout: 20_000 });
+    await chip.click();
+  };
+  await pick('Serius RM1,500? Ok, macam mana?');
+  await pick('Ok bang, ambil la nombor akaun saya.');
+  const open = page.getByRole('button', { name: 'Buka BankKu' });
+  await expect(open).toBeVisible({ timeout: 20_000 });
+  if (shot) {
+    await page.waitForTimeout(400);
+    await page.screenshot({ path: shot });
+  }
+  await open.click();
+  await expect(page.locator('[data-screen="bankku-transfer"]')).toBeVisible();
+}

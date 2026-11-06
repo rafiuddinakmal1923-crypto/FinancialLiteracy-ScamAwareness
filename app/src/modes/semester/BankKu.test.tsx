@@ -292,3 +292,17 @@ describe('ChatThread overlays (ui:transfer, ui:link, ui:calc)', () => {
     expect(screen.getByText('Ok.')).toBeTruthy();
   });
 });
+
+describe('urgency cue on quick-money chats (Task 16)', () => {
+  it('shows "Terdesak?" in the chat when Tekanan is at the desperation cue', async () => {
+    useGame.getState().set({ meters: { ...useGame.getState().meters, tekanan: BALANCE.desperation.cueAt } });
+    await act(async () => { render(<ChatThread params={{ id: 'pindah' }} />); });
+    expect(screen.getByText('Terdesak?')).toBeTruthy();
+  });
+
+  it('stays hidden below the cue', async () => {
+    useGame.getState().set({ meters: { ...useGame.getState().meters, tekanan: BALANCE.desperation.cueAt - 1 } });
+    await act(async () => { render(<ChatThread params={{ id: 'pindah' }} />); });
+    expect(screen.queryByText('Terdesak?')).toBeNull();
+  });
+});

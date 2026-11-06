@@ -17,6 +17,14 @@ describe('BALANCE (SDS 5.2-5.8, D20-D24)', () => {
     expect(score).toBeCloseTo(65.5, 10);
   });
 
+  it('MoneyChain hops are 600-1200 ms, the pulse is slow (< 3 Hz) and reduced-motion fades are < 200 ms', () => {
+    const m = BALANCE.moneyChain;
+    expect(m.hopMs).toBeGreaterThanOrEqual(600);
+    expect(m.hopMs).toBeLessThanOrEqual(1200);
+    expect(1000 / m.pulseMs).toBeLessThan(3);
+    expect(m.reducedMs).toBeLessThan(200);
+  });
+
   it('keeps the scam share band at 35-45% (D20)', () => {
     expect(BALANCE.adaptive.scamShareMin).toBe(0.35);
     expect(BALANCE.adaptive.scamShareMax).toBe(0.45);

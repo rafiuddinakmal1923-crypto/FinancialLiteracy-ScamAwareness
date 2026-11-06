@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, ArrowLeftRight, Calculator, CircleCheck, Link2 } from 'lucide-react';
+import { ArrowLeft, ArrowLeftRight, Calculator, CircleCheck, Gauge, Link2 } from 'lucide-react';
 import { scenarios } from 'virtual:celik-content';
 import { BALANCE } from '../../engine/balance';
-import type { ChatMessage, UiDirective } from '../../engine/types';
+import type { ChatMessage, Family, UiDirective } from '../../engine/types';
 import { useT } from '../../shell/i18n';
 import { navigate, replaceRoute } from '../../shell/router';
 import { useGame } from '../../state/game';
@@ -49,6 +49,25 @@ function UiCard({ ui, onOpen }: { ui: UiDirective; onOpen(): void }) {
       <button type="button" onClick={onOpen} className="min-h-12 shrink-0 rounded-2xl bg-ink px-4 text-base font-semibold text-paper active:scale-[.98]">
         {t(open)}
       </button>
+    </div>
+  );
+}
+
+/** Families that dangle quick money: under high Tekanan they get the "Terdesak?" cue (D17 desperation). */
+const QUICK_MONEY: readonly Family[] = ['job', 'mule', 'loan', 'investment'];
+
+/** Urgency cue under the header when Tekanan is at BALANCE.desperation.cueAt or more, on a quick-money chat. */
+function DesperateCue({ family }: { family: Family }) {
+  const t = useT();
+  const tekanan = useGame((s) => s.meters.tekanan);
+  if (!QUICK_MONEY.includes(family) || tekanan < BALANCE.desperation.cueAt) return null;
+  return (
+    <div role="note" className="relative z-[5] flex items-center gap-2.5 border-b border-kancil/50 bg-kancil-soft py-2 pl-3 pr-3">
+      <span className="flex shrink-0 items-center gap-1.5 rounded-full bg-kancil py-1 pl-2 pr-3 text-base font-bold text-ink">
+        <Gauge aria-hidden size={18} strokeWidth={2} />
+        {t('sembang.desperate.badge')}
+      </span>
+      <span className="min-w-0 text-base leading-snug text-ink">{t('sembang.desperate.body', { n: tekanan })}</span>
     </div>
   );
 }
@@ -128,6 +147,7 @@ function Thread({ id }: { id: string }) {
   return (
     <div data-screen="chat" className="relative flex min-h-0 flex-1 flex-col">
       <ThreadHeader name={name} />
+      <DesperateCue family={meta.family} />
 
       {overlay && pendingUi && pendingUi.kind !== 'calc' && (
         <div
@@ -137,7 +157,7 @@ function Thread({ id }: { id: string }) {
           className="absolute inset-0 z-30 flex flex-col bg-paper"
         >
           {pendingUi.kind === 'transfer'
-            ? <BankKu mode="transfer" transfer={{ amount: pendingUi.amount, to: name, onDone: closeUi }} />
+            ? <BankKu mode="transfer" transfer={{ amount: pendingUi.amount, to: pendingUi.to ?? name, onDone: closeUi }} />
             : <FakePage url={pendingUi.url} onDone={closeUi} />}
         </div>
       )}
