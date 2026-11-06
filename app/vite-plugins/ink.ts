@@ -7,6 +7,7 @@ import { join, relative, resolve, sep } from 'node:path';
 import type { Plugin } from 'vite';
 import { compileScenario } from '../src/engine/compile';
 import { CONTENT_FILES, ContentError, parseContent } from '../src/engine/schemas';
+import type { CalcPreset } from '../src/engine/schemas';
 import type { CompiledScenario } from '../src/engine/types';
 
 export const VIRTUAL_ID = 'virtual:celik-content';
@@ -18,8 +19,10 @@ export const REAL_NAMES_FILE = 'concepts.json';
 const SCANNED_EXT = /\.(ink|json|txt|md)$/i;
 
 /** Named JSON exports of the virtual module, each backed by `<name>.json` in content/. */
-export const JSON_EXPORTS = ['tactics', 'cards', 'concepts', 'sindiket', 'drills', 'semester', 'pages'] as const;
+export const JSON_EXPORTS = ['tactics', 'cards', 'concepts', 'sindiket', 'drills', 'semester', 'pages', 'calcPresets'] as const;
 export type JsonExport = (typeof JSON_EXPORTS)[number];
+/** File behind an export: `<name>.json`, except calcPresets (calc-presets.json). */
+export const jsonFileOf = (name: JsonExport): string => (name === 'calcPresets' ? 'calc-presets.json' : `${name}.json`);
 
 export type CelikContent = { scenarios: Record<string, CompiledScenario> } & Record<JsonExport, unknown>;
 
@@ -226,7 +229,7 @@ export function loadCelikContent(contentDir: string): LoadResult {
 
   const data = { scenarios } as CelikContent;
   for (const name of JSON_EXPORTS) {
-    const fileName = `${name}.json`;
+    const fileName = jsonFileOf(name);
     const schema = CONTENT_FILES[fileName];
     const path = join(dir, fileName);
     data[name] = null;
@@ -238,7 +241,29 @@ export function loadCelikContent(contentDir: string): LoadResult {
     }
   }
 
+  problems.push(...calcPresetProblems(files.filter((p) => p.startsWith(scenarioDir + sep) && p.endsWith('.ink')).map((f) => ({ file: rel(f), text: readText(f) })), data.calcPresets as CalcPreset[] | null));
+
   return { data, files, problems };
+}
+
+const CALC_TAG_RE = /ui:calc:([a-z]+):([a-z0-9_-]+)/g;
+
+/**
+ * Every `# ui:calc:<tab>:<preset>` in the scenarios must name a preset in calc-presets.json that belongs to the
+ * same tab. (The tag parser checks the shape; only the content loader sees both sides.)
+ */
+export function calcPresetProblems(sources: { file: string; text: string }[], presets: CalcPreset[] | null): string[] {
+  const out: string[] = [];
+  const byId = new Map((presets ?? []).map((p) => [p.id, p]));
+  for (const { file, text } of sources) {
+    for (const m of text.matchAll(CALC_TAG_RE)) {
+      const [, tab, id] = m;
+      const p = byId.get(id);
+      if (!p) out.push(`${file}: ui:calc preset "${id}" is not in calc-presets.json`);
+      else if (p.tab !== tab) out.push(`${file}: ui:calc preset "${id}" belongs to the ${p.tab} tab, not ${tab}`);
+    }
+  }
+  return out;
 }
 
 /** Source code for the virtual module. */

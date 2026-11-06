@@ -41,7 +41,7 @@ export const DEMO_PRESETS: Record<DemoScene, DemoPreset> = {
   },
   kelas: { route: '/kelas', game: { onboarded: true, week: 1 } },
   kalkulator: {
-    route: '/kalkulator/masa',
+    route: '/kalkulator/pulangan',
     game: { onboarded: true, week: 8, budget: BUDGET, meters: { duit: 1350, simpanan: 300, tekanan: 30 } },
   },
 };

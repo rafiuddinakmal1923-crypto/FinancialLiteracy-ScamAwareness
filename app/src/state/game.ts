@@ -60,6 +60,15 @@ function dropTx(log: TxEntry[], scenario: string): TxEntry[] {
   return log.some((e) => e.scenario === scenario) ? log.filter((e) => e.scenario !== scenario) : log;
 }
 
+/** One step of a chat so far, for replaying it after the Kalkulator: a reply chosen, or a ui pause resolved. */
+export type TrailStep = { c: number } | { u: boolean };
+
+/**
+ * Where a chat paused to open the Kalkulator ("Kira dulu"): the player's path so far, so the chat can be rebuilt
+ * at the same point (also after a reload), and whether they pressed Kembali ke perbualan. Persisted.
+ */
+export interface CalcResume { id: string; family: Family; trail: TrailStep[]; returned: boolean }
+
 export interface GameData {
   character: 'aina' | 'amir'; name: string;
   /** True once onboarding is finished (a game exists). Week stays 0 until the first week intro opens week 1. */
@@ -79,6 +88,12 @@ export interface GameData {
   weekIntroOpen: boolean;
   /** BankKu transactions, oldest first (last TX_LOG_MAX). */
   txLog: TxEntry[];
+  /** Scenario ids whose Kalkulator +10 XP was already awarded (once per scenario). */
+  calcUsed: string[];
+  /** The chat that is waiting while the Kalkulator is open, or null. */
+  calcResume: CalcResume | null;
+  /** "<scenario>:<tactic>" flags already counted from an unrealistic Semak Pulangan result. */
+  calcFlagged: string[];
 }
 
 export interface GameActions {
@@ -104,6 +119,16 @@ export interface GameActions {
   beginWeek(def: WeekDef): IntroSummary | null;
   closeWeekIntro(): void;
   moveLabur(product: LaburProduct, delta: number): MoveResult;
+  /** The chat opens the Kalkulator: remember where it was. */
+  calcOpen(r: { id: string; family: Family; trail: TrailStep[] }): void;
+  /** Kembali ke perbualan: the chat resumes past its Kalkulator pause. */
+  calcReturn(): void;
+  /** The chat consumed the resume point. */
+  calcDone(): void;
+  /** +10 XP the first time the Kalkulator is used in scenario `id`. Returns true when it was just awarded. */
+  calcUse(id: string): boolean;
+  /** An unrealistic Semak Pulangan result inside the open scenario counts as a found flag, once per scenario. */
+  calcFlag(tactic: Tactic): void;
   hydrate(d: GameData | null): void;
   reset(): void;
   set(p: Partial<GameData>): void;
@@ -114,13 +139,14 @@ export function initialGame(): GameData {
     character: 'aina', name: 'Aina', onboarded: false, week: 0, meters: initialMeters(), budget: null,
     results: [], cards: [], badges: [], swipe: { best: 0, streak: 0, lastPlayed: null },
     actions: [], incomeTotal: 0, active: null, lastEnded: null, transcripts: {}, weekIntroOpen: false,
-    txLog: [],
+    txLog: [], calcUsed: [], calcResume: null, calcFlagged: [],
   };
 }
 
 const DATA_KEYS: (keyof GameData)[] = [
   'character', 'name', 'onboarded', 'week', 'meters', 'budget', 'results', 'cards', 'badges',
   'swipe', 'actions', 'incomeTotal', 'active', 'lastEnded', 'transcripts', 'weekIntroOpen', 'txLog',
+  'calcUsed', 'calcResume', 'calcFlagged',
 ];
 
 /** Picks only the persisted data fields (no actions) from the store state. */
@@ -130,6 +156,15 @@ export function gameData(s: GameData): GameData {
   return out as unknown as GameData;
 }
 
+/**
+ * Applies a meter change to the live meters and to the open chat's snapshot, so rewinding the chat (it restarts
+ * from the snapshot when it reopens after the Kalkulator) does not lose what was earned there.
+ */
+function bumpMeters(s: GameData, fn: (m: Meters) => Meters): Pick<GameData, 'meters' | 'active'> {
+  return { meters: fn(s.meters), active: s.active ? { ...s.active, snapshot: fn(s.active.snapshot) } : null };
+}
+const bumpXp = (s: GameData, delta: number) => bumpMeters(s, (m) => applyXp(m, delta));
+
 export const useGame = create<GameData & GameActions>()((set, get) => ({
   ...initialGame(),
 
@@ -138,7 +173,11 @@ export const useGame = create<GameData & GameActions>()((set, get) => ({
     // Starting any chat now would roll the meters back to the snapshot and lose the ended chat's effects.
     if (lastEnded) return;
     const base = active ? active.snapshot : meters;
-    set({ meters: base, active: { id, snapshot: base, hintUsed: false }, txLog: active ? dropTx(txLog, active.id) : txLog });
+    const { calcResume } = get();
+    set({
+      meters: base, active: { id, snapshot: base, hintUsed: false }, txLog: active ? dropTx(txLog, active.id) : txLog,
+      calcResume: calcResume && calcResume.id !== id ? null : calcResume,
+    });
   },
 
   apply: (effects, label) => {
@@ -169,7 +208,7 @@ export const useGame = create<GameData & GameActions>()((set, get) => ({
     };
     const transcript = lastEnded?.id === meta.id ? lastEnded.transcript : null;
     set({
-      meters: applyOutcome(meters, meta, outcome), results: [...results, result], active: null, lastEnded: null,
+      meters: applyOutcome(meters, meta, outcome), results: [...results, result], active: null, lastEnded: null, calcResume: null,
       transcripts: transcript ? { ...transcripts, [meta.id]: transcript } : transcripts,
     });
   },
@@ -177,7 +216,7 @@ export const useGame = create<GameData & GameActions>()((set, get) => ({
   retryScenario: () => {
     const { active, txLog } = get();
     if (!active) return;
-    set({ meters: active.snapshot, active: { ...active, hintUsed: false }, lastEnded: null, txLog: dropTx(txLog, active.id) });
+    set({ meters: active.snapshot, active: { ...active, hintUsed: false }, lastEnded: null, calcResume: null, txLog: dropTx(txLog, active.id) });
   },
 
   endScenario: ({ id, outcome, missed, transcript }) => {
@@ -185,7 +224,7 @@ export const useGame = create<GameData & GameActions>()((set, get) => ({
     if (active?.id !== id) return;
     const e: EndedScenario = { id, outcome, transcript, found: [], huntDone: false };
     if (missed !== undefined) e.missed = missed;
-    set({ lastEnded: e });
+    set({ lastEnded: e, calcResume: null });
   },
 
   huntFlag: (tactic, meta) => {
@@ -205,6 +244,34 @@ export const useGame = create<GameData & GameActions>()((set, get) => ({
     const { meters, cards } = get();
     const id = cardId(tactic, family);
     set({ meters: applyFlagFound(meters, tactic), cards: cards.includes(id) ? cards : [...cards, id] });
+  },
+
+  calcOpen: ({ id, family, trail }) => set({ calcResume: { id, family, trail: [...trail], returned: false } }),
+
+  calcReturn: () => {
+    const { calcResume } = get();
+    if (calcResume) set({ calcResume: { ...calcResume, returned: true } });
+  },
+
+  calcDone: () => set({ calcResume: null }),
+
+  calcUse: (id) => {
+    const { calcUsed } = get();
+    if (calcUsed.includes(id)) return false;
+    set({ ...bumpXp(get(), BALANCE.xp.calc), calcUsed: [...calcUsed, id] });
+    return true;
+  },
+
+  calcFlag: (tactic) => {
+    const { calcResume, calcFlagged, cards } = get();
+    if (!calcResume) return;
+    const key = `${calcResume.id}:${tactic}`;
+    if (calcFlagged.includes(key)) return;
+    const card = cardId(tactic, calcResume.family);
+    set({
+      ...bumpMeters(get(), (m) => applyFlagFound(m, tactic)),
+      calcFlagged: [...calcFlagged, key], cards: cards.includes(card) ? cards : [...cards, card],
+    });
   },
 
   setBudget: (split) => {

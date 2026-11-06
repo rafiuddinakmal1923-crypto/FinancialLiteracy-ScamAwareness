@@ -40,14 +40,33 @@ export function resolveRoute<T extends { pattern: string }>(
   return null;
 }
 
+/** '#/x?a=1&b=a%20b' -> { a: '1', b: 'a b' } (Kalkulator presets); {} when there is no query. */
+export function parseQuery(hash: string): Record<string, string> {
+  const i = hash.indexOf('?');
+  const out: Record<string, string> = {};
+  if (i < 0) return out;
+  for (const part of hash.slice(i + 1).split('&')) {
+    if (!part) continue;
+    const [k, v = ''] = part.split('=');
+    try { out[decodeURIComponent(k)] = decodeURIComponent(v.replace(/\+/g, ' ')); } catch { out[k] = v; }
+  }
+  return out;
+}
+
+/** The hash a path maps to, keeping its query string ('/kalkulator/kos?preset=x' -> '#/kalkulator/kos?preset=x'). */
+function toHash(path: string): string {
+  const i = path.indexOf('?');
+  return '#' + parseHash(path) + (i < 0 ? '' : path.slice(i));
+}
+
 export function navigate(path: string): void {
-  const target = '#' + parseHash(path);
+  const target = toHash(path);
   if (window.location.hash !== target) window.location.hash = target;
 }
 
 /** Swaps the current history entry (used for redirects so Back does not bounce). */
 export function replaceRoute(path: string): void {
-  const target = '#' + parseHash(path);
+  const target = toHash(path);
   if (window.location.hash === target) return;
   history.replaceState(history.state, '', target);
   window.dispatchEvent(new HashChangeEvent('hashchange'));
@@ -72,9 +91,9 @@ function subscribe(cb: () => void): () => void {
 
 const currentHash = () => window.location.hash;
 
-/** Current path and the params of the registered route that matches it. */
-export function useRoute(): { path: string; params: Record<string, string> } {
+/** Current path, the params of the registered route that matches it, and the query string's values. */
+export function useRoute(): { path: string; params: Record<string, string>; query: Record<string, string> } {
   const hash = useSyncExternalStore(subscribe, currentHash, () => '');
   const path = parseHash(hash);
-  return { path, params: resolveRoute(table, path)?.params ?? {} };
+  return { path, params: resolveRoute(table, path)?.params ?? {}, query: parseQuery(hash) };
 }

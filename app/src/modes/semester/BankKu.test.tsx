@@ -283,13 +283,13 @@ describe('ChatThread overlays (ui:transfer, ui:link, ui:calc)', () => {
     expect(screen.getByText('Terima kasih!')).toBeTruthy();
   });
 
-  it('the Kalkulator hook is a neutral card, not a bank transfer', async () => {
+  it('the Kalkulator hook is a Kira dulu card that opens the Kalkulator, not a bank transfer', async () => {
     await open('kira');
-    expect(screen.getByText('Kalkulator')).toBeTruthy();
+    expect(screen.getByText('Kira dulu')).toBeTruthy();
     expect(screen.queryByRole('button', { name: 'Buka BankKu' })).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: 'Buka Kalkulator' }));
-    await tick(BALANCE.typing.maxMs);
-    expect(screen.getByText('Ok.')).toBeTruthy();
+    expect(window.location.hash).toBe('#/kalkulator/masa?preset=mula');
+    expect(useGame.getState().calcResume).toMatchObject({ id: 'kira', returned: false });
   });
 });
 

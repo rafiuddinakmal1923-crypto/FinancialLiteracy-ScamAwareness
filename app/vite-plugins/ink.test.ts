@@ -79,7 +79,7 @@ describe('real names and rates (D27)', () => {
 describe('generateModule', () => {
   it('emits every named export', () => {
     const code = generateModule(loadCelikContent(repoContent).data);
-    for (const name of ['scenarios', 'tactics', 'cards', 'concepts', 'sindiket', 'drills', 'semester', 'pages']) {
+    for (const name of ['scenarios', 'tactics', 'cards', 'concepts', 'sindiket', 'drills', 'semester', 'pages', 'calcPresets']) {
       expect(code).toContain(`export const ${name} =`);
     }
   });
@@ -114,5 +114,42 @@ describe('ruling R10: real names inside "# apa_patut:" lines of scenarios', () =
     expect(names.some((p) => /r10\.ink:6: .*KWSP/.test(p))).toBe(true); // hint line
     expect(names.some((p) => /r10\.ink:7: .*Maybank/.test(p))).toBe(true); // apa_patut: other brand
     expect(names.some((p) => /r10\.ink:10: .*KWSP/.test(p))).toBe(true); // dialogue
+  });
+});
+
+describe('ui:calc preset references (Task 18)', () => {
+  const calcScenario = (tag: string) => [
+    '# id:kira', '# type:scam', '# family:investment', '# tactics:greed', '# contact:Tester', '',
+    `Tester: Untung besar. # flag:greed:Untung besar # ${tag}`,
+    '* [Tak nak] Tester: Ok. # outcome:safe', '-> END',
+  ].join(NL) + NL;
+  const withPresets = (ink: string) => {
+    const dir = tempContent();
+    writeFileSync(join(dir, 'scenarios', 'kira.ink'), ink);
+    writeFileSync(join(dir, 'calc-presets.json'), JSON.stringify([
+      { id: 'naga30w', tab: 'pulangan', label: { ms: 'Janji 30% seminggu' }, inputs: { promised: 30, period: 'minggu' } },
+    ]));
+    return loadCelikContent(dir);
+  };
+
+  it('accepts a scenario whose preset exists on the same tab, and exports calcPresets', () => {
+    const r = withPresets(calcScenario('ui:calc:pulangan:naga30w'));
+    expect(r.problems).toEqual([]);
+    expect(Array.isArray(r.data.calcPresets)).toBe(true);
+    expect(generateModule(r.data)).toContain('export const calcPresets =');
+  });
+
+  it('reports a missing preset id', () => {
+    const r = withPresets(calcScenario('ui:calc:pulangan:tiada_preset'));
+    expect(r.problems.some((p) => p.includes('kira.ink') && p.includes('tiada_preset'))).toBe(true);
+  });
+
+  it('reports a preset used on the wrong tab', () => {
+    const r = withPresets(calcScenario('ui:calc:masa:naga30w'));
+    expect(r.problems.some((p) => p.includes('naga30w') && p.includes('pulangan'))).toBe(true);
+  });
+
+  it('the repo content has no dangling ui:calc presets', () => {
+    expect(loadCelikContent(repoContent).problems).toEqual([]);
   });
 });

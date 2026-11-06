@@ -5,7 +5,7 @@ import { scenarios } from 'virtual:celik-content';
 import { BALANCE } from '../../engine/balance';
 import { StoryRunner } from '../../engine/story';
 import type { ChatMessage, Outcome, ScenarioMeta, UiDirective } from '../../engine/types';
-import { useGame } from '../../state/game';
+import { useGame, type CalcResume, type TrailStep } from '../../state/game';
 import { useSettings } from '../../state/settings';
 
 export type { ChatMessage };
@@ -27,6 +27,8 @@ export interface ScenarioView {
   hint(): string | null;
   pendingUi: UiDirective | null;
   resolveUi(ok: boolean): void;
+  /** Opens the Kalkulator: remembers the path so far so the chat is rebuilt at this point on return (also after a reload). */
+  suspend(): void;
 }
 
 /** Reduced motion shortens typing pauses to this share of the normal delay. */
@@ -64,6 +66,10 @@ export function useScenario(id: string, opts?: ScenarioOptions): ScenarioView {
   const nextIdRef = useRef(1);
   /** Mirror of `messages` for the transcript handed to the store on the end. */
   const logRef = useRef<ChatMessage[]>([]);
+  /** Replies and ui results so far, to rebuild the chat after the Kalkulator. */
+  const trailRef = useRef<TrailStep[]>([]);
+  /** While set, the pump replays this path instantly (no typing pauses) instead of waiting for the player. */
+  const replayRef = useRef<{ trail: TrailStep[]; returned: boolean } | null>(null);
 
   const push = useCallback((m: Omit<ChatMessage, 'id'>) => {
     const msg = { ...m, id: nextIdRef.current++ };
@@ -79,6 +85,21 @@ export function useScenario(id: string, opts?: ScenarioOptions): ScenarioView {
     const { apply } = useGame.getState();
     while (live()) {
       const step = runner.next();
+      const replay = replayRef.current;
+      if (step.kind === 'choices' && replay) {
+        const next = replay.trail[0];
+        if (next && 'c' in next) {
+          replay.trail.shift();
+          const choice = step.choices.find((c) => c.index === next.c);
+          if (choice) {
+            runner.choose(choice.index);
+            trailRef.current = [...trailRef.current, next];
+            push({ from: 'me', speaker: null, text: choice.text, flags: [] });
+            continue;
+          }
+        }
+        replayRef.current = null;
+      }
       if (step.kind === 'choices') {
         pendingChoicesRef.current = step.choices;
         choosingRef.current = false;
@@ -93,7 +114,9 @@ export function useScenario(id: string, opts?: ScenarioOptions): ScenarioView {
         return;
       }
       if (step.text !== '') {
-        if (step.speaker !== null) {
+        if (step.speaker !== null && replayRef.current) {
+          push({ from: 'them', speaker: step.speaker, text: step.text, flags: step.flags });
+        } else if (step.speaker !== null) {
           const o = optsRef.current;
           const ms = typingDelay((o?.random ?? Math.random)(), useSettings.getState().reducedMotion);
           setTyping(true);
@@ -107,6 +130,24 @@ export function useScenario(id: string, opts?: ScenarioOptions): ScenarioView {
       }
       // BankKu logs each Duit change under the scenario contact (S08).
       if (step.effects.length) apply(step.effects, compiled.meta.contact || compiled.meta.number);
+      if (step.ui && replayRef.current) {
+        const rp = replayRef.current;
+        const next = rp.trail[0];
+        if (next && 'u' in next) {
+          rp.trail.shift();
+          trailRef.current = [...trailRef.current, next];
+          runnerRef.current?.setUiResult(next.u);
+          continue;
+        }
+        // The end of the recorded path: the pause the chat left from.
+        replayRef.current = null;
+        if (rp.returned) {
+          trailRef.current = [...trailRef.current, { u: true }];
+          runnerRef.current?.setUiResult(true);
+          useGame.getState().calcDone();
+          continue;
+        }
+      }
       if (step.ui) {
         const ui = step.ui;
         setPendingUi(ui);
@@ -126,6 +167,9 @@ export function useScenario(id: string, opts?: ScenarioOptions): ScenarioView {
     hintUsedRef.current = false;
     nextIdRef.current = 1;
     logRef.current = [];
+    trailRef.current = [];
+    const saved: CalcResume | null = useGame.getState().calcResume;
+    replayRef.current = saved && saved.id === id ? { trail: [...saved.trail], returned: saved.returned } : null;
     setMessages([]);
     setChoices(null);
     setTyping(false);
@@ -150,6 +194,7 @@ export function useScenario(id: string, opts?: ScenarioOptions): ScenarioView {
     choosingRef.current = true;
     pendingChoicesRef.current = null;
     runner.choose(i);
+    trailRef.current = [...trailRef.current, { c: i }];
     setChoices(null);
     push({ from: 'me', speaker: null, text: choice.text, flags: [] });
     void pump(genRef.current);
@@ -164,6 +209,7 @@ export function useScenario(id: string, opts?: ScenarioOptions): ScenarioView {
     uiResolverRef.current = null;
     if (!resolve) return;
     runnerRef.current?.setUiResult(ok);
+    trailRef.current = [...trailRef.current, { u: ok }];
     setPendingUi(null);
     resolve();
   }, []);
@@ -175,5 +221,9 @@ export function useScenario(id: string, opts?: ScenarioOptions): ScenarioView {
     return useGame.getState().useHint() ? text : null;
   }, [compiled]);
 
-  return { meta: compiled.meta, messages, choices, typing, choose, ended, hint, pendingUi, resolveUi };
+  const suspend = useCallback(() => {
+    useGame.getState().calcOpen({ id, family: compiled.meta.family, trail: trailRef.current });
+  }, [id, compiled]);
+
+  return { meta: compiled.meta, messages, choices, typing, choose, ended, hint, pendingUi, resolveUi, suspend };
 }

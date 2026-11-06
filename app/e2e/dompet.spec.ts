@@ -70,10 +70,11 @@ test('Dompet week 0: three sliders, donut and Kancil 50/30/20; confirming sets S
   for (const b of await labur.getByRole('button', { name: /^(Masuk|Keluar)$/ }).all()) await expect(b).toBeDisabled();
   await expect(labur.getByRole('button', { name: /^(Masuk|Keluar)$/ })).toHaveCount(4);
 
-  // Lihat 10 tahun lagi opens /kalkulator/masa; until Task 18 registers it, the "Akan datang" toast shows.
+  // Lihat 10 tahun lagi opens Mesin Masa with the default RM50 a month.
   await page.getByRole('button', { name: 'Lihat 10 tahun lagi' }).click();
-  await expect(page.getByRole('status').filter({ hasText: 'Akan datang' })).toBeVisible();
-  await expect(page).toHaveURL(/#\/dompet$/);
+  await expect(page).toHaveURL(/#\/kalkulator\/masa$/);
+  await expect(page.getByText('RM8,775.28')).toBeVisible();
+  await page.goBack();
 
   // Saved: still the weekly view after a reload.
   await page.reload();

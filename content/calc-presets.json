@@ -1,0 +1,20 @@
+[
+  {
+    "id": "naga30w",
+    "tab": "pulangan",
+    "label": { "ms": "Janji CryptoNaga: 30% seminggu", "en": "CryptoNaga's promise: 30% a week" },
+    "inputs": { "promised": 30, "period": "minggu" }
+  },
+  {
+    "id": "bayar1000",
+    "tab": "kos",
+    "label": { "ms": "BayarNanti: RM1,000, kadar rata 18%, 12 bulan", "en": "BayarNanti: RM1,000, flat rate 18%, 12 months" },
+    "inputs": { "amount": 1000, "flat": 18, "months": 12 }
+  },
+  {
+    "id": "labur50",
+    "tab": "masa",
+    "label": { "ms": "RM50 sebulan dari umur 19 hingga 30", "en": "RM50 a month from age 19 to 30" },
+    "inputs": { "monthly": 50, "rate": 5, "startAge": 19, "endAge": 30 }
+  }
+]

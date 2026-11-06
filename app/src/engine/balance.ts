@@ -40,6 +40,29 @@ export const BALANCE = {
     ekuitiPath: [0.8, 0.5, 0.7, 0.4, 0.6, 0.5, 0.6, -6, 3, 2, 2, 0.5],
     /** Source and year for amanahYearly, ekuitiPath and unrealisticAbove (illustrative, not market data). */
     illustrative: { source: 'TODO-VERIFY', year: 2026 },
+    /**
+     * Kalkulator defaults and limits (Task 18). Every rate is an illustrative "contoh", TODO-VERIFY (same source and
+     * year as `illustrative`). Percents here are as typed in the app (5 = 5%).
+     */
+    calc: {
+      defaults: {
+        monthly: 50, ratePct: 5, startAge: 19, endAge: 30,
+        promisedPct: 5, period: 'tahun' as 'hari' | 'minggu' | 'bulan' | 'tahun',
+        amount: 1000, flatPct: 18, fee: 100, months: 12,
+      },
+      /** "Hingga umur" chips. */
+      endAgeChips: [30, 55],
+      /** Example-rate chips for Mesin Masa, one per example band (a "contoh" inside that band's range). */
+      rateChips: [
+        { band: 'simpanan', pct: 1 }, { band: 'simpananTetap', pct: 3 }, { band: 'hargaTetap', pct: 5 }, { band: 'unitAmanah', pct: 8 },
+      ] as { band: 'simpanan' | 'simpananTetap' | 'hargaTetap' | 'unitAmanah'; pct: number }[],
+      /** Sane limits so no input can overflow into NaN or Infinity. */
+      maxAge: 100, maxMonths: 120, maxDigits: 9,
+      /** Yearly rates from this percent up are shown as "lebih daripada ..." instead of a giant number. */
+      displayCapPct: 10_000_000,
+      /** Semak Pulangan chart scale, in percent a year (the shaded zone starts at unrealisticAbove). */
+      scale: { minPct: -10, maxPct: 30 },
+    },
     /** Illustrative yearly return ranges for Semak Pulangan. */
     bands: {
       simpanan: { min: 0.0025, max: 0.01, source: 'TODO-VERIFY', year: 2026 },

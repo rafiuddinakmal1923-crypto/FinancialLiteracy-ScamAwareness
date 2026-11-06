@@ -115,6 +115,32 @@ export const PagesFileSchema = z.record(z.string(), FakePageSchema).superRefine(
   }
 });
 
+/**
+ * Kalkulator presets (D21, Task 18): numbers a scenario's `# ui:calc:<tab>:<id>` pre-fills. Rates are percents as
+ * typed in the app (18 = 18%); `flat` and `fee` are mutually exclusive.
+ */
+const PRESET_ID_RE = /^[a-z0-9_-]+$/;
+const nonNeg = z.number().nonnegative().max(1_000_000_000);
+const MasaInputsSchema = z.strictObject({ monthly: nonNeg, rate: nonNeg, startAge: z.number().int().min(0).max(100), endAge: z.number().int().min(0).max(100) });
+const PulanganInputsSchema = z.strictObject({ promised: nonNeg, period: z.enum(['hari', 'minggu', 'bulan', 'tahun']) });
+const KosInputsSchema = z
+  .strictObject({ amount: nonNeg, months: z.number().int().min(1).max(120), flat: nonNeg.optional(), fee: nonNeg.optional() })
+  .refine((i) => (i.flat === undefined) !== (i.fee === undefined), { message: 'give exactly one of flat or fee' });
+const presetHead = { id: z.string().regex(PRESET_ID_RE), label: LocalizedSchema };
+export const CalcPresetSchema = z.discriminatedUnion('tab', [
+  z.strictObject({ ...presetHead, tab: z.literal('masa'), inputs: MasaInputsSchema }),
+  z.strictObject({ ...presetHead, tab: z.literal('pulangan'), inputs: PulanganInputsSchema }),
+  z.strictObject({ ...presetHead, tab: z.literal('kos'), inputs: KosInputsSchema }),
+]);
+export type CalcPreset = z.infer<typeof CalcPresetSchema>;
+export const CalcPresetsFileSchema = z.array(CalcPresetSchema).superRefine((list, ctx) => {
+  const seen = new Set<string>();
+  list.forEach((p, i) => {
+    if (seen.has(p.id)) ctx.addIssue({ code: 'custom', path: [i, 'id'], message: `duplicate preset id "${p.id}"` });
+    seen.add(p.id);
+  });
+});
+
 /** Registry of content file name -> schema. Owner tasks register theirs here. */
 export const CONTENT_FILES: Record<string, ZodType> = {
   'tactics.json': TacticsFileSchema,
@@ -122,6 +148,7 @@ export const CONTENT_FILES: Record<string, ZodType> = {
   'concepts.json': ConceptsFileSchema,
   'semester.json': SemesterFileSchema,
   'pages.json': PagesFileSchema,
+  'calc-presets.json': CalcPresetsFileSchema,
 };
 
 export function parseContent<T>(schema: ZodType<T>, data: unknown, file: string): T {

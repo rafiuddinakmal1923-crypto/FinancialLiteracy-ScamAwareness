@@ -11,6 +11,7 @@ import { Dompet } from '../modes/semester/Dompet';
 import { FakePageScreen } from '../modes/semester/FakePageScreen';
 import { FlagHunt } from '../modes/semester/FlagHunt';
 import { WeekIntro } from '../modes/semester/WeekIntro';
+import { Kalkulator } from '../modes/kalkulator/Kalkulator';
 import { DemoScene } from './DemoScene';
 import { HomeScreen } from './HomeScreen';
 import { Onboarding } from './Onboarding';
@@ -43,6 +44,8 @@ export const ROUTE_TABLE: RouteDef[] = [
   { pattern: '/semester/debrief/:id', name: 'debrief', component: Debrief, statusBar: 'light', needsGame: true, tip: 'side.tip.debrief', mood: 'proud' },
   { pattern: '/bankku', name: 'bankku', component: BankKuScreen, statusBar: 'dark', needsGame: true, tip: 'side.tip.bankku', mood: 'neutral' },
   { pattern: '/dompet', name: 'dompet', component: Dompet, statusBar: 'dark', needsGame: true, tip: 'side.tip.dompet', mood: 'smile' },
+  { pattern: '/kalkulator', name: 'kalkulator', component: Kalkulator, statusBar: 'dark', needsGame: true, tip: 'side.tip.kalkulator', mood: 'smile' },
+  { pattern: '/kalkulator/:tab', name: 'kalkulator-tab', component: Kalkulator, statusBar: 'dark', needsGame: true, tip: 'side.tip.kalkulator', mood: 'smile' },
   { pattern: '/semester/minggu', name: 'minggu', component: WeekIntro, statusBar: 'dark', needsGame: true, tip: 'side.tip.minggu', mood: 'neutral' },
   { pattern: '/laman/:url', name: 'laman', component: FakePageScreen, statusBar: 'light', needsGame: true, tip: 'side.tip.laman', mood: 'worried' },
   { pattern: '/demo/:scene', name: 'demo', component: DemoScene, statusBar: 'light', tip: 'side.tip.demo', mood: 'neutral' },

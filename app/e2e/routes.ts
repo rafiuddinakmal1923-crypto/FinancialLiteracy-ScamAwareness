@@ -45,6 +45,10 @@ export const ROUTES: ScreenRoute[] = [
   // BankKu home with sample transactions, then frozen (last: the frozen account stays for the rest of the run).
   { path: '/bankku', name: 'bankku', setup: (page) => patchSavedGame(page, { txLog: SAMPLE_TX }, '/bankku') },
   { path: '/bankku', name: 'bankku-beku', setup: (page) => patchSavedGame(page, { meters: { akaun: 'Disekat' } }, '/bankku') },
+  // Kalkulator: the three tabs.
+  { path: '/kalkulator/masa', name: 'kalkulator-masa', screen: 'kalkulator', waitFor: 'RM8,775.28' },
+  { path: '/kalkulator/pulangan', name: 'kalkulator-pulangan', screen: 'kalkulator', waitFor: 'Semak dulu: SC Investor Alert List' },
+  { path: '/kalkulator/kos', name: 'kalkulator-kos', screen: 'kalkulator', waitFor: 'Jumlah bayar balik' },
   // In-game fake page on its own route (a link scenario opens the same page over the chat).
   { path: '/laman/kurierkilat-bayar.test', name: 'laman', screen: 'fakepage' },
   // The mule demo preset (resets the game): the chat with the urgency cue, then the BankKu transfer and its TAC.

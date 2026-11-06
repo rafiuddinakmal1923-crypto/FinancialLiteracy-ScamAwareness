@@ -28,7 +28,7 @@ const UI_CARD = {
 
 /**
  * The card for a ui pause: a transfer opens BankKu and a link opens the fake page (overlays on the thread); the
- * Kalkulator hook just continues until Task 18 builds Kalkulator.
+ * Kalkulator hook ("Kira dulu") opens the Kalkulator route with the preset filled in.
  */
 function UiCard({ ui, onOpen }: { ui: UiDirective; onOpen(): void }) {
   const t = useT();
@@ -137,7 +137,11 @@ function Thread({ id }: { id: string }) {
 
   const senderOf = (m: ChatMessage) => (m.from === 'me' ? t('sembang.you') : m.speaker ?? name);
   const waiting = !!choices || !!pendingUi || showEnd;
-  const openUi = () => (pendingUi?.kind === 'calc' ? view.resolveUi(true) : setOverlay(true));
+  const openUi = () => {
+    if (pendingUi?.kind !== 'calc') { setOverlay(true); return; }
+    view.suspend();
+    navigate(`/kalkulator/${pendingUi.tab}?preset=${encodeURIComponent(pendingUi.preset)}`);
+  };
   const closeUi = (ok: boolean) => {
     setOverlay(false);
     view.resolveUi(ok);

@@ -4,13 +4,12 @@ import { BALANCE } from '../../engine/balance';
 import { netWorth } from '../../engine/meters';
 import type { BudgetSplit } from '../../engine/week';
 import { useT } from '../../shell/i18n';
-import { isKnownPath, navigate } from '../../shell/router';
+import { navigate } from '../../shell/router';
 import { useSettings } from '../../state/settings';
 import { useGame } from '../../state/game';
 import { formatMoney } from '../../ui/format';
 import { Kancil } from '../../ui/Kancil';
 import { MeterBar } from '../../ui/MeterBar';
-import { toast } from '../../ui/Toast';
 import { LaburPot } from './LaburPot';
 import { richT } from './rich';
 import { DEFAULT_SPLIT, rebalance, SPLIT_KEYS, SPLIT_STEP, SUGGESTED_SPLIT, type SplitKey } from './split';
@@ -22,7 +21,10 @@ export const POT_COLOR: Record<SplitKey, string> = {
 };
 const POT_KEY: Record<SplitKey, string> = { needs: 'dompet.pot.needs', wants: 'dompet.pot.wants', savings: 'dompet.pot.savings' };
 
-/** Mesin Masa (S19, Task 18). Until its route exists the button shows "Akan datang". */
+/**
+ * Mesin Masa (S19). Lihat 10 tahun lagi opens it with the Kalkulator's default saving (RM50 a month, 19 to 30):
+ * Dompet has no monthly income to derive a saving from (Simpanan is a balance, not a monthly amount).
+ */
 export const MESIN_MASA_PATH = '/kalkulator/masa';
 
 function Header({ children }: { children?: ReactNode }) {
@@ -285,7 +287,7 @@ function WeeklyView({ split }: { split: BudgetSplit }) {
   const introOpen = useGame((s) => s.weekIntroOpen);
   const labur = meters.labur.amanah + meters.labur.ekuiti;
   const [root, setRoot] = useState<HTMLDivElement | null>(null);
-  const openFuture = () => (isKnownPath(MESIN_MASA_PATH) ? navigate(MESIN_MASA_PATH) : toast(t('common.comingSoon'), 'info'));
+  const openFuture = () => navigate(MESIN_MASA_PATH);
   return (
     <div ref={setRoot} data-screen="dompet" className="relative flex min-h-0 flex-1 flex-col">
       <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden pb-6">
