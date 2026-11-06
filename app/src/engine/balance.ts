@@ -1,0 +1,15 @@
+export const BALANCE = {
+  start: { duit: 2000, simpanan: 0, tekanan: 20, imuniti: 30, xp: 0 },
+  incomeWeeks: [4, 8, 12],
+  income: 400,
+  imuniti: { safe: 10, fell: -15, flag: 5, swipeRight: 3, swipeWrong: -5, badge: 5 },
+  xp: { safe: 50, fell: 20, flag: 10, swipeRight: 5, swipeWrong: 0, badge: 30, drill: 40, action: 25, hint: -10 },
+  levels: [['Mangsa', 0], ['Waspada', 200], ['Bijak', 500], ['Penjaga', 900], ['Wira Anti-Scam', 1400]],
+  grade: { weights: { judgement: 0.4, imuniti: 0.3, money: 0.2, flags: 0.1 }, A: 85, B: 70, C: 55, capWhenRecord: 'C' },
+  desperation: { simpananBelow: 100, tekananUp: 10, cueAt: 60 },
+  adaptive: { base: 100, bonus: 10, scamShareMin: 0.55, scamShareMax: 0.65 },
+  swipe: { cards: 10, seconds: 60, revealMs: 1500 },
+  typing: { minMs: 600, maxMs: 1500 },
+  persona: { hookMatch: 40, hookMiss: 10, max: 100 },
+  kelas: { pointsCorrect: 100, rounds: 10, minTeams: 2, maxTeams: 6 },
+} as const;

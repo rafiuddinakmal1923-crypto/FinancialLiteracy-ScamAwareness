@@ -1,0 +1,51 @@
+[
+  {
+    "code": "greed",
+    "name": { "ms": "Terlalu Lumayan" },
+    "does": { "ms": "Menjanjikan duit mudah yang terlalu besar." },
+    "cue": { "ms": "RM300 sehari, kerja dari rumah" },
+    "tip": { "ms": "Kalau tawaran nampak terlalu bagus, berhenti sekejap dan tanya: kenapa mereka beri sebanyak ini? Kerja sebenar jarang bayar setinggi itu untuk kerja semudah itu." }
+  },
+  {
+    "code": "urgency",
+    "name": { "ms": "Desakan Masa" },
+    "does": { "ms": "Mendesak kamu membuat keputusan cepat." },
+    "cue": { "ms": "Slot tinggal 3 hari ni!" },
+    "tip": { "ms": "Penipu tak mahu kamu berfikir lama. Ambil masa, tanya orang yang kamu percaya, dan tawaran yang betul akan masih ada." }
+  },
+  {
+    "code": "authority",
+    "name": { "ms": "Menyamar Pihak Berkuasa" },
+    "does": { "ms": "Berpura-pura jadi polis, mahkamah atau bank." },
+    "cue": { "ms": "Saya Inspektor dari Bukit Aman" },
+    "tip": { "ms": "Pihak berkuasa sebenar tak urus kes melalui telefon atau minta kamu pindah duit. Letak telefon, dan hubungi sendiri nombor rasmi mereka." }
+  },
+  {
+    "code": "fear",
+    "name": { "ms": "Ugutan" },
+    "does": { "ms": "Mengugut tangkapan, denda atau akaun disekat." },
+    "cue": { "ms": "Akaun anda akan dibekukan" },
+    "tip": { "ms": "Rasa takut itu normal, ia memang cara penipu bekerja. Tarik nafas, putuskan panggilan, dan semak sendiri dengan pihak yang sebenar." }
+  },
+  {
+    "code": "secrecy",
+    "name": { "ms": "Rahsiakan" },
+    "does": { "ms": "Mengasingkan mangsa daripada nasihat orang lain." },
+    "cue": { "ms": "Jangan beritahu sesiapa" },
+    "tip": { "ms": "Urusan yang betul tak perlu dirahsiakan. Beritahu keluarga atau kawan; mereka sering nampak apa yang kita terlepas." }
+  },
+  {
+    "code": "social",
+    "name": { "ms": "Bukti Palsu" },
+    "does": { "ms": "Menggunakan testimoni dan kawan palsu untuk meyakinkan." },
+    "cue": { "ms": "500 pelajar dah join!" },
+    "tip": { "ms": "Gambar, komen dan angka boleh dipalsukan dengan mudah. Cari maklumat daripada sumber bebas, bukan dari mesej yang menjual kepada kamu." }
+  },
+  {
+    "code": "payfirst",
+    "name": { "ms": "Bayar Dulu" },
+    "does": { "ms": "Meminta yuran, top-up atau akses akaun dahulu." },
+    "cue": { "ms": "Top-up RM100 untuk tugasan 2" },
+    "tip": { "ms": "Kerja dan hadiah yang sebenar tak minta kamu bayar dulu. Bila ada permintaan bayaran sebelum apa-apa, itulah tanda untuk berhenti." }
+  }
+]
