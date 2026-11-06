@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { BALANCE } from './balance';
 import { initialMeters, netWorth } from './meters';
+import { round2 } from './money';
 import { CONTENT_FILES, parseContent, SemesterFileSchema } from './schemas';
 import { applyBudget, applyWeekIntro, moveLabur, type WeekDef } from './week';
 
@@ -125,6 +126,26 @@ describe('moveLabur', () => {
     if ('error' in r) throw new Error(r.error);
     expect(r.meters.duit).toBe(200);
     expect(r.meters.simpanan).toBe(200);
+  });
+});
+
+describe('sen grid', () => {
+  it('12 week intros keep every balance on the sen grid', () => {
+    let m = { ...base(), duit: 1000.55, simpanan: 100.25, labur: { amanah: 500, ekuiti: 333.33 } };
+    const grid = (x: number) => { expect(Number.isInteger(Math.round(x * 100))).toBe(true); expect(x).toBe(round2(x)); };
+    for (let w = 1; w <= 12; w++) {
+      m = applyWeekIntro(m, wk(w, [{ label: 'Makan', amount: 80.1 }])).meters;
+      for (const x of [m.duit, m.simpanan, m.labur.amanah, m.labur.ekuiti]) grid(x);
+    }
+  });
+  it('sen-valued moves keep net worth identical', () => {
+    const m = { ...base(), duit: 1234.56, simpanan: 0, labur: { amanah: 100.01, ekuiti: 0 } };
+    const a = moveLabur(m, 'amanah', 33.33, true);
+    if ('error' in a) throw new Error(a.error);
+    const b = moveLabur(a.meters, 'amanah', -0.07, true);
+    if ('error' in b) throw new Error(b.error);
+    expect(netWorth(a.meters)).toBe(netWorth(m));
+    expect(netWorth(b.meters)).toBe(netWorth(m));
   });
 });
 

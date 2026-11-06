@@ -1,4 +1,5 @@
 import { BALANCE } from './balance';
+import { round2 } from './money';
 import {
   CONCEPTS, LABUR_PRODUCTS, OUTCOMES_BY_TYPE, RIGHT_OUTCOMES, TACTICS,
   type Concept, type Effect, type LaburProduct, type Meters, type Outcome, type ScenarioMeta, type Tactic,
@@ -22,13 +23,13 @@ export function initialMeters(b: typeof BALANCE = BALANCE): Meters {
 export function applyEffect(m: Meters, e: Effect): Meters {
   switch (e.kind) {
     case 'duit': {
-      const duit = Math.max(0, m.duit + e.delta);
+      const duit = Math.max(0, round2(m.duit + e.delta));
       return { ...m, duit, simpanan: Math.min(m.simpanan, duit) };
     }
     case 'tekanan': return { ...m, tekanan: clamp(m.tekanan + e.delta, 0, 100) };
     case 'akaun': return { ...m, akaun: e.value };
     case 'rekod': return { ...m, rekod: e.value };
-    case 'labur': return { ...m, labur: { ...m.labur, [e.product]: Math.max(0, m.labur[e.product] + e.delta) } };
+    case 'labur': return { ...m, labur: { ...m.labur, [e.product]: Math.max(0, round2(m.labur[e.product] + e.delta)) } };
   }
 }
 
@@ -78,7 +79,7 @@ export function applyOutcome(m: Meters, meta: ScenarioMeta, outcome: Outcome): M
 
 /** Net worth (S03 home, S12 Dompet): spendable Duit plus both Labur pots, in RM. */
 export function netWorth(m: Meters): number {
-  return m.duit + LABUR_PRODUCTS.reduce((sum, p) => sum + m.labur[p], 0);
+  return round2(m.duit + LABUR_PRODUCTS.reduce((sum, p) => sum + m.labur[p], 0));
 }
 
 export function applyFlagFound(m: Meters, tactic: Tactic): Meters {

@@ -169,7 +169,8 @@ export const useGame = create<GameData & GameActions>()((set, get) => ({
   beginWeek: (def) => {
     const { week, weekIntroOpen, meters, incomeTotal } = get();
     if (week >= BALANCE.semesterWeeks || weekIntroOpen) return null;
-    const summary = applyWeekIntro(meters, { ...def, week: week + 1 });
+    if (def.week !== week + 1) throw new Error(`beginWeek: expected week ${week + 1}, got ${def.week}`);
+    const summary = applyWeekIntro(meters, def);
     set({ week: week + 1, meters: summary.meters, incomeTotal: incomeTotal + summary.income, weekIntroOpen: true });
     return summary;
   },
