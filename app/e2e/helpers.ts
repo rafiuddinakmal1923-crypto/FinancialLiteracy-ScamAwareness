@@ -32,3 +32,45 @@ export async function playScenario1ToEnd(page: Page, shot?: string): Promise<voi
   }
   await next.click();
 }
+
+/**
+ * Edits the saved game in IndexedDB, then reopens the app at `path`. The edit runs on a static asset page of the
+ * same origin, so the app's own pagehide save cannot overwrite it.
+ */
+export async function patchSavedGame(page: Page, patch: Record<string, unknown>, path: string): Promise<void> {
+  await page.goto('/icon.svg');
+  await page.evaluate(async (p) => {
+    const db = await new Promise<IDBDatabase>((resolve, reject) => {
+      const req = indexedDB.open('celik');
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
+    const store = db.transaction('save', 'readwrite').objectStore('save');
+    const row = await new Promise<{ id: string; data: { game: Record<string, unknown> } }>((resolve, reject) => {
+      const req = store.get('main');
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
+    const game = row.data.game;
+    for (const [k, v] of Object.entries(p)) {
+      game[k] = k === 'meters' ? { ...(game.meters as object), ...(v as object) } : v;
+    }
+    await new Promise<void>((resolve, reject) => {
+      const req = store.put(row);
+      req.onsuccess = () => resolve();
+      req.onerror = () => reject(req.error);
+    });
+    db.close();
+  }, patch);
+  await page.goto(`/#${path}`);
+}
+
+/** A few BankKu transactions (income, week costs, a transfer) for the screenshots. */
+export const SAMPLE_TX = [
+  { id: 1, week: 1, label: 'Buku rujukan', amount: -45 },
+  { id: 2, week: 2, label: 'Makan seminggu', amount: -80 },
+  { id: 3, week: 3, label: 'Abang Zul', amount: 500 },
+  { id: 4, week: 3, label: 'Abang Zul', amount: -500 },
+  { id: 5, week: 4, label: 'bankku.tx.income', amount: 400 },
+  { id: 6, week: 4, label: 'Tambah nilai telefon', amount: -10.5 },
+];

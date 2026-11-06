@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatMoney, formatSignedMoney } from './format';
+import { formatBank, formatMoney, formatSignedBank, formatSignedMoney } from './format';
 
 describe('formatMoney', () => {
   it('whole ringgit: thousands separator, no decimals', () => {
@@ -20,5 +20,16 @@ describe('formatMoney', () => {
     expect(formatSignedMoney(400)).toBe('+RM400');
     expect(formatSignedMoney(0.15)).toBe('+RM0.15');
     expect(formatSignedMoney(-6)).toBe('-RM6');
+  });
+});
+
+describe('formatBank (BankKu, Review Focus 2)', () => {
+  it('always shows the sen', () => {
+    expect(formatBank(0)).toBe('RM0.00');
+    expect(formatBank(-0)).toBe('RM0.00');
+    expect(formatBank(1234.5)).toBe('RM1,234.50');
+    expect(formatBank(-10)).toBe('-RM10.00');
+    expect(formatSignedBank(400)).toBe('+RM400.00');
+    expect(formatSignedBank(-2.9)).toBe('-RM2.90');
   });
 });

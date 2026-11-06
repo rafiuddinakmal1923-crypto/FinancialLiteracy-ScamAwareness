@@ -95,12 +95,33 @@ export const SemesterFileSchema = z.object({ weeks: z.array(WeekDefSchema).lengt
   });
 });
 
+/**
+ * A fake in-game web page (S06 `ui:link`, Task 15), keyed by its `.test` host. Fields are pre-filled fake data
+ * shown read-only (CLAUDE.md rule 2); `asksTac` makes the page's button lead to the BankKu TAC screen.
+ */
+export const FakePageSchema = z.object({
+  title: LocalizedSchema,
+  body: LocalizedSchema,
+  fields: z.array(z.object({ label: LocalizedSchema, value: z.string().min(1) })),
+  button: LocalizedSchema,
+  asksTac: z.boolean(),
+});
+export type FakePageDef = z.infer<typeof FakePageSchema>;
+/** In-game hosts only: lowercase labels ending in `.test`, no scheme or path. */
+export const PAGE_HOST_RE = /^[a-z0-9-]+(?:\.[a-z0-9-]+)*\.test$/;
+export const PagesFileSchema = z.record(z.string(), FakePageSchema).superRefine((pages, ctx) => {
+  for (const host of Object.keys(pages)) {
+    if (!PAGE_HOST_RE.test(host)) ctx.addIssue({ code: 'custom', path: [host], message: `page host "${host}" must be a bare <name>.test host` });
+  }
+});
+
 /** Registry of content file name -> schema. Owner tasks register theirs here. */
 export const CONTENT_FILES: Record<string, ZodType> = {
   'tactics.json': TacticsFileSchema,
   'cards.json': CardsFileSchema,
   'concepts.json': ConceptsFileSchema,
   'semester.json': SemesterFileSchema,
+  'pages.json': PagesFileSchema,
 };
 
 export function parseContent<T>(schema: ZodType<T>, data: unknown, file: string): T {

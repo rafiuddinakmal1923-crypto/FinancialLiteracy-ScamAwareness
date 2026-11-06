@@ -1,0 +1,37 @@
+{
+  "kurierkilat-bayar.test": {
+    "title": {
+      "ms": "KurierKilat: bungkusan anda tertahan",
+      "en": "KurierKilat: your parcel is on hold"
+    },
+    "body": {
+      "ms": "Alamat penghantaran tidak lengkap. Bayar caj penghantaran semula RM2.90 hari ini, atau bungkusan akan dipulangkan kepada pengirim.",
+      "en": "The delivery address is incomplete. Pay the RM2.90 redelivery fee today, or the parcel goes back to the sender."
+    },
+    "fields": [
+      { "label": { "ms": "Nombor penjejakan", "en": "Tracking number" }, "value": "KK-0000-0042 (contoh)" },
+      { "label": { "ms": "Penerima", "en": "Recipient" }, "value": "Pelajar UCR (contoh)" },
+      { "label": { "ms": "Caj penghantaran semula", "en": "Redelivery fee" }, "value": "RM2.90" },
+      { "label": { "ms": "Bayar melalui", "en": "Pay with" }, "value": "BankKu, akaun 0000-0000-0042 (contoh)" }
+    ],
+    "button": { "ms": "Bayar RM2.90", "en": "Pay RM2.90" },
+    "asksTac": true
+  },
+  "cryptonaga.test": {
+    "title": {
+      "ms": "CryptoNaga: duit anda berganda dalam 7 hari",
+      "en": "CryptoNaga: double your money in 7 days"
+    },
+    "body": {
+      "ms": "Ribuan pelajar dah sertai! Masukkan RM500 hari ini dan terima RM1,000 minggu depan. Dijamin tanpa risiko. Tawaran tamat tengah malam ini.",
+      "en": "Thousands of students have joined! Put in RM500 today and get RM1,000 next week. Guaranteed risk-free. Offer ends at midnight."
+    },
+    "fields": [
+      { "label": { "ms": "Pelaburan minimum", "en": "Minimum investment" }, "value": "RM500" },
+      { "label": { "ms": "Bayaran balik dijanji", "en": "Promised payout" }, "value": "RM1,000 dalam 7 hari" },
+      { "label": { "ms": "Kod rujukan", "en": "Referral code" }, "value": "NAGA-0042 (contoh)" }
+    ],
+    "button": { "ms": "Daftar sekarang", "en": "Join now" },
+    "asksTac": false
+  }
+}

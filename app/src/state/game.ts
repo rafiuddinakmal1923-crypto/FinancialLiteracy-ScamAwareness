@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { BALANCE } from '../engine/balance';
 import { cardId } from '../engine/cards';
 import { applyBudget, applyWeekIntro, moveLabur as engineMoveLabur, type BudgetSplit, type IntroSummary, type MoveResult, type WeekDef } from '../engine/week';
+import { round2 } from '../engine/money';
 import { applyEffect, applyFlagFound, applyOutcome, applyXp, initialMeters, isRight } from '../engine/meters';
 import type { ChatMessage, Effect, EndedScenario, Family, LaburProduct, Meters, Outcome, ScenarioMeta, ScenarioResult, Tactic } from '../engine/types';
 
@@ -32,6 +33,33 @@ function fillGame(d: GameData): GameData {
   };
 }
 
+/**
+ * One BankKu transaction (S08): a change to Duit. `label` is a contact name, a week-cost label, or an i18n key
+ * starting with "bankku." (income, Labur moves). `scenario` tags a chat's entries so a rollback can drop them.
+ */
+export interface TxEntry { id: number; week: number; label: string; amount: number; scenario?: string }
+
+/** BankKu keeps this many transactions (it shows the last 5). */
+export const TX_LOG_MAX = 50;
+
+/** Appends one entry per non-zero amount and keeps the last TX_LOG_MAX. */
+function appendTx(log: TxEntry[], week: number, items: { label: string; amount: number; scenario?: string }[]): TxEntry[] {
+  let id = log.at(-1)?.id ?? 0;
+  const added: TxEntry[] = [];
+  for (const it of items) {
+    if (it.amount === 0) continue;
+    const e: TxEntry = { id: ++id, week, label: it.label, amount: it.amount };
+    if (it.scenario !== undefined) e.scenario = it.scenario;
+    added.push(e);
+  }
+  return added.length ? [...log, ...added].slice(-TX_LOG_MAX) : log;
+}
+
+/** The log without a rolled-back chat's entries. */
+function dropTx(log: TxEntry[], scenario: string): TxEntry[] {
+  return log.some((e) => e.scenario === scenario) ? log.filter((e) => e.scenario !== scenario) : log;
+}
+
 export interface GameData {
   character: 'aina' | 'amir'; name: string;
   /** True once onboarding is finished (a game exists). Week stays 0 until the first week intro opens week 1. */
@@ -49,12 +77,15 @@ export interface GameData {
   transcripts: Record<string, ChatMessage[]>;
   /** True while the week intro is showing; Labur moves are allowed only then (D22). */
   weekIntroOpen: boolean;
+  /** BankKu transactions, oldest first (last TX_LOG_MAX). */
+  txLog: TxEntry[];
 }
 
 export interface GameActions {
   /** Starts (or restarts) a chat from a snapshot. A no-op while an ended chat's aftermath is pending (M2). */
   startScenario(id: string): void;
-  apply(effects: Effect[]): void;
+  /** Applies a scenario's effects; each Duit change is logged in BankKu under `label` (the scenario contact). */
+  apply(effects: Effect[], label?: string): void;
   useHint(): boolean;
   finishScenario(meta: ScenarioMeta, outcome: Outcome, flagsFound: number, flagsTotal: number): void;
   retryScenario(): void;
@@ -83,12 +114,13 @@ export function initialGame(): GameData {
     character: 'aina', name: 'Aina', onboarded: false, week: 0, meters: initialMeters(), budget: null,
     results: [], cards: [], badges: [], swipe: { best: 0, streak: 0, lastPlayed: null },
     actions: [], incomeTotal: 0, active: null, lastEnded: null, transcripts: {}, weekIntroOpen: false,
+    txLog: [],
   };
 }
 
 const DATA_KEYS: (keyof GameData)[] = [
   'character', 'name', 'onboarded', 'week', 'meters', 'budget', 'results', 'cards', 'badges',
-  'swipe', 'actions', 'incomeTotal', 'active', 'lastEnded', 'transcripts', 'weekIntroOpen',
+  'swipe', 'actions', 'incomeTotal', 'active', 'lastEnded', 'transcripts', 'weekIntroOpen', 'txLog',
 ];
 
 /** Picks only the persisted data fields (no actions) from the store state. */
@@ -102,17 +134,24 @@ export const useGame = create<GameData & GameActions>()((set, get) => ({
   ...initialGame(),
 
   startScenario: (id) => {
-    const { active, meters, lastEnded } = get();
+    const { active, meters, lastEnded, txLog } = get();
     // Starting any chat now would roll the meters back to the snapshot and lose the ended chat's effects.
     if (lastEnded) return;
     const base = active ? active.snapshot : meters;
-    set({ meters: base, active: { id, snapshot: base, hintUsed: false } });
+    set({ meters: base, active: { id, snapshot: base, hintUsed: false }, txLog: active ? dropTx(txLog, active.id) : txLog });
   },
 
-  apply: (effects) => {
-    const { active, meters } = get();
+  apply: (effects, label) => {
+    const { active, meters, txLog, week } = get();
     if (!active) return;
-    set({ meters: effects.reduce(applyEffect, meters) });
+    let m = meters;
+    const tx: { label: string; amount: number; scenario: string }[] = [];
+    for (const e of effects) {
+      const next = applyEffect(m, e);
+      if (next.duit !== m.duit) tx.push({ label: label ?? 'bankku.tx.transfer', amount: round2(next.duit - m.duit), scenario: active.id });
+      m = next;
+    }
+    set({ meters: m, txLog: appendTx(txLog, week, tx) });
   },
 
   useHint: () => {
@@ -136,9 +175,9 @@ export const useGame = create<GameData & GameActions>()((set, get) => ({
   },
 
   retryScenario: () => {
-    const { active } = get();
+    const { active, txLog } = get();
     if (!active) return;
-    set({ meters: active.snapshot, active: { ...active, hintUsed: false }, lastEnded: null });
+    set({ meters: active.snapshot, active: { ...active, hintUsed: false }, lastEnded: null, txLog: dropTx(txLog, active.id) });
   },
 
   endScenario: ({ id, outcome, missed, transcript }) => {
@@ -173,19 +212,30 @@ export const useGame = create<GameData & GameActions>()((set, get) => ({
   },
 
   beginWeek: (def) => {
-    const { week, weekIntroOpen, meters, incomeTotal } = get();
+    const { week, weekIntroOpen, meters, incomeTotal, txLog } = get();
     if (week >= BALANCE.semesterWeeks || weekIntroOpen) return null;
     if (def.week !== week + 1) throw new Error(`beginWeek: expected week ${week + 1}, got ${def.week}`);
     const summary = applyWeekIntro(meters, def);
-    set({ week: week + 1, meters: summary.meters, incomeTotal: incomeTotal + summary.income, weekIntroOpen: true });
+    const tx = [
+      { label: 'bankku.tx.income', amount: summary.income },
+      ...summary.costs.map((c) => ({ label: c.label, amount: -c.amount })),
+    ];
+    set({
+      week: week + 1, meters: summary.meters, incomeTotal: incomeTotal + summary.income, weekIntroOpen: true,
+      txLog: appendTx(txLog, week + 1, tx),
+    });
     return summary;
   },
 
   closeWeekIntro: () => set({ weekIntroOpen: false }),
 
   moveLabur: (product, delta) => {
-    const r = engineMoveLabur(get().meters, product, delta, get().weekIntroOpen);
-    if ('meters' in r) set({ meters: r.meters });
+    const { meters, weekIntroOpen, txLog, week } = get();
+    const r = engineMoveLabur(meters, product, delta, weekIntroOpen);
+    if ('meters' in r) {
+      const amount = round2(r.meters.duit - meters.duit);
+      set({ meters: r.meters, txLog: appendTx(txLog, week, [{ label: `bankku.tx.labur.${product}`, amount }]) });
+    }
     return r;
   },
 
@@ -195,7 +245,10 @@ export const useGame = create<GameData & GameActions>()((set, get) => ({
     // A chat cut off mid-story is rolled back. One that had already ended keeps its effects, so its
     // consequence, flag hunt and debrief can still be finished (or retried) after a reload.
     if (d.active && d.lastEnded?.id === d.active.id) { set(d); return; }
-    set({ ...d, meters: d.active ? d.active.snapshot : d.meters, active: null, lastEnded: null });
+    set({
+      ...d, meters: d.active ? d.active.snapshot : d.meters, active: null, lastEnded: null,
+      txLog: d.active ? dropTx(d.txLog, d.active.id) : d.txLog,
+    });
   },
 
   reset: () => set(initialGame()),

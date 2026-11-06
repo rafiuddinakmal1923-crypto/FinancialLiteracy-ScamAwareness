@@ -105,7 +105,8 @@ export function useScenario(id: string, opts?: ScenarioOptions): ScenarioView {
           push({ from: 'system', speaker: null, text: step.text, flags: step.flags });
         }
       }
-      if (step.effects.length) apply(step.effects);
+      // BankKu logs each Duit change under the scenario contact (S08).
+      if (step.effects.length) apply(step.effects, compiled.meta.contact || compiled.meta.number);
       if (step.ui) {
         const ui = step.ui;
         setPendingUi(ui);
@@ -114,7 +115,7 @@ export function useScenario(id: string, opts?: ScenarioOptions): ScenarioView {
         setPendingUi(null);
       }
     }
-  }, [id, push]);
+  }, [id, push, compiled]);
 
   useEffect(() => {
     const gen = ++genRef.current;
@@ -154,11 +155,15 @@ export function useScenario(id: string, opts?: ScenarioOptions): ScenarioView {
     void pump(genRef.current);
   }, [pump, push]);
 
-  const resolveUi = useCallback((_ok: boolean) => {
-    // The ink decides the branch after the ui; ok/cancel both just continue for now.
+  /**
+   * Ends a ui pause: ok = Hantar TAC / the page's button, false = Batal / close. The ink sees it as `ui_ok` and
+   * decides the branch (and any money moved, through its effect tags); BankKu never changes the meters itself.
+   */
+  const resolveUi = useCallback((ok: boolean) => {
     const resolve = uiResolverRef.current;
     uiResolverRef.current = null;
     if (!resolve) return;
+    runnerRef.current?.setUiResult(ok);
     setPendingUi(null);
     resolve();
   }, []);

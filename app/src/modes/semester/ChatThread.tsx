@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, ArrowLeftRight, CircleCheck, Link2 } from 'lucide-react';
+import { ArrowLeft, ArrowLeftRight, Calculator, CircleCheck, Link2 } from 'lucide-react';
 import { scenarios } from 'virtual:celik-content';
 import { BALANCE } from '../../engine/balance';
 import type { ChatMessage, UiDirective } from '../../engine/types';
@@ -10,33 +10,44 @@ import { useGame } from '../../state/game';
 import { useSettings } from '../../state/settings';
 import { Avatar } from '../../ui/Avatar';
 import { ChatBubble } from '../../ui/ChatBubble';
-import { formatRM } from '../../ui/format';
+import { formatMoney } from '../../ui/format';
 import { Kancil } from '../../ui/Kancil';
 import { ReplyChip } from '../../ui/ReplyChip';
 import { TypingIndicator } from '../../ui/TypingIndicator';
+import { BankKu } from './BankKu';
+import { FakePage } from './FakePage';
 import { useScenario } from './useScenario';
 
 const SPRING = { type: 'spring', stiffness: 300, damping: 28 } as const;
 
-/** Placeholder for the BankKu transfer, fake page and Kalkulator hook (later tasks replace it). */
+const UI_CARD = {
+  transfer: { icon: ArrowLeftRight, title: 'sembang.ui.transfer', open: 'sembang.ui.openBank' },
+  link: { icon: Link2, title: 'sembang.ui.link', open: 'sembang.ui.openLink' },
+  calc: { icon: Calculator, title: 'sembang.ui.calc', open: 'sembang.ui.openCalc' },
+} as const;
+
+/**
+ * The card for a ui pause: a transfer opens BankKu and a link opens the fake page (overlays on the thread); the
+ * Kalkulator hook just continues until Task 18 builds Kalkulator.
+ */
 function UiCard({ ui, onOpen }: { ui: UiDirective; onOpen(): void }) {
   const t = useT();
   const link = ui.kind === 'link';
-  const Icon = link ? Link2 : ArrowLeftRight;
-  const detail = ui.kind === 'link' ? ui.url : ui.kind === 'transfer' ? formatRM(ui.amount) : ui.preset;
+  const { icon: Icon, title, open } = UI_CARD[ui.kind];
+  const detail = ui.kind === 'link' ? ui.url : ui.kind === 'transfer' ? formatMoney(ui.amount) : t(`sembang.ui.calc.${ui.tab}`);
   return (
     <div className="flex items-center gap-3 rounded-2xl bg-paper p-3 ring-1 ring-indigo-soft">
       <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-indigo-soft text-indigo">
         <Icon aria-hidden size={22} strokeWidth={1.75} />
       </span>
       <span className="min-w-0 flex-1">
-        <span className="block text-base font-semibold text-ink">{t(link ? 'sembang.ui.link' : 'sembang.ui.transfer')}</span>
-        <span className={`block truncate text-base ${link ? 'text-indigo underline' : 'font-mono font-semibold text-ink'}`}>
+        <span className="block text-base font-semibold text-ink">{t(title)}</span>
+        <span className={`block truncate text-base ${link ? 'text-indigo underline' : ui.kind === 'transfer' ? 'font-mono font-semibold text-ink' : 'text-ink-soft'}`}>
           {detail}
         </span>
       </span>
       <button type="button" onClick={onOpen} className="min-h-12 shrink-0 rounded-2xl bg-ink px-4 text-base font-semibold text-paper active:scale-[.98]">
-        {t(link ? 'sembang.ui.openLink' : 'sembang.ui.openBank')}
+        {t(open)}
       </button>
     </div>
   );
@@ -81,6 +92,8 @@ function Thread({ id }: { id: string }) {
   const hintUsed = useGame((s) => s.active?.id === id && s.active.hintUsed);
   const [hintText, setHintText] = useState<string | null>(null);
   const [showEnd, setShowEnd] = useState(false);
+  /** True while the BankKu transfer or the fake page covers the thread (the chat state stays as it is). */
+  const [overlay, setOverlay] = useState(false);
   const logRef = useRef<HTMLDivElement>(null);
   const name = meta.contact || meta.number || '';
   const ended = !!view.ended;
@@ -105,11 +118,29 @@ function Thread({ id }: { id: string }) {
 
   const senderOf = (m: ChatMessage) => (m.from === 'me' ? t('sembang.you') : m.speaker ?? name);
   const waiting = !!choices || !!pendingUi || showEnd;
+  const openUi = () => (pendingUi?.kind === 'calc' ? view.resolveUi(true) : setOverlay(true));
+  const closeUi = (ok: boolean) => {
+    setOverlay(false);
+    view.resolveUi(ok);
+  };
   const showHintChip = !!meta.hint && !hintText && !hintUsed && !!choices;
 
   return (
-    <div data-screen="chat" className="flex min-h-0 flex-1 flex-col">
+    <div data-screen="chat" className="relative flex min-h-0 flex-1 flex-col">
       <ThreadHeader name={name} />
+
+      {overlay && pendingUi && pendingUi.kind !== 'calc' && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label={pendingUi.kind === 'transfer' ? t('app.bankku') : pendingUi.url}
+          className="absolute inset-0 z-30 flex flex-col bg-paper"
+        >
+          {pendingUi.kind === 'transfer'
+            ? <BankKu mode="transfer" transfer={{ amount: pendingUi.amount, to: name, onDone: closeUi }} />
+            : <FakePage url={pendingUi.url} onDone={closeUi} />}
+        </div>
+      )}
 
       <div
         ref={logRef}
@@ -157,7 +188,7 @@ function Thread({ id }: { id: string }) {
               </div>
             </div>
           )}
-          {pendingUi && <div className={choices ? 'mb-2' : ''}><UiCard ui={pendingUi} onOpen={() => view.resolveUi(true)} /></div>}
+          {pendingUi && <div className={choices ? 'mb-2' : ''}><UiCard ui={pendingUi} onOpen={openUi} /></div>}
           {showEnd && (
             <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={SPRING}>
               <p className="mb-2 text-center text-base font-medium text-ink-soft">{t('sembang.ended')}</p>

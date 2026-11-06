@@ -8,5 +8,5 @@ declare module 'virtual:celik-content' {
   export const sindiket: unknown;
   export const drills: unknown;
   export const semester: { weeks: import('./engine/schemas').WeekDef[] } | null;
-  export const pages: unknown;
+  export const pages: Record<string, import('./engine/schemas').FakePageDef> | null;
 }

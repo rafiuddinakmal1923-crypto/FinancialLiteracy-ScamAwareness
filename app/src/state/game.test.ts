@@ -1,6 +1,6 @@
 import 'fake-indexeddb/auto';
 import { beforeEach, describe, expect, it } from 'vitest';
-import { useGame, initialGame } from './game';
+import { gameData, useGame, initialGame } from './game';
 import { settingsData, useSettings } from './settings';
 import { initialMeters, netWorth } from '../engine/meters';
 import { BALANCE } from '../engine/balance';
@@ -405,5 +405,79 @@ describe('week intro and Labur actions (Task 13)', () => {
     const { weekIntroOpen: _w, ...old } = initialGame();
     useGame.getState().hydrate(old as never);
     expect(useGame.getState().weekIntroOpen).toBe(false);
+  });
+});
+
+describe('BankKu transaction log (Task 15)', () => {
+  const week = (n: number) => ({ week: n, scenario: null, context: { ms: 'x' }, costs: [{ label: { ms: 'Makan' }, amount: 80 }] });
+
+  it('a fresh game has an empty txLog, and an older save hydrates to []', () => {
+    expect(useGame.getState().txLog).toEqual([]);
+    const { txLog: _t, ...old } = initialGame();
+    useGame.getState().hydrate(old as never);
+    expect(useGame.getState().txLog).toEqual([]);
+  });
+
+  it('apply appends each duit change with the scenario contact as label, and skips other effects', () => {
+    useGame.getState().set({ week: 3 });
+    const g = useGame.getState();
+    g.startScenario('s1');
+    g.apply([{ kind: 'tekanan', delta: 5 }, { kind: 'duit', delta: -100 }, { kind: 'duit', delta: 50 }], 'Abang Zul');
+    expect(useGame.getState().txLog).toMatchObject([
+      { id: 1, week: 3, label: 'Abang Zul', amount: -100 },
+      { id: 2, week: 3, label: 'Abang Zul', amount: 50 },
+    ]);
+  });
+
+  it('records the real change when Duit is clamped at 0', () => {
+    const g = useGame.getState();
+    g.startScenario('s1');
+    g.apply([{ kind: 'duit', delta: -999999 }], 'X');
+    expect(useGame.getState().txLog[0]!.amount).toBe(-initialMeters().duit);
+    g.apply([{ kind: 'duit', delta: -10 }], 'X');
+    expect(useGame.getState().txLog).toHaveLength(1);
+  });
+
+  it('beginWeek appends income and each cost', () => {
+    useGame.getState().set({ week: 3 });
+    useGame.getState().beginWeek(week(4));
+    const log = useGame.getState().txLog;
+    expect(log.map((t) => [t.week, t.amount])).toEqual([[4, BALANCE.income], [4, -80]]);
+    expect(log[0]!.label).toBe('bankku.tx.income');
+    expect(log[1]!.label).toBe('Makan');
+  });
+
+  it('keeps only the last 50 entries', () => {
+    const g = useGame.getState();
+    g.startScenario('s1');
+    for (let i = 0; i < 60; i++) g.apply([{ kind: 'duit', delta: -1 }], `t${i}`);
+    const log = useGame.getState().txLog;
+    expect(log).toHaveLength(50);
+    expect(log[0]!.label).toBe('t10');
+    expect(log.at(-1)!.label).toBe('t59');
+    expect(new Set(log.map((t) => t.id)).size).toBe(50);
+  });
+
+  it('Cuba lagi (retry) and a mid-story reload drop that chat\'s transactions with its meters', () => {
+    useGame.getState().set({ week: 3 });
+    useGame.getState().beginWeek(week(4));
+    const before = useGame.getState().txLog;
+    const g = useGame.getState();
+    g.closeWeekIntro();
+    g.startScenario('s1');
+    g.apply([{ kind: 'duit', delta: -100 }], 'Abang Zul');
+    g.retryScenario();
+    expect(useGame.getState().txLog).toEqual(before);
+    g.apply([{ kind: 'duit', delta: -100 }], 'Abang Zul');
+    useGame.getState().hydrate(gameData(useGame.getState()));
+    expect(useGame.getState().txLog).toEqual(before);
+  });
+
+  it('a finished chat keeps its transactions', () => {
+    const g = useGame.getState();
+    g.startScenario('s1');
+    g.apply([{ kind: 'duit', delta: -100 }], 'Abang Zul');
+    g.finishScenario(scamMeta, 'scammed', 0, 2);
+    expect(useGame.getState().txLog).toHaveLength(1);
   });
 });

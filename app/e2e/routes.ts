@@ -1,6 +1,6 @@
 // Routes captured by screens.spec.ts. Later tasks append their screens here.
 import type { Page } from '@playwright/test';
-import { playScenario1ToEnd } from './helpers';
+import { patchSavedGame, playScenario1ToEnd, SAMPLE_TX } from './helpers';
 
 /** Confirms the starting split (Simpanan 10%, RM200: under the RM300 emergency target). */
 async function confirmBudget(page: Page): Promise<void> {
@@ -42,4 +42,7 @@ export const ROUTES: ScreenRoute[] = [
   { path: '/dompet', name: 'dompet', setup: confirmBudget },
   { path: '/semester/minggu', name: 'minggu', waitFor: 'Baki Duit' },
   { path: '/dompet', name: 'dompet-labur', screen: 'dompet', setup: openEmergencyCheck },
+  // BankKu home with sample transactions, then frozen (last: the frozen account stays for the rest of the run).
+  { path: '/bankku', name: 'bankku', setup: (page) => patchSavedGame(page, { txLog: SAMPLE_TX }, '/bankku') },
+  { path: '/bankku', name: 'bankku-beku', setup: (page) => patchSavedGame(page, { meters: { akaun: 'Disekat' } }, '/bankku') },
 ];

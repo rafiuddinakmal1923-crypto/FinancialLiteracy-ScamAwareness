@@ -128,3 +128,36 @@ describe('StoryRunner', () => {
     expect(b).toMatchObject({ kind: 'line', speaker: null, text: '', effects: [{ kind: 'tekanan', delta: 5 }] });
   });
 });
+
+describe('StoryRunner.setUiResult (Task 15)', () => {
+  const body = [
+    'VAR ui_ok = false',
+    'Tester: Transfer sekarang, untung besar. # flag:greed:untung besar # ui:transfer:500',
+    '{ ui_ok:',
+    '  Tester: Dah masuk. # outcome:mule',
+    '- else:',
+    '  Tester: Kenapa batal? # outcome:safe',
+    '}',
+    '-> END',
+  ].join('\n');
+
+  it('sets ui_ok so the ink can branch on Hantar TAC vs Batal', () => {
+    const yes = new StoryRunner(inline('ui_yes', body));
+    expect(yes.next()).toMatchObject({ kind: 'line', ui: { kind: 'transfer', amount: 500 } });
+    yes.setUiResult(true);
+    expect(yes.next()).toMatchObject({ text: 'Dah masuk.' });
+    expect(yes.next()).toEqual({ kind: 'end', outcome: 'mule' });
+
+    const no = new StoryRunner(inline('ui_no', body));
+    no.next();
+    no.setUiResult(false);
+    expect(no.next()).toMatchObject({ text: 'Kenapa batal?' });
+  });
+
+  it('is a no-op when the story does not declare ui_ok', () => {
+    const r = new StoryRunner(inline('ui_none', 'Tester: Buka ni, untung. # flag:greed:untung # ui:link:bayar.test/x\nTester: Ok. # outcome:safe\n-> END'));
+    r.next();
+    expect(() => r.setUiResult(true)).not.toThrow();
+    expect(r.next()).toMatchObject({ text: 'Ok.' });
+  });
+});

@@ -16,3 +16,15 @@ export function formatMoney(n: number): string {
 export function formatSignedMoney(n: number): string {
   return `${n > 0 ? '+' : ''}${formatMoney(n)}`;
 }
+
+/** Bank style, always to the sen (BankKu, S08): 0 -> "RM0.00", 1234.5 -> "RM1,234.50", -10 -> "-RM10.00". */
+export function formatBank(n: number): string {
+  const sen = Math.round(Math.abs(n) * 100);
+  const abs = (sen / 100).toLocaleString('en-MY', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  return `${n < 0 && sen > 0 ? '-' : ''}RM${abs}`;
+}
+
+/** formatBank with "+" before money in: 400 -> "+RM400.00". */
+export function formatSignedBank(n: number): string {
+  return `${n > 0 ? '+' : ''}${formatBank(n)}`;
+}

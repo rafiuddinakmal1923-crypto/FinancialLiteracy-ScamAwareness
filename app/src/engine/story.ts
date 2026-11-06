@@ -66,6 +66,15 @@ export class StoryRunner {
     return end;
   }
 
+  /**
+   * Hands the result of a `ui:` pause (Hantar TAC / page button = true, Batal / close = false) to the ink as
+   * the global `ui_ok`, so a scenario can branch on it. A no-op when the story does not declare `VAR ui_ok`.
+   */
+  setUiResult(ok: boolean): void {
+    const vars = this.story.variablesState;
+    if (vars.GlobalVariableExistsWithName('ui_ok')) vars.$('ui_ok', ok);
+  }
+
   choose(index: number): void {
     const p = this.pending;
     if (!p || p.kind !== 'choices') throw new Error('No choices are pending');
