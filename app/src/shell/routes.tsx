@@ -6,7 +6,9 @@ import { ChatList } from '../modes/semester/ChatList';
 import { ChatThread } from '../modes/semester/ChatThread';
 import { Consequence } from '../modes/semester/Consequence';
 import { Debrief } from '../modes/semester/Debrief';
+import { Dompet } from '../modes/semester/Dompet';
 import { FlagHunt } from '../modes/semester/FlagHunt';
+import { WeekIntro } from '../modes/semester/WeekIntro';
 import { ComingSoon } from './ComingSoon';
 import { HomeScreen } from './HomeScreen';
 import { Onboarding } from './Onboarding';
@@ -37,6 +39,8 @@ export const ROUTE_TABLE: RouteDef[] = [
   { pattern: '/semester/akibat/:id', name: 'akibat', component: Consequence, statusBar: 'light', needsGame: true, tip: 'side.tip.akibat', mood: 'worried' },
   { pattern: '/semester/bendera/:id', name: 'bendera', component: FlagHunt, statusBar: 'light', needsGame: true, tip: 'side.tip.bendera', mood: 'neutral' },
   { pattern: '/semester/debrief/:id', name: 'debrief', component: Debrief, statusBar: 'light', needsGame: true, tip: 'side.tip.debrief', mood: 'proud' },
+  { pattern: '/dompet', name: 'dompet', component: Dompet, statusBar: 'dark', needsGame: true, tip: 'side.tip.dompet', mood: 'smile' },
+  { pattern: '/semester/minggu', name: 'minggu', component: WeekIntro, statusBar: 'dark', needsGame: true, tip: 'side.tip.minggu', mood: 'neutral' },
   { pattern: '/demo/:scene', name: 'demo', component: ComingSoon, statusBar: 'light', tip: 'side.tip.demo', mood: 'neutral' },
 ];
 

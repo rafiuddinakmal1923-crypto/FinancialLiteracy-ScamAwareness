@@ -32,7 +32,7 @@ export const APP_TILES: { id: string; path: string; icon: string | LucideIcon }[
   { id: 'latihan', path: '/latihan', icon: latihan },
   { id: 'tetapan', path: '/settings', icon: Gear },
 ];
-export const MODE_PATHS = { semester: '/semester', harian: '/harian', kelas: '/kelas', sindiket: '/sindiket' } as const;
+export const MODE_PATHS = { semester: '/semester/minggu', harian: '/harian', kelas: '/kelas', sindiket: '/sindiket' } as const;
 
 const TIPS = 5;
 
@@ -140,6 +140,7 @@ export function HomeScreen() {
   const name = useGame((s) => s.name);
   const meters = useGame((s) => s.meters);
   const swipe = useGame((s) => s.swipe);
+  const hasBudget = useGame((s) => s.budget !== null);
   const [tipOpen, setTipOpen] = useState(true);
   const lvl = levelForXp(meters.xp);
   const nextName = lvl.next !== null ? levelForXp(lvl.next).name : null;
@@ -196,7 +197,9 @@ export function HomeScreen() {
 
       <section aria-label={t('home.modes')} className="grid grid-cols-2 gap-2.5 px-4 pb-4 pt-3">
         <ModeTile
-          title={t('mode.semester')} sub={t('mode.semester.sub', { week })} icon={GraduationCap} path={MODE_PATHS.semester}
+          title={t('mode.semester')} sub={t('mode.semester.sub', { week })} icon={GraduationCap}
+          // No budget yet: Dompet's week-0 split comes first, then each tap opens the next week intro.
+          path={hasBudget ? MODE_PATHS.semester : '/dompet'}
           cls="bg-kancil text-ink" iconCls="bg-paper/60"
         />
         <ModeTile

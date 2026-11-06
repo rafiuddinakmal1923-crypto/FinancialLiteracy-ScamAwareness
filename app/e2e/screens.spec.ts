@@ -58,7 +58,7 @@ for (const vp of VIEWPORTS) {
       await test.step(route.name, async () => {
         if (route.setup) await route.setup(page);
         else await page.goto(`/#${route.path}`);
-        await expect(page.locator(`[data-screen="${route.name}"]`)).toBeVisible();
+        await expect(page.locator(`[data-screen="${route.screen ?? route.name}"]`)).toBeVisible();
         if (route.name === 'splash') await expect(page.getByRole('button', { name: 'Mula' })).toBeVisible();
         if (route.waitFor) await expect(page.getByText(route.waitFor)).toBeVisible({ timeout: 15_000 });
         await page.evaluate(() => document.fonts.ready);
