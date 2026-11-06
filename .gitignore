@@ -4,3 +4,6 @@ dist/
 *.log
 .env
 video/footage/
+app/e2e/screens/
+app/test-results/
+app/playwright-report/

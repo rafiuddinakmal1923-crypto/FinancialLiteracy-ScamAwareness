@@ -1,0 +1,38 @@
+@import '@fontsource/plus-jakarta-sans/latin-700.css';
+@import '@fontsource/plus-jakarta-sans/latin-800.css';
+@import '@fontsource/inter/latin-400.css';
+@import '@fontsource/inter/latin-500.css';
+@import '@fontsource/inter/latin-600.css';
+@import '@fontsource/jetbrains-mono/latin-600.css';
+@import 'tailwindcss';
+
+@theme {
+  --color-ink: #1c1b3a;
+  --color-ink-soft: #5e5c7a;
+  --color-indigo: #2d2a6e;
+  --color-indigo-soft: #e9e8f7;
+  --color-kancil: #f4a340;
+  --color-kancil-soft: #fff1dc;
+  --color-paper: #fff8ee;
+  --color-chat-in: #ffffff;
+  --color-chat-out: #dcf3e6;
+  --color-danger: #e5484d;
+  --color-danger-soft: #fdecec;
+  --color-safe: #30a46c;
+  --color-safe-soft: #e6f6ee;
+  --color-warning: #f5a524;
+  --color-sindiket-bg: #121212;
+  --color-sindiket-neon: #b6f03c;
+
+  --font-display: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+body {
+  margin: 0;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+}
