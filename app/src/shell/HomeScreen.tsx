@@ -7,6 +7,7 @@ import kalkulator from '../../../assets/app-kalkulator.svg';
 import kad from '../../../assets/app-kad.svg';
 import latihan from '../../../assets/app-latihan.svg';
 import { BALANCE } from '../engine/balance';
+import { localDate } from '../engine/dates';
 import { netWorth } from '../engine/meters';
 import { CONCEPTS, TACTICS } from '../engine/types';
 import { levelForXp } from '../engine/xp';
@@ -140,14 +141,13 @@ export function HomeScreen() {
   const week = useGame((s) => Math.max(1, s.week));
   const name = useGame((s) => s.name);
   const meters = useGame((s) => s.meters);
-  const swipe = useGame((s) => s.swipe);
+  const harian = useGame((s) => s.harian);
   const hasBudget = useGame((s) => s.budget !== null);
   const [tipOpen, setTipOpen] = useState(true);
   const lvl = levelForXp(meters.xp);
   const nextName = lvl.next !== null ? levelForXp(lvl.next).name : null;
-  // Cek Harian (Task 20) brings its own streak and local date; until then the daily-round streak stands in.
-  const today = new Date().toISOString().slice(0, 10);
-  const playedToday = swipe.lastPlayed === today;
+  // Cek Harian: "today" is the device's local date, never UTC.
+  const playedToday = harian.lastPlayed === localDate();
   const tipIndex = (week - 1 + new Date().getDate()) % TIPS;
 
   return (
@@ -208,12 +208,12 @@ export function HomeScreen() {
           sub={t('mode.harian.today', { status: t(playedToday ? 'mode.harian.done' : 'mode.harian.todo') })}
           icon={Flame} path={MODE_PATHS.harian}
           cls="bg-white text-ink ring-1 ring-indigo-soft"
-          iconCls={swipe.streak > 0 ? 'bg-danger-soft text-danger' : 'bg-indigo-soft text-ink-soft'}
-          extra={swipe.streak > 0 ? (
+          iconCls={harian.streak > 0 ? 'bg-danger-soft text-danger' : 'bg-indigo-soft text-ink-soft'}
+          extra={harian.streak > 0 ? (
             <span className="flex items-center gap-0.5 rounded-full bg-danger-soft px-2 py-0.5 font-mono text-base font-semibold text-danger">
               <Flame aria-hidden size={16} strokeWidth={2} className="fill-danger" />
-              {swipe.streak}
-              <span className="sr-only">{t('mode.harian.streak', { n: swipe.streak })}</span>
+              {harian.streak}
+              <span className="sr-only">{t('mode.harian.streak', { n: harian.streak })}</span>
             </span>
           ) : undefined}
         />

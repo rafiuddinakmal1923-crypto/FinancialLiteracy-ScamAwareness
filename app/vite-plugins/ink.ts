@@ -19,10 +19,11 @@ export const REAL_NAMES_FILE = 'concepts.json';
 const SCANNED_EXT = /\.(ink|json|txt|md)$/i;
 
 /** Named JSON exports of the virtual module, each backed by `<name>.json` in content/. */
-export const JSON_EXPORTS = ['tactics', 'cards', 'concepts', 'sindiket', 'drills', 'semester', 'pages', 'calcPresets'] as const;
+export const JSON_EXPORTS = ['tactics', 'cards', 'moneyCards', 'concepts', 'sindiket', 'drills', 'semester', 'pages', 'calcPresets'] as const;
 export type JsonExport = (typeof JSON_EXPORTS)[number];
-/** File behind an export: `<name>.json`, except calcPresets (calc-presets.json). */
-export const jsonFileOf = (name: JsonExport): string => (name === 'calcPresets' ? 'calc-presets.json' : `${name}.json`);
+/** File behind an export: `<name>.json`, except calcPresets (calc-presets.json) and moneyCards (money-cards.json). */
+const FILE_OVERRIDES: Partial<Record<JsonExport, string>> = { calcPresets: 'calc-presets.json', moneyCards: 'money-cards.json' };
+export const jsonFileOf = (name: JsonExport): string => FILE_OVERRIDES[name] ?? `${name}.json`;
 
 export type CelikContent = { scenarios: Record<string, CompiledScenario> } & Record<JsonExport, unknown>;
 

@@ -1,0 +1,182 @@
+[
+  {
+    "id": "c001", "channel": "sms", "sender": "KurierKilat",
+    "text": { "ms": "Bungkusan anda tertahan di stor. Bayar caj RM2.50 di kurier-bayar.test/x dalam 24 jam atau dipulangkan.", "en": "Your parcel is held at the depot. Pay a RM2.50 fee at kurier-bayar.test/x within 24 hours or it gets sent back." },
+    "answer": "scam", "tactics": ["urgency", "payfirst"],
+    "why": { "ms": "Minta bayar dulu melalui pautan dan letak had masa. Semak terus dalam apl kurier yang anda pasang sendiri.", "en": "Pay first through a link, with a deadline. Check in the courier app you installed yourself." }
+  },
+  {
+    "id": "c002", "channel": "chat", "sender": "Kak Lina (HR)",
+    "text": { "ms": "Hai! Kerja part-time tengok video, RM300 sehari, boleh buat dari bilik je. Cuma kena bayar yuran daftar RM50 dulu ya.", "en": "Hi! Part-time job watching videos, RM300 a day, from your room. Just pay a RM50 sign-up fee first." },
+    "answer": "scam", "tactics": ["greed", "payfirst"],
+    "why": { "ms": "Gaji terlalu tinggi untuk kerja mudah, dan majikan sebenar tak minta yuran dulu.", "en": "Pay too high for easy work, and a real employer does not ask for a fee first." }
+  },
+  {
+    "id": "c003", "channel": "sms", "sender": "BankKu Alert",
+    "text": { "ms": "AMARAN: Akaun anda akan DISEKAT dalam 1 jam kerana aktiviti mencurigakan. Sahkan sekarang di bankku-sah.test/a", "en": "WARNING: Your account will be BLOCKED within 1 hour due to suspicious activity. Verify now at bankku-sah.test/a" },
+    "answer": "scam", "tactics": ["fear", "urgency"],
+    "why": { "ms": "Menakutkan dan terburu-buru, dengan pautan yang bukan alamat rasmi bank.", "en": "Scary and rushed, with a link that is not the bank's real address." }
+  },
+  {
+    "id": "c004", "channel": "chat", "sender": "CryptoNaga VIP",
+    "text": { "ms": "Untung 30% seminggu, modal RM500 pun boleh! 200 orang dah join kumpulan kami. Slot hari ni tinggal 3 je.", "en": "30% profit a week, even with RM500! 200 people already joined our group. Only 3 slots left today." },
+    "answer": "scam", "tactics": ["greed", "social", "urgency"],
+    "why": { "ms": "Untung 30% seminggu jauh terlalu tinggi. Ramai yang join tak bermakna ia selamat.", "en": "30% a week is far too high. Many people joining does not make it safe." }
+  },
+  {
+    "id": "c005", "channel": "chat", "sender": "Pegawai Razak (Polis)",
+    "text": { "ms": "Nama awak dikaitkan dengan kes pengubahan wang haram. Jangan beritahu sesiapa, termasuk keluarga, dan ikut arahan saya.", "en": "Your name is linked to a money laundering case. Do not tell anyone, including family, and follow my instructions." },
+    "answer": "scam", "tactics": ["authority", "fear", "secrecy"],
+    "why": { "ms": "Polis sebenar tak suruh anda berahsia. Hubungi 997 sendiri untuk semak.", "en": "Real police do not tell you to keep quiet. Call 997 yourself to check." }
+  },
+  {
+    "id": "c006", "channel": "email", "sender": "Cabutan Bertuah Raya",
+    "text": { "ms": "TAHNIAH! Anda menang RM5,000 dalam cabutan bertuah. Balas e-mel ini dengan nama penuh dan nombor akaun untuk terima hadiah.", "en": "CONGRATULATIONS! You won RM5,000 in a lucky draw. Reply with your full name and account number to claim the prize." },
+    "answer": "scam", "tactics": ["greed"],
+    "why": { "ms": "Anda tak masuk cabutan pun, tapi hadiah minta butiran akaun. Itu umpan.", "en": "You never entered a draw, yet the prize wants your account details. That is bait." }
+  },
+  {
+    "id": "c007", "channel": "chat", "sender": "Abang Rafi",
+    "text": { "ms": "Sayang, abang kecemasan kat luar negara. Tolong transfer RM800 sekarang ya. Jangan cerita kat family dulu, nanti abang ganti.", "en": "Darling, I have an emergency abroad. Please transfer RM800 right now. Do not tell your family yet, I will pay you back." },
+    "answer": "scam", "tactics": ["urgency", "secrecy"],
+    "why": { "ms": "Orang yang kenal lama online dan minta duit sambil suruh rahsia ialah tanda penipuan cinta.", "en": "An online-only partner asking for money and secrecy is a love scam sign." }
+  },
+  {
+    "id": "c008", "channel": "sms", "sender": "PinjamCepat",
+    "text": { "ms": "Pinjaman RM5,000 anda diluluskan tanpa semakan! Bayar duit proses RM200 dulu ke akaun kami untuk keluarkan wang.", "en": "Your RM5,000 loan is approved with no checks! Pay a RM200 processing fee to our account first to release the money." },
+    "answer": "scam", "tactics": ["greed", "payfirst"],
+    "why": { "ms": "Pemberi pinjaman sah tak minta bayar dulu sebelum duit masuk.", "en": "A genuine lender never asks you to pay before the money arrives." }
+  },
+  {
+    "id": "c009", "channel": "chat", "sender": "Jual Kasut Murah",
+    "text": { "ms": "Kasut tu tinggal 1 pasang je, ramai nak. Bayar deposit RM100 sekarang untuk simpan, kita tak boleh jumpa, saya hantar je.", "en": "Only 1 pair left and lots of people want it. Pay a RM100 deposit now to hold it. We cannot meet, I will just post it." },
+    "answer": "scam", "tactics": ["urgency", "payfirst"],
+    "why": { "ms": "Bayar dulu kepada orang yang tak boleh dijumpa itu berisiko. Pilih COD atau jumpa dulu.", "en": "Paying first to someone you cannot meet is risky. Choose cash on delivery or meet first." }
+  },
+  {
+    "id": "c010", "channel": "sms", "sender": "Bank Merpati Security",
+    "text": { "ms": "Kami nampak transaksi pelik RM2,300. Untuk batalkan, baca balik kod TAC yang baru anda terima kepada pegawai kami.", "en": "We spotted a strange RM2,300 transaction. To cancel it, read the TAC you just received to our officer." },
+    "answer": "scam", "tactics": ["authority", "fear", "urgency"],
+    "why": { "ms": "Bank tak pernah minta TAC anda. Kod itu untuk anda sahaja.", "en": "A bank never asks for your TAC. That code is for you alone." }
+  },
+  {
+    "id": "c011", "channel": "email", "sender": "Biasiswa Cempaka Global",
+    "text": { "ms": "Anda terpilih untuk biasiswa RM3,000. Bayar yuran pemprosesan RM30 hari ini untuk kekalkan tempat anda.", "en": "You have been picked for a RM3,000 scholarship. Pay a RM30 processing fee today to keep your place." },
+    "answer": "scam", "tactics": ["greed", "payfirst"],
+    "why": { "ms": "Biasiswa sebenar tak minta anda bayar untuk menerimanya.", "en": "A real scholarship never asks you to pay to receive it." }
+  },
+  {
+    "id": "c012", "channel": "chat", "sender": "Danial (nombor baru)",
+    "text": { "ms": "Weh ni aku, Danial. Phone aku rosak, guna nombor baru. Boleh tolong bayarkan bil RM300 sekarang? Aku ganti petang ni.", "en": "Hey it's me, Danial. My phone broke, using a new number. Can you pay a RM300 bill for me right now? I'll pay you back this evening." },
+    "answer": "scam", "tactics": ["social", "urgency"],
+    "why": { "ms": "Nombor baru yang mengaku kawan dan minta duit cepat. Telefon nombor lama dia dulu.", "en": "A new number claiming to be a friend and asking for quick money. Call his old number first." }
+  },
+  {
+    "id": "c013", "channel": "chat", "sender": "Kerja Online Mudah",
+    "text": { "ms": "Pinjamkan akaun bank awak untuk terima bayaran pelanggan. Setiap transaksi awak dapat RM200. Senyap-senyap je, jangan bagitahu bank.", "en": "Lend us your bank account to receive customer payments. You get RM200 per transaction. Keep it quiet, don't tell the bank." },
+    "answer": "scam", "tactics": ["secrecy", "greed"],
+    "why": { "ms": "Ini mengupah anda jadi keldai akaun, dan anda yang boleh didakwa. Jangan.", "en": "This hires you as a money mule, and you can be charged. Do not." }
+  },
+  {
+    "id": "c014", "channel": "sms", "sender": "BankKu",
+    "text": { "ms": "Transaksi RM89.90 di KedaiOnline. Bukan anda? Hubungi nombor di belakang kad.", "en": "Transaction of RM89.90 at KedaiOnline. Not you? Call the number on the back of your card." },
+    "answer": "legit", "tactics": [],
+    "why": { "ms": "Tiada pautan, tiada OTP diminta, minta anda guna nombor rasmi sendiri.", "en": "No link, no OTP asked, and it tells you to use the official number you already have." }
+  },
+  {
+    "id": "c015", "channel": "sms", "sender": "Sembang Admin",
+    "text": { "ms": "Akaun Sembang anda akan DIPADAM hari ni kerana aduan. Klik sembang-sah.test/p untuk elak dipadam.", "en": "Your Sembang account will be DELETED today due to a complaint. Click sembang-sah.test/p to stop it." },
+    "answer": "scam", "tactics": ["fear", "urgency"],
+    "why": { "ms": "Ugutan padam akaun dengan pautan pelik. Buka apl sendiri untuk semak.", "en": "A deletion threat with an odd link. Open the app yourself to check." }
+  },
+  {
+    "id": "c016", "channel": "email", "sender": "Dr. Hana Pelaburan",
+    "text": { "ms": "Pelaburan jaminan untung 15% sebulan, TIADA risiko. Pelanggan kami dah kaya! Lihat gambar kereta baru mereka dan sertai hari ini.", "en": "Investment with a guaranteed 15% profit a month, NO risk. Our clients got rich! See photos of their new cars and join today." },
+    "answer": "scam", "tactics": ["greed", "social"],
+    "why": { "ms": "Tiada pelaburan sebenar yang jamin untung tinggi tanpa risiko. Gambar kereta tak bukti apa-apa.", "en": "No real investment guarantees high profit with no risk. Photos of cars prove nothing." }
+  },
+  {
+    "id": "c017", "channel": "sms", "sender": "BayarNanti Tunggakan",
+    "text": { "ms": "Tunggakan RM1,200 anda belum dibayar. Bayar HARI INI atau kami hubungi majikan dan keluarga anda.", "en": "Your RM1,200 arrears are unpaid. Pay TODAY or we will contact your employer and family." },
+    "answer": "scam", "tactics": ["fear", "urgency"],
+    "why": { "ms": "Ugutan malukan anda depan orang lain. Semak baki dalam apl rasmi sendiri.", "en": "A threat to embarrass you in front of others. Check your balance in the official app yourself." }
+  },
+  {
+    "id": "c018", "channel": "chat", "sender": "Pegawai Mahkamah",
+    "text": { "ms": "Waran tangkap telah dikeluarkan atas nama anda. Bayar denda RM1,500 sekarang melalui akaun ini untuk batalkan waran.", "en": "An arrest warrant has been issued in your name. Pay a RM1,500 fine now into this account to cancel the warrant." },
+    "answer": "scam", "tactics": ["authority", "fear", "payfirst"],
+    "why": { "ms": "Mahkamah tak minta denda melalui mesej ke akaun peribadi. Tenang, dan hubungi 997.", "en": "Courts do not ask for fines by message into a personal account. Stay calm and call 997." }
+  },
+  {
+    "id": "c019", "channel": "chat", "sender": "Kumpulan Hadiah Raya",
+    "text": { "ms": "Semua dah dapat RM50 free! Awak je belum. Kongsi pautan hadiah-raya.test/g kepada 5 kawan, lepas tu isi kata laluan e-dompet untuk terima.", "en": "Everyone already got RM50 free! Only you haven't. Share hadiah-raya.test/g with 5 friends, then enter your e-wallet password to receive it." },
+    "answer": "scam", "tactics": ["social", "greed"],
+    "why": { "ms": "Tekanan 'semua dah dapat' dan minta kata laluan. Kata laluan tak patut dikongsi.", "en": "'Everyone got it' pressure plus a password request. Passwords are never to be shared." }
+  },
+  {
+    "id": "c020", "channel": "sms", "sender": "BankKu",
+    "text": { "ms": "Baki akaun anda RM1,240.50 pada 7 Nov. Untuk lihat penyata penuh, buka apl BankKu yang anda dah pasang.", "en": "Your account balance is RM1,240.50 on 7 Nov. To see the full statement, open the BankKu app you already installed." },
+    "answer": "legit", "tactics": [],
+    "why": { "ms": "Hanya memberitahu baki, tiada pautan, tiada permintaan maklumat. Anda buka apl sendiri.", "en": "It only tells you the balance, with no link and no request for details. You open your own app." }
+  },
+  {
+    "id": "c021", "channel": "chat", "sender": "Kafe Cempaka (Kak Min)",
+    "text": { "ms": "Hai Aina, shift Sabtu ni 10 pagi sampai 4 petang ya. Gaji masuk hujung bulan. Ada soalan, tanya Kak Min kat kaunter je.", "en": "Hi Aina, your shift this Saturday is 10 am to 4 pm. Pay comes at month end. Any questions, just ask Kak Min at the counter." },
+    "answer": "legit", "tactics": [],
+    "why": { "ms": "Tiada yuran, ada orang sebenar di kedai yang boleh anda jumpa dan tanya.", "en": "No fee, and a real person at the shop you can meet and ask." }
+  },
+  {
+    "id": "c022", "channel": "email", "sender": "Universiti Cempaka Raya",
+    "text": { "ms": "Kelas Ekonomi 101 ditukar ke Dewan B, Khamis 2 petang. Jadual penuh ada di papan kenyataan fakulti dan portal pelajar yang anda guna biasa.", "en": "Economics 101 moves to Hall B, Thursday 2 pm. The full timetable is on the faculty notice board and the student portal you normally use." },
+    "answer": "legit", "tactics": [],
+    "why": { "ms": "Maklumat biasa, tiada pautan, tiada bayaran. Boleh disahkan di papan kenyataan.", "en": "Ordinary news with no link and no payment. You can confirm it on the notice board." }
+  },
+  {
+    "id": "c023", "channel": "sms", "sender": "KurierKilat",
+    "text": { "ms": "Bungkusan anda dalam perjalanan, dijangka sampai esok. Tiada bayaran diperlukan. Jejak dalam apl KurierKilat anda atau tanya penjual.", "en": "Your parcel is on the way and should arrive tomorrow. No payment needed. Track it in your KurierKilat app or ask the seller." },
+    "answer": "legit", "tactics": [],
+    "why": { "ms": "Tiada caj, tiada pautan, dan suruh anda semak dalam apl sendiri.", "en": "No fee, no link, and it points you to your own app." }
+  },
+  {
+    "id": "c024", "channel": "chat", "sender": "Mak",
+    "text": { "ms": "Akak, mak dah masuk duit RM200 untuk beli buku. Nanti tengok akaun ya. Makan jangan lupa.", "en": "Sis, I put RM200 in for your books. Check your account later. Don't forget to eat." },
+    "answer": "legit", "tactics": [],
+    "why": { "ms": "Mak memberi duit, bukan meminta. Anda boleh semak sendiri dalam apl bank.", "en": "Mum is giving money, not asking. You can check it yourself in your bank app." }
+  },
+  {
+    "id": "c025", "channel": "sms", "sender": "Bank Merpati",
+    "text": { "ms": "Kad debit anda tamat tempoh bulan depan. Kad baharu dihantar ke alamat berdaftar. Ada soalan? Hubungi nombor di belakang kad.", "en": "Your debit card expires next month. A new card will be sent to your registered address. Questions? Call the number on the back of your card." },
+    "answer": "legit", "tactics": [],
+    "why": { "ms": "Tiada pautan, tiada kod diminta, dan beri jalan semak melalui nombor di kad.", "en": "No link, no code asked, and a way to verify through the number on your card." }
+  },
+  {
+    "id": "c026", "channel": "chat", "sender": "Danial",
+    "text": { "ms": "Bro, semalam aku bayarkan makan kita RM12. Bila free bagi balik, tunai pun boleh. Jumpa kat kelas esok ek.", "en": "Bro, yesterday I covered our lunch, RM12. Give it back when you're free, cash is fine. See you in class tomorrow." },
+    "answer": "legit", "tactics": [],
+    "why": { "ms": "Jumlah kecil, kawan yang anda kenal, tiada desakan. Boleh bayar tunai bila jumpa.", "en": "A small amount from a friend you know, with no pressure. You can pay cash when you meet." }
+  },
+  {
+    "id": "c027", "channel": "email", "sender": "Amanah Cempaka",
+    "text": { "ms": "Penyata bulanan anda sudah sedia. Nilai unit boleh naik dan turun. Log masuk dengan cara biasa atau tanya di mana-mana kaunter cawangan.", "en": "Your monthly statement is ready. Unit values can go up and down. Log in the usual way or ask at any branch counter." },
+    "answer": "legit", "tactics": [],
+    "why": { "ms": "Tiada janji untung, tiada pautan, dan ingatkan nilai boleh turun. Jujur tentang risiko.", "en": "No promised profit, no link, and it says values can fall. Honest about risk." }
+  },
+  {
+    "id": "c028", "channel": "sms", "sender": "Klinik Cempaka",
+    "text": { "ms": "Peringatan: temujanji gigi anda esok 9:30 pagi. Nak tukar masa? Telefon klinik di 011-0000 0123.", "en": "Reminder: your dental appointment is tomorrow at 9:30 am. Want to change the time? Call the clinic on 011-0000 0123." },
+    "answer": "legit", "tactics": [],
+    "why": { "ms": "Peringatan biasa tanpa bayaran atau pautan, dan ada nombor klinik untuk disahkan.", "en": "A normal reminder with no payment or link, and a clinic number you can check." }
+  },
+  {
+    "id": "c029", "channel": "chat", "sender": "Kak Mira (Kedai Kasut)",
+    "text": { "ms": "Kasut tu masih ada saiz 8. Boleh jumpa kat depan perpustakaan, tengok dulu, kalau ok baru bayar tunai. Tak jadi pun takpe.", "en": "Those shoes are still in size 8. Meet in front of the library, look first, pay cash only if you like them. No hard feelings if not." },
+    "answer": "legit", "tactics": [],
+    "why": { "ms": "Jumpa dulu, tengok barang, baru bayar. Tiada deposit dan tiada desakan.", "en": "Meet, see the item, then pay. No deposit and no pressure." }
+  },
+  {
+    "id": "c030", "channel": "email", "sender": "Bintang Digital Sdn Bhd",
+    "text": { "ms": "Resit #1042: langganan bulanan RM9.90, tarikh 7 Nov. Tak kenal pembelian ini? Telefon kami di 011-0000 0456 atau semak dalam apl anda.", "en": "Receipt #1042: monthly subscription RM9.90, 7 Nov. Don't recognise this purchase? Call us on 011-0000 0456 or check in your app." },
+    "answer": "legit", "tactics": [],
+    "why": { "ms": "Resit sahaja, tiada pautan bayar, dan ada nombor untuk disahkan.", "en": "A receipt only, with no payment link and a number to verify." }
+  }
+]

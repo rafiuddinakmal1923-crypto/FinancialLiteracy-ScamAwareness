@@ -47,6 +47,33 @@ export const CardsFileSchema = z.array(SwipeCardSchema);
 export const ConceptSchema = z.enum(CONCEPTS);
 
 /**
+ * Money card (D25, SDS 4.3): a true/false statement or a pick of two options. Any rate in the text says "contoh";
+ * a card never recommends a product, and names no real scheme (those live only in concepts.json, D27).
+ */
+const moneyHead = {
+  id: z.string().min(1), concept: ConceptSchema, text: LocalizedSchema, why: LocalizedSchema,
+  /** Set on a card that states a rate or % figure (CLAUDE.md rule 11). */
+  verify: z.literal('TODO-VERIFY').optional(),
+};
+export const MoneyCardSchema = z.discriminatedUnion('kind', [
+  z.strictObject({ ...moneyHead, kind: z.literal('truefalse'), answer: z.boolean() }),
+  z.strictObject({
+    ...moneyHead,
+    kind: z.literal('pick'),
+    options: z.tuple([LocalizedSchema, LocalizedSchema]),
+    better: z.union([z.literal(0), z.literal(1)]),
+  }),
+]);
+export type MoneyCard = z.infer<typeof MoneyCardSchema>;
+export const MoneyCardsFileSchema = z.array(MoneyCardSchema).superRefine((list, ctx) => {
+  const seen = new Set<string>();
+  list.forEach((c, i) => {
+    if (seen.has(c.id)) ctx.addIssue({ code: 'custom', path: [i, 'id'], message: `duplicate money card id "${c.id}"` });
+    seen.add(c.id);
+  });
+});
+
+/**
  * Kad Ilmu text that may carry a figure. Any object with a % figure or a `rate` needs `verify: "TODO-VERIFY"`
  * or a `source` (checked by the content checker, CLAUDE.md rule 11); `year` names the year of the figure.
  */
@@ -145,6 +172,7 @@ export const CalcPresetsFileSchema = z.array(CalcPresetSchema).superRefine((list
 export const CONTENT_FILES: Record<string, ZodType> = {
   'tactics.json': TacticsFileSchema,
   'cards.json': CardsFileSchema,
+  'money-cards.json': MoneyCardsFileSchema,
   'concepts.json': ConceptsFileSchema,
   'semester.json': SemesterFileSchema,
   'pages.json': PagesFileSchema,

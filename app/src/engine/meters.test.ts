@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { BALANCE } from './balance';
 import { CONCEPTS, TACTICS, type Outcome, type ScenarioMeta, type Tactic } from './types';
-import { initialMeters, applyEffect, applyOutcome, applyFlagFound, applyXp, isRight } from './meters';
+import { initialMeters, applyEffect, applyOutcome, applyFlagFound, applyXp, isRight, applySwipeAnswer, applyMoneyAnswer } from './meters';
 
 const scam: ScenarioMeta = { id: 's', type: 'scam', family: 'job', tactics: ['greed', 'urgency'], concepts: [], contact: 'x', ui: 'chat', apaPatut: [] };
 const legit: ScenarioMeta = { ...scam, id: 'l', type: 'legit', tactics: [] };
@@ -213,5 +213,37 @@ describe('right and wrong outcomes come from one place (types.ts)', () => {
     for (const type of ['scam', 'legit', 'finance'] as const) {
       for (const o of OUTCOMES_BY_TYPE[type]) expect(isRight(o), o).toBe(rightOutcomes(type).includes(o));
     }
+  });
+});
+
+describe('per-card helpers (Task 20)', () => {
+  it('applySwipeAnswer moves each tactic by swipeRight/swipeWrong and awards XP only when right', () => {
+    const m = initialMeters();
+    const r = applySwipeAnswer(m, true, ['greed', 'urgency']);
+    expect(r.imuniti.greed).toBe(m.imuniti.greed + BALANCE.imuniti.swipeRight);
+    expect(r.imuniti.urgency).toBe(m.imuniti.urgency + BALANCE.imuniti.swipeRight);
+    expect(r.imuniti.fear).toBe(m.imuniti.fear);
+    expect(r.xp).toBe(BALANCE.xp.swipeRight);
+    const w = applySwipeAnswer(m, false, ['greed']);
+    expect(w.imuniti.greed).toBe(m.imuniti.greed + BALANCE.imuniti.swipeWrong);
+    expect(w.xp).toBe(BALANCE.xp.swipeWrong);
+  });
+  it('a legit card (no tactics) only gives XP', () => {
+    const m = initialMeters();
+    expect(applySwipeAnswer(m, true, []).imuniti).toEqual(m.imuniti);
+    expect(applySwipeAnswer(m, true, []).xp).toBe(BALANCE.xp.swipeRight);
+  });
+  it('applyMoneyAnswer moves the concept by cardRight/cardWrong and clamps 0-100', () => {
+    const m = initialMeters();
+    expect(applyMoneyAnswer(m, true, 'bajet').celik.bajet).toBe(m.celik.bajet + BALANCE.celik.cardRight);
+    expect(applyMoneyAnswer(m, true, 'bajet').xp).toBe(BALANCE.xp.moneyCardRight);
+    expect(applyMoneyAnswer(m, false, 'bajet').celik.bajet).toBe(m.celik.bajet + BALANCE.celik.cardWrong);
+    expect(applyMoneyAnswer(m, false, 'bajet').xp).toBe(BALANCE.xp.moneyCardWrong);
+    const hi = { ...m, celik: { ...m.celik, bajet: 99 }, imuniti: { ...m.imuniti, greed: 99 } };
+    expect(applyMoneyAnswer(hi, true, 'bajet').celik.bajet).toBe(100);
+    expect(applySwipeAnswer(hi, true, ['greed']).imuniti.greed).toBe(100);
+    const lo = { ...m, celik: { ...m.celik, bajet: 2 }, imuniti: { ...m.imuniti, greed: 2 } };
+    expect(applyMoneyAnswer(lo, false, 'bajet').celik.bajet).toBe(0);
+    expect(applySwipeAnswer(lo, false, ['greed']).imuniti.greed).toBe(0);
   });
 });

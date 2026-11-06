@@ -4,6 +4,7 @@ declare module 'virtual:celik-content' {
   export const scenarios: Record<string, import('./engine/types').CompiledScenario>;
   export const tactics: import('./engine/schemas').TacticInfo[] | null;
   export const cards: import('./engine/schemas').SwipeCard[] | null;
+  export const moneyCards: import('./engine/schemas').MoneyCard[] | null;
   export const concepts: import('./engine/schemas').ConceptInfo[] | null;
   export const sindiket: unknown;
   export const drills: unknown;

@@ -1,0 +1,150 @@
+[
+  {
+    "id": "m001", "kind": "truefalse", "concept": "bajet",
+    "text": { "ms": "Bajet yang baik mula dengan menulis dulu apa yang wajib dibayar, seperti sewa, makan dan tambang, sebelum belanja benda lain.", "en": "A good budget starts by writing down what must be paid first, like rent, food and fares, before spending on anything else." },
+    "answer": true,
+    "why": { "ms": "Yang wajib diasingkan dulu, baru baki boleh dibelanjakan dengan tenang.", "en": "Set the must-pays aside first, then spend the rest with a calm mind." }
+  },
+  {
+    "id": "m002", "kind": "pick", "concept": "bajet",
+    "text": { "ms": "Elaun RM600 baru masuk. Mana lebih elok?", "en": "Your RM600 allowance just came in. Which is better?" },
+    "options": [
+      { "ms": "Terus beli kasut RM250, lepas tu tengok apa tinggal", "en": "Buy the RM250 shoes straight away, then see what is left" },
+      { "ms": "Asingkan sewa dan makan dulu, baru tengok baki untuk kasut", "en": "Set aside rent and food first, then see what is left for the shoes" }
+    ],
+    "better": 1,
+    "why": { "ms": "Wajib dulu, 'nak' kemudian. Kasut tetap boleh dibeli bila baki cukup.", "en": "Needs first, wants after. The shoes can still be bought when the balance allows." }
+  },
+  {
+    "id": "m003", "kind": "truefalse", "concept": "bajet",
+    "text": { "ms": "Langganan RM9.90 sebulan nampak kecil, tapi setahun jadi RM118.80.", "en": "A RM9.90 monthly subscription looks small, but over a year it adds up to RM118.80." },
+    "answer": true,
+    "why": { "ms": "RM9.90 darab 12 bulan ialah RM118.80. Kos kecil yang berulang pun perlu masuk bajet.", "en": "RM9.90 times 12 months is RM118.80. Small repeating costs belong in the budget too." }
+  },
+  {
+    "id": "m004", "kind": "pick", "concept": "bajet",
+    "text": { "ms": "Kawan ajak makan mewah hujung bulan, duit tinggal RM40. Apa buat?", "en": "A friend invites you to a fancy dinner at month end and you have RM40 left. What do you do?" },
+    "options": [
+      { "ms": "Pergi juga, nanti fikir macam mana", "en": "Go anyway and figure it out later" },
+      { "ms": "Cakap terus terang, cadang tempat murah atau minggu depan", "en": "Be honest, and suggest somewhere cheaper or next week" }
+    ],
+    "better": 1,
+    "why": { "ms": "Kawan sebenar faham. Berterus terang tak memalukan.", "en": "Real friends understand. Being open is nothing to be embarrassed about." }
+  },
+  {
+    "id": "m005", "kind": "truefalse", "concept": "kecemasan",
+    "text": { "ms": "Dana kecemasan ialah duit simpanan asing untuk perkara tak dijangka, seperti telefon rosak atau pergi klinik.", "en": "An emergency fund is separate savings for the unexpected, like a broken phone or a clinic visit." },
+    "answer": true,
+    "why": { "ms": "Duit ini bukan untuk membeli barang, ia untuk tak terpaksa berhutang bila kecemasan datang.", "en": "This money is not for shopping. It saves you from borrowing when an emergency comes." }
+  },
+  {
+    "id": "m006", "kind": "truefalse", "concept": "kecemasan",
+    "text": { "ms": "Duit kecemasan elok diletak di tempat yang boleh diambil bila-bila, bukan di tempat yang nilainya naik turun.", "en": "Emergency money is best kept where you can take it out any time, not where its value goes up and down." },
+    "answer": true,
+    "why": { "ms": "Waktu kecemasan, anda perlu jumlah yang sama dan terus ada.", "en": "In an emergency you need the same amount, available right away." }
+  },
+  {
+    "id": "m007", "kind": "pick", "concept": "kecemasan",
+    "text": { "ms": "Telefon rosak dan anda ada RM300 simpanan kecemasan. Apa langkah lebih baik?", "en": "Your phone breaks and you have RM300 in emergency savings. What is the better step?" },
+    "options": [
+      { "ms": "Guna simpanan itu, lepas tu isi semula perlahan-lahan", "en": "Use the savings, then refill it slowly" },
+      { "ms": "Pinjam daripada apl pinjaman segera sebab cepat", "en": "Borrow from a quick-loan app because it is fast" }
+    ],
+    "better": 0,
+    "why": { "ms": "Itulah gunanya dana kecemasan. Pinjaman segera biasanya bawa caj tambahan.", "en": "That is what the fund is for. Quick loans usually come with extra charges." }
+  },
+  {
+    "id": "m008", "kind": "truefalse", "concept": "kompaun", "verify": "TODO-VERIFY",
+    "text": { "ms": "RM50 sebulan selama 10 tahun pada 5% setahun (contoh) jadi lebih RM7,700.", "en": "RM50 a month for 10 years at 5% a year (example) becomes more than RM7,700." },
+    "answer": true,
+    "why": { "ms": "Simpan RM6,000, kompaun tambah lebih RM1,700 jadi kira-kira RM7,764. Contoh sahaja.", "en": "You save RM6,000 and compounding adds over RM1,700, about RM7,764. Example only." }
+  },
+  {
+    "id": "m009", "kind": "truefalse", "concept": "kompaun",
+    "text": { "ms": "Menyimpan jumlah yang sama setiap bulan, yang mula awal biasanya dapat lebih banyak daripada yang mula lambat, dengan kadar contoh yang sama.", "en": "Saving the same amount each month, the one who starts earlier usually ends up with more than the one who starts late, at the same example rate." },
+    "answer": true,
+    "why": { "ms": "Duit yang lebih lama menyimpan dapat lebih banyak masa untuk bertambah. Contoh sahaja.", "en": "Money kept longer has more time to grow. Example only." }
+  },
+  {
+    "id": "m010", "kind": "pick", "concept": "kompaun",
+    "text": { "ms": "Dua orang simpan RM50 sebulan pada kadar contoh yang sama hingga umur 30. Siapa dapat lebih?", "en": "Two people save RM50 a month at the same example rate until age 30. Who ends up with more?" },
+    "options": [
+      { "ms": "Yang mula pada umur 19", "en": "The one who starts at 19" },
+      { "ms": "Yang mula pada umur 25", "en": "The one who starts at 25" }
+    ],
+    "better": 0,
+    "why": { "ms": "Mula umur 19 simpan lebih lama, jadi lebih banyak masa untuk kompaun. Contoh sahaja.", "en": "Starting at 19 means saving longer, so more time to compound. Example only." }
+  },
+  {
+    "id": "m011", "kind": "truefalse", "concept": "kompaun",
+    "text": { "ms": "Faedah kompaun hanya dikira atas jumlah asal, bukan atas untung yang sudah ditambah.", "en": "Compound interest is only worked out on the original amount, not on profit already added." },
+    "answer": false,
+    "why": { "ms": "Kompaun bermaksud untung pun menghasilkan untung. Itu yang buat ia membesar makin laju.", "en": "Compounding means profit earns profit too. That is why it grows faster over time." }
+  },
+  {
+    "id": "m012", "kind": "truefalse", "concept": "risiko",
+    "text": { "ms": "Tawaran yang janji untung tinggi dan tiada risiko boleh dipercayai.", "en": "An offer that promises high profit and no risk can be trusted." },
+    "answer": false,
+    "why": { "ms": "Untung tinggi sentiasa datang dengan risiko. Janji tiada risiko ialah tanda amaran.", "en": "High profit always comes with risk. A promise of no risk is a warning sign." }
+  },
+  {
+    "id": "m013", "kind": "pick", "concept": "risiko", "verify": "TODO-VERIFY",
+    "text": { "ms": "Dana Ekuiti Cempaka turun 6% (contoh) minggu ini. Apa langkah lebih bijak?", "en": "Dana Ekuiti Cempaka fell 6% (example) this week. Which step is wiser?" },
+    "options": [
+      { "ms": "Semak sebab, dan fikir berapa lama anda sanggup tunggu", "en": "Check the reason, and think how long you can wait" },
+      { "ms": "Panik dan jual semua serta-merta", "en": "Panic and sell everything at once" }
+    ],
+    "better": 0,
+    "why": { "ms": "Harga naik turun itu biasa. Keputusan dalam panik jarang elok. Contoh sahaja.", "en": "Prices going up and down is normal. Decisions made in panic are rarely good. Example only." }
+  },
+  {
+    "id": "m014", "kind": "truefalse", "concept": "risiko",
+    "text": { "ms": "Pelaburan sebenar boleh turun nilai. Yang tak pernah turun langsung patut buat kita curiga.", "en": "A real investment can lose value. One that never goes down at all should make us suspicious." },
+    "answer": true,
+    "why": { "ms": "Keuntungan yang sentiasa licin tanpa naik turun selalunya cerita yang direka.", "en": "Profits that are always smooth with no ups and downs are often an invented story." }
+  },
+  {
+    "id": "m015", "kind": "truefalse", "concept": "hutang",
+    "text": { "ms": "Beli sekarang, bayar nanti tidak percuma: lewat bayar boleh kena caj tambahan.", "en": "Buy now, pay later is not free: paying late can bring extra charges." },
+    "answer": true,
+    "why": { "ms": "Baca caj lewat sebelum setuju. Bayaran yang dipecah tetap hutang.", "en": "Read the late fees before agreeing. Split payments are still a debt." }
+  },
+  {
+    "id": "m016", "kind": "pick", "concept": "hutang",
+    "text": { "ms": "Nak beli telefon RM1,000. Pilihan mana lebih murah secara keseluruhan?", "en": "You want a RM1,000 phone. Which option costs less overall?" },
+    "options": [
+      { "ms": "Simpan RM100 sebulan, beli bila cukup", "en": "Save RM100 a month and buy when you have enough" },
+      { "ms": "Ansuran 12 bulan dengan caj tambahan contoh RM180", "en": "12 monthly instalments with an example extra charge of RM180" }
+    ],
+    "better": 0,
+    "why": { "ms": "Menunggu bayar RM1,000 sahaja, ansuran contoh jadi RM1,180. Contoh sahaja.", "en": "Waiting costs just RM1,000, while the example instalments total RM1,180. Example only." }
+  },
+  {
+    "id": "m017", "kind": "truefalse", "concept": "hutang",
+    "text": { "ms": "Pemberi pinjaman yang sah tidak akan minta kad ATM atau PIN anda sebagai cagaran.", "en": "A legitimate lender will not ask for your ATM card or PIN as security." },
+    "answer": true,
+    "why": { "ms": "Kad dan PIN anda kunci kepada duit anda. Minta benda itu ialah tanda pinjaman haram.", "en": "Your card and PIN are the key to your money. Asking for them is a sign of an illegal loan." }
+  },
+  {
+    "id": "m018", "kind": "truefalse", "concept": "semak",
+    "text": { "ms": "Sebelum percaya sesebuah syarikat atau tawaran, semak melalui laman atau nombor rasmi yang anda cari sendiri, bukan yang datang dalam mesej.", "en": "Before trusting a company or offer, check through the official site or number you look up yourself, not the one in the message." },
+    "answer": true,
+    "why": { "ms": "Penipu beri pautan dan nombor palsu. Cari sendiri supaya anda pasti.", "en": "Scammers supply fake links and numbers. Look it up yourself to be sure." }
+  },
+  {
+    "id": "m019", "kind": "pick", "concept": "semak",
+    "text": { "ms": "Mesej kata akaun anda disekat dan beri pautan untuk 'buka sekatan'. Apa buat?", "en": "A message says your account is blocked and gives a link to 'unblock'. What do you do?" },
+    "options": [
+      { "ms": "Tekan pautan sebab takut akaun hilang", "en": "Tap the link because you fear losing the account" },
+      { "ms": "Tutup mesej, hubungi nombor di belakang kad", "en": "Close the message and call the number on the back of your card" }
+    ],
+    "better": 1,
+    "why": { "ms": "Guna saluran yang anda sendiri tahu betul. Tiada rugi menyemak dulu.", "en": "Use a channel you know is real. Nothing is lost by checking first." }
+  },
+  {
+    "id": "m020", "kind": "truefalse", "concept": "semak",
+    "text": { "ms": "Kalau ramai orang kongsi sesuatu tawaran, bermakna tawaran itu sah.", "en": "If lots of people share an offer, it means the offer is real." },
+    "answer": false,
+    "why": { "ms": "Ramai kongsi tak bukti apa-apa. Penipuan pun boleh tersebar. Semak sumber sebenar.", "en": "Many shares prove nothing. Scams spread too. Check the real source." }
+  }
+]

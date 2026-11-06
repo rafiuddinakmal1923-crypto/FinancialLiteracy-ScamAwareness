@@ -3,8 +3,9 @@ import { BALANCE } from '../engine/balance';
 import { cardId } from '../engine/cards';
 import { applyBudget, applyWeekIntro, moveLabur as engineMoveLabur, type BudgetSplit, type IntroSummary, type MoveResult, type WeekDef } from '../engine/week';
 import { round2 } from '../engine/money';
-import { applyEffect, applyFlagFound, applyOutcome, applyXp, initialMeters, isRight } from '../engine/meters';
-import type { ChatMessage, Effect, EndedScenario, Family, LaburProduct, Meters, Outcome, ScenarioMeta, ScenarioResult, Tactic } from '../engine/types';
+import { applyEffect, applyFlagFound, applyMoneyAnswer, applyOutcome, applySwipeAnswer, applyXp, initialMeters, isRight } from '../engine/meters';
+import { updateHarianStreak } from '../engine/harian';
+import type { ChatMessage, Concept, Effect, EndedScenario, Family, LaburProduct, Meters, Outcome, ScenarioMeta, ScenarioResult, Tactic } from '../engine/types';
 
 /**
  * Fills meter fields an older save does not have (milestone 2 saves have no `celik` or `labur`) from the
@@ -28,6 +29,7 @@ function fillGame(d: GameData): GameData {
     // Saves from before `onboarded` existed: onboarding then set week to 1, so week >= 1 meant a game existed.
     onboarded: d.onboarded ?? (d.week ?? 0) >= 1,
     meters: fillMeters(d.meters),
+    harian: { ...initialHarian(), ...d.harian },
     active: d.active ? { ...d.active, snapshot: fillMeters(d.active.snapshot) } : null,
     results: (d.results ?? []).map((r) => ({ ...r, concepts: r.concepts ?? [] })),
   };
@@ -69,6 +71,15 @@ export type TrailStep = { c: number } | { u: boolean };
  */
 export interface CalcResume { id: string; family: Family; trail: TrailStep[]; returned: boolean }
 
+export interface HarianData {
+  streak: number; lastPlayed: string | null; freezeWeek: string | null; best: number;
+  lastScore: number | null; lastDeckDate: string | null;
+}
+
+export function initialHarian(): HarianData {
+  return { streak: 0, lastPlayed: null, freezeWeek: null, best: 0, lastScore: null, lastDeckDate: null };
+}
+
 export interface GameData {
   character: 'aina' | 'amir'; name: string;
   /** True once onboarding is finished (a game exists). Week stays 0 until the first week intro opens week 1. */
@@ -77,7 +88,10 @@ export interface GameData {
   week: number; meters: Meters;
   budget: BudgetSplit | null;
   results: ScenarioResult[]; cards: string[]; badges: Tactic[];
+  /** The 60-second Sahih atau Scam round: best score and its own play streak. */
   swipe: { best: number; streak: number; lastPlayed: string | null };
+  /** Cek Harian (Task 20): streak with one free freeze a week (`freezeWeek` = ISO week it was used), last result. */
+  harian: HarianData;
   actions: string[]; incomeTotal: number;
   active: { id: string; snapshot: Meters; hintUsed: boolean } | null;
   /** The chat that just ended, until its debrief is closed (or Cuba lagi). */
@@ -129,6 +143,10 @@ export interface GameActions {
   calcUse(id: string): boolean;
   /** An unrealistic Semak Pulangan result inside the open scenario counts as a found flag, once per scenario. */
   calcFlag(tactic: Tactic): void;
+  /** Cek Harian finished with `score` (cards right) on local date `today`: streak and result; a no-op if already played today. */
+  playHarian(score: number, today: string): void;
+  /** One card answered: swipe cards move Imuniti per tactic, money cards move Celik for `concept`; XP when right. */
+  answerCard(kind: 'swipe' | 'money', right: boolean, tactics: Tactic[], concept?: Concept): void;
   hydrate(d: GameData | null): void;
   reset(): void;
   set(p: Partial<GameData>): void;
@@ -137,7 +155,7 @@ export interface GameActions {
 export function initialGame(): GameData {
   return {
     character: 'aina', name: 'Aina', onboarded: false, week: 0, meters: initialMeters(), budget: null,
-    results: [], cards: [], badges: [], swipe: { best: 0, streak: 0, lastPlayed: null },
+    results: [], cards: [], badges: [], swipe: { best: 0, streak: 0, lastPlayed: null }, harian: initialHarian(),
     actions: [], incomeTotal: 0, active: null, lastEnded: null, transcripts: {}, weekIntroOpen: false,
     txLog: [], calcUsed: [], calcResume: null, calcFlagged: [],
   };
@@ -145,7 +163,7 @@ export function initialGame(): GameData {
 
 const DATA_KEYS: (keyof GameData)[] = [
   'character', 'name', 'onboarded', 'week', 'meters', 'budget', 'results', 'cards', 'badges',
-  'swipe', 'actions', 'incomeTotal', 'active', 'lastEnded', 'transcripts', 'weekIntroOpen', 'txLog',
+  'swipe', 'harian', 'actions', 'incomeTotal', 'active', 'lastEnded', 'transcripts', 'weekIntroOpen', 'txLog',
   'calcUsed', 'calcResume', 'calcFlagged',
 ];
 
@@ -307,6 +325,17 @@ export const useGame = create<GameData & GameActions>()((set, get) => ({
       set({ meters: r.meters, txLog: appendTx(txLog, week, [{ label: `bankku.tx.labur.${product}`, amount }]) });
     }
     return r;
+  },
+
+  playHarian: (score, today) => {
+    const { harian } = get();
+    if (harian.lastPlayed === today) return;
+    set({ harian: { ...harian, ...updateHarianStreak(harian, today), lastScore: score, lastDeckDate: today } });
+  },
+
+  answerCard: (kind, right, tactics, concept) => {
+    if (kind === 'swipe') set(bumpMeters(get(), (m) => applySwipeAnswer(m, right, tactics)));
+    else if (concept) set(bumpMeters(get(), (m) => applyMoneyAnswer(m, right, concept)));
   },
 
   hydrate: (saved) => {

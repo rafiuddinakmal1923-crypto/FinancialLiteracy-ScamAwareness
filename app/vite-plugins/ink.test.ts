@@ -79,7 +79,7 @@ describe('real names and rates (D27)', () => {
 describe('generateModule', () => {
   it('emits every named export', () => {
     const code = generateModule(loadCelikContent(repoContent).data);
-    for (const name of ['scenarios', 'tactics', 'cards', 'concepts', 'sindiket', 'drills', 'semester', 'pages', 'calcPresets']) {
+    for (const name of ['scenarios', 'tactics', 'cards', 'moneyCards', 'concepts', 'sindiket', 'drills', 'semester', 'pages', 'calcPresets']) {
       expect(code).toContain(`export const ${name} =`);
     }
   });

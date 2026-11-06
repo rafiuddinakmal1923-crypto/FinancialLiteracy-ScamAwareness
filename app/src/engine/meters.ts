@@ -50,6 +50,18 @@ function bumpCelik(m: Meters, concepts: Concept[], delta: number): Meters {
   return { ...m, celik };
 }
 
+/** One Cek Harian / Sahih atau Scam swipe card answered: Imuniti for the card's tactics, XP only when right (D5). */
+export function applySwipeAnswer(m: Meters, right: boolean, tactics: Tactic[]): Meters {
+  const moved = bump(m, tactics, right ? BALANCE.imuniti.swipeRight : BALANCE.imuniti.swipeWrong);
+  return applyXp(moved, right ? BALANCE.xp.swipeRight : BALANCE.xp.swipeWrong);
+}
+
+/** One money card answered: Celik for its concept, XP only when right (D25). */
+export function applyMoneyAnswer(m: Meters, right: boolean, concept: Concept): Meters {
+  const moved = bumpCelik(m, [concept], right ? BALANCE.celik.cardRight : BALANCE.celik.cardWrong);
+  return applyXp(moved, right ? BALANCE.xp.moneyCardRight : BALANCE.xp.moneyCardWrong);
+}
+
 /** A right call: `safe` or `untung`. Everything else (scammed, mule, frozen, curiga, rugi, hutang) is wrong (SDS 5.4). */
 export function isRight(outcome: Outcome): boolean {
   return RIGHT_OUTCOMES.includes(outcome);
