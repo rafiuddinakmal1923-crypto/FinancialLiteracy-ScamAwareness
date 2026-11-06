@@ -86,22 +86,32 @@ Every scenario, card and badge is tagged with the same seven tactics, so the gam
 
 ### 4.2 Scenario format (ink)
 
-Scenarios live in `content/scenarios/*.ink`, compiled to JSON at build time. Tags carry metadata, red flags and effects:
+Scenarios live in `content/scenarios/*.ink` (one scenario per file), compiled to JSON at build time. Global tags at the top carry metadata; line tags carry red flags, effects and the outcome (see docs/DECISIONS.md D14-D16):
 
 ```text
-=== kerja_sambilan ===
-# type:scam # family:job # tactics:greed,urgency,payfirst
+# id:kerja_sambilan
+# type:scam
+# family:job
+# tactics:greed,urgency,payfirst
+# contact:Kak Mira (HR)
+# number:011-0000 0123
+# hint:Syarikat sebenar tak minta bayaran untuk mula kerja.
+# apa_patut:Semak syarikat dengan SSM sebelum setuju.
+
 Kak Mira (HR): Salam! Ada kerja part-time like & share, RM300 sehari. # flag:greed:RM300 sehari
-Minat? Slot tinggal 3 je hari ni! # flag:urgency:Slot tinggal 3
+Kak Mira (HR): Minat? Slot tinggal 3 je hari ni! # flag:urgency:Slot tinggal 3
 * [Minat! Macam mana nak mula?] -> mula
 * [Syarikat apa ni? Boleh saya semak SSM?] -> tanya
 * [Abaikan] -> abaikan
-= mula
-Kak Mira: Tugasan 1 dapat RM30. Tugasan 2 perlu top-up RM100 dulu ya. # flag:payfirst:top-up RM100
-* [Top-up RM100] # effect:duit:-100 # outcome:scammed
+=== mula ===
+Kak Mira (HR): Tugasan 1 dapat RM30. Tugasan 2 perlu top-up RM100 dulu ya. # flag:payfirst:top-up RM100
+* [Top-up RM100]
+    Kak Mira (HR): Terima kasih! Komisen masuk esok ya. # effect:duit:-100 # outcome:scammed
     -> END
-* [Tak nak bayar apa-apa] # effect:imuniti:payfirst:+10 # outcome:safe
+* [Tak nak bayar apa-apa]
+    Kak Mira (HR): Ok takpe... # outcome:safe
     -> END
+// knots tanya and abaikan omitted from this sample
 ```
 
 Ink treats `//` as a comment, so in-game links never include `http://`: write `kurierkilat-bayar.test/alamat`. Fake numbers use `01X-0000 0NNN`. A line the writer is unsure of gets an ink comment `// REVIEW`.
