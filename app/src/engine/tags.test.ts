@@ -152,3 +152,15 @@ describe('parseMeta: finance and concepts (D23)', () => {
     expect(() => parseMeta(['id:a', 'type:legit', 'family:bank', 'contact:Bank'])).toThrow(/tactics/);
   });
 });
+
+describe('duplicate codes in list tags (Task 11 review)', () => {
+  const base = ['id:x', 'type:scam', 'family:job', 'contact:X'];
+  it('rejects a duplicate tactic in "# tactics:"', () => {
+    expect(() => parseMeta([...base, 'tactics:greed, urgency, greed'])).toThrow(TagError);
+    expect(() => parseMeta([...base, 'tactics:greed, urgency, greed'])).toThrow(/greed/);
+  });
+  it('rejects a duplicate concept in "# concepts:"', () => {
+    expect(() => parseMeta([...base, 'tactics:greed', 'concepts:risiko,risiko'])).toThrow(TagError);
+    expect(() => parseMeta([...base, 'tactics:greed', 'concepts:risiko,risiko'])).toThrow(/risiko/);
+  });
+});

@@ -1,33 +1,38 @@
 import { useState, type ReactNode } from 'react';
-import { Flame, GraduationCap, Presentation, Settings as Gear, VenetianMask, type LucideIcon } from 'lucide-react';
+import { Flame, GraduationCap, Lock, Presentation, Settings as Gear, VenetianMask, type LucideIcon } from 'lucide-react';
 import sembang from '../../../assets/app-sembang.svg';
 import bankku from '../../../assets/app-bankku.svg';
 import dompet from '../../../assets/app-dompet.svg';
+import kalkulator from '../../../assets/app-kalkulator.svg';
 import kad from '../../../assets/app-kad.svg';
 import latihan from '../../../assets/app-latihan.svg';
 import { BALANCE } from '../engine/balance';
+import { netWorth } from '../engine/meters';
+import { CONCEPTS, TACTICS } from '../engine/types';
 import { levelForXp } from '../engine/xp';
 import { useGame } from '../state/game';
 import { CoachSheet } from '../ui/CoachSheet';
-import { ImunitiRing } from '../ui/ImunitiRing';
+import { formatRM } from '../ui/format';
 import { MeterBar } from '../ui/MeterBar';
+import { meanScore, ScoreRing } from '../ui/ScoreRing';
 import { toast } from '../ui/Toast';
 import { useT } from './i18n';
 import { isKnownPath, navigate } from './router';
 
 /**
  * Paths the home tiles open. A later task only adds a matching entry to ROUTE_TABLE (shell/routes.tsx);
- * until then the tile shows an "Akan datang" toast.
+ * until then the tile shows an "Akan datang" toast. Tetapan stays on the grid (ruling R7).
  */
 export const APP_TILES: { id: string; path: string; icon: string | LucideIcon }[] = [
   { id: 'sembang', path: '/sembang', icon: sembang },
   { id: 'bankku', path: '/bankku', icon: bankku },
   { id: 'dompet', path: '/dompet', icon: dompet },
+  { id: 'kalkulator', path: '/kalkulator', icon: kalkulator },
   { id: 'kad', path: '/kad', icon: kad },
   { id: 'latihan', path: '/latihan', icon: latihan },
   { id: 'tetapan', path: '/settings', icon: Gear },
 ];
-export const MODE_PATHS = { semester: '/semester', sindiket: '/sindiket', swipe: '/swipe', kelas: '/kelas' } as const;
+export const MODE_PATHS = { semester: '/semester', harian: '/harian', kelas: '/kelas', sindiket: '/sindiket' } as const;
 
 const TIPS = 5;
 
@@ -38,7 +43,7 @@ function useOpen() {
 
 function WeekTrack({ week }: { week: number }) {
   return (
-    <div aria-hidden className="mt-2 flex gap-1">
+    <div aria-hidden className="mt-1.5 flex gap-1">
       {Array.from({ length: BALANCE.semesterWeeks }, (_, i) => (
         <span key={i} className={`h-1.5 flex-1 rounded-full ${i < week ? 'bg-kancil' : 'bg-indigo-soft'}`} />
       ))}
@@ -46,11 +51,25 @@ function WeekTrack({ week }: { week: number }) {
   );
 }
 
+/** "Nilai bersih RM2,000" with the amount in the numbers face (the copy stays one i18n string). */
+function NetWorth({ amount }: { amount: number }) {
+  const t = useT();
+  const MARK = '\u0000';
+  const [before, after = ''] = t('home.netWorth', { amount: MARK }).split(MARK);
+  return (
+    <p className="text-base font-semibold text-ink">
+      {before}
+      <span className="font-mono font-semibold text-ink">{formatRM(amount)}</span>
+      {after}
+    </p>
+  );
+}
+
 function AppTile({ id, path, icon: Icon }: (typeof APP_TILES)[number]) {
   const t = useT();
   const open = useOpen();
   return (
-    <button type="button" onClick={() => open(path)} className="flex min-h-12 flex-col items-center gap-1 rounded-2xl py-1 active:scale-95">
+    <button type="button" onClick={() => open(path)} className="flex min-h-12 min-w-0 flex-col items-center gap-1 rounded-2xl py-1 active:scale-95">
       {typeof Icon === 'string' ? (
         <img src={Icon} alt="" width={56} height={56} className="h-14 w-14 drop-shadow-[0_2px_4px_rgba(28,27,58,.15)]" draggable={false} />
       ) : (
@@ -58,23 +77,20 @@ function AppTile({ id, path, icon: Icon }: (typeof APP_TILES)[number]) {
           <Icon aria-hidden size={28} strokeWidth={1.75} />
         </span>
       )}
-      <span className="text-base font-medium text-ink">{t(`app.${id}`)}</span>
+      <span className="max-w-full text-base font-medium text-ink">{t(`app.${id}`)}</span>
     </button>
   );
 }
 
-function ModeTile({ title, sub, icon: Icon, path, cls, iconCls, extra }: {
-  title: string; sub: string; icon: LucideIcon; path: string; cls: string; iconCls: string; extra?: ReactNode;
+const TILE = 'flex min-h-[88px] flex-col justify-between gap-1 rounded-[20px] p-3 text-left shadow-[0_2px_8px_rgba(28,27,58,.08)]';
+
+function TileBody({ title, sub, icon: Icon, iconCls, extra }: {
+  title: string; sub: string; icon: LucideIcon; iconCls: string; extra?: ReactNode;
 }) {
-  const open = useOpen();
   return (
-    <button
-      type="button"
-      onClick={() => open(path)}
-      className={`flex min-h-[92px] flex-col justify-between gap-1 rounded-[20px] p-3 text-left shadow-[0_2px_8px_rgba(28,27,58,.08)] active:scale-[.98] ${cls}`}
-    >
+    <>
       <span className="flex items-start justify-between gap-1">
-        <span className={`flex h-9 w-9 items-center justify-center rounded-xl ${iconCls}`}>
+        <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${iconCls}`}>
           <Icon aria-hidden size={22} strokeWidth={1.75} />
         </span>
         {extra}
@@ -83,11 +99,41 @@ function ModeTile({ title, sub, icon: Icon, path, cls, iconCls, extra }: {
         <span className="block text-balance font-display text-base font-extrabold leading-tight">{title}</span>
         <span className="mt-0.5 block text-balance text-base leading-tight opacity-85">{sub}</span>
       </span>
+    </>
+  );
+}
+
+function ModeTile({ path, cls, ...body }: {
+  title: string; sub: string; icon: LucideIcon; path: string; cls: string; iconCls: string; extra?: ReactNode;
+}) {
+  const open = useOpen();
+  return (
+    <button type="button" onClick={() => open(path)} className={`${TILE} active:scale-[.98] ${cls}`}>
+      <TileBody {...body} />
     </button>
   );
 }
 
-/** S03: the fake phone home screen. */
+/** A mode that is not built yet (Mod Sindiket until the stretch build, D26): shown, locked, not tappable. */
+function LockedTile({ title, icon }: { title: string; icon: LucideIcon }) {
+  const t = useT();
+  return (
+    <div
+      data-locked=""
+      role="group"
+      aria-disabled="true"
+      aria-label={t('mode.locked', { mode: title })}
+      className={`${TILE} bg-sindiket-bg/90 text-paper/80 shadow-none ring-1 ring-inset ring-paper/10`}
+    >
+      <TileBody
+        title={title} sub={t('common.comingSoon')} icon={icon} iconCls="bg-paper/10 text-sindiket-neon/70"
+        extra={<Lock aria-hidden size={20} strokeWidth={1.75} className="mt-1 text-paper/70" />}
+      />
+    </div>
+  );
+}
+
+/** S03 v2: the fake phone home screen. */
 export function HomeScreen() {
   const t = useT();
   const week = useGame((s) => s.week);
@@ -97,6 +143,7 @@ export function HomeScreen() {
   const [tipOpen, setTipOpen] = useState(true);
   const lvl = levelForXp(meters.xp);
   const nextName = lvl.next !== null ? levelForXp(lvl.next).name : null;
+  // Cek Harian (Task 20) brings its own streak and local date; until then the daily-round streak stands in.
   const today = new Date().toISOString().slice(0, 10);
   const playedToday = swipe.lastPlayed === today;
   const tipIndex = (Math.max(1, week) - 1 + new Date().getDate()) % TIPS;
@@ -107,27 +154,43 @@ export function HomeScreen() {
         <p className="font-display text-[22px] font-extrabold leading-tight text-paper">{t('home.greeting', { name })}</p>
       </div>
 
-      <section aria-label={t('imuniti.word')} className="relative z-10 -mt-11 mx-4 rounded-2xl bg-white px-4 py-3 shadow-[0_2px_8px_rgba(28,27,58,.08)]">
-        <div className="flex items-center gap-4">
-          <ImunitiRing imuniti={meters.imuniti} level={lvl.name} size={112} />
-          <div className="min-w-0 flex-1">
-            <MeterBar
-              label="XP"
-              value={meters.xp - lvl.min}
-              max={lvl.next !== null ? lvl.next - lvl.min : 1}
-              display={lvl.next !== null ? t('home.xp', { xp: meters.xp, next: lvl.next }) : t('home.xpMax', { xp: meters.xp })}
-              tone="kancil"
-            />
-            {nextName && <p className="mt-2 text-base text-ink-soft">{t('home.nextLevel', { level: nextName })}</p>}
-          </div>
+      <section aria-label={t('home.scores')} className="relative z-10 -mt-11 mx-4 rounded-2xl bg-white px-4 pb-3 pt-3 shadow-[0_2px_8px_rgba(28,27,58,.08)]">
+        <div className="grid grid-cols-2 gap-2">
+          <ScoreRing
+            name={t('celik.word')} tone="kancil"
+            score={meanScore(meters.celik, CONCEPTS)} parts={CONCEPTS.map((c) => meters.celik[c])}
+          />
+          <ScoreRing
+            name={t('imuniti.word')} tone="indigo"
+            score={meanScore(meters.imuniti, TACTICS)} parts={TACTICS.map((k) => meters.imuniti[k])}
+          />
         </div>
-        <div className="mt-2">
+
+        <div className="mt-2.5 border-t border-indigo-soft pt-2">
+          <div className="flex items-baseline justify-between gap-2">
+            <p className="font-display text-xl font-extrabold leading-tight text-indigo">{t(`level.${lvl.name}`)}</p>
+            {nextName && <p className="truncate text-base text-ink-soft">{t('home.nextLevel', { level: t(`level.${nextName}`) })}</p>}
+          </div>
+          <MeterBar
+            className="mt-1"
+            label={t('home.xpLabel')}
+            value={meters.xp - lvl.min}
+            max={lvl.next !== null ? lvl.next - lvl.min : 1}
+            display={lvl.next !== null ? t('home.xp', { xp: meters.xp, next: lvl.next }) : t('home.xpMax', { xp: meters.xp })}
+            tone="kancil"
+          />
+        </div>
+
+        <div className="mt-2.5 border-t border-indigo-soft pt-2">
           <p className="text-base font-semibold text-ink">{t('home.week', { week, total: BALANCE.semesterWeeks })}</p>
           <WeekTrack week={week} />
+          <div className="mt-2">
+            <NetWorth amount={netWorth(meters)} />
+          </div>
         </div>
       </section>
 
-      <nav aria-label={t('home.apps')} className="grid grid-cols-3 gap-x-2 gap-y-1 px-4 pt-3">
+      <nav aria-label={t('home.apps')} className="grid grid-cols-4 gap-y-1 px-2 pt-3">
         {APP_TILES.map((a) => <AppTile key={a.id} {...a} />)}
       </nav>
 
@@ -137,19 +200,24 @@ export function HomeScreen() {
           cls="bg-kancil text-ink" iconCls="bg-paper/60"
         />
         <ModeTile
-          title={t('mode.sindiket')} sub={t('mode.sindiket.sub')} icon={VenetianMask} path={MODE_PATHS.sindiket}
-          cls="bg-sindiket-bg text-paper" iconCls="bg-sindiket-neon text-sindiket-bg"
-        />
-        <ModeTile
-          title={t('mode.swipe')}
-          sub={swipe.streak > 0 ? t('mode.swipe.streak', { n: swipe.streak }) : t(playedToday ? 'mode.swipe.done' : 'mode.swipe.todo')}
-          icon={Flame} path={MODE_PATHS.swipe}
-          cls="bg-white text-ink ring-1 ring-indigo-soft" iconCls={swipe.streak > 0 ? 'bg-danger-soft text-danger' : 'bg-indigo-soft text-ink-soft'}
+          title={t('mode.harian')}
+          sub={t('mode.harian.today', { status: t(playedToday ? 'mode.harian.done' : 'mode.harian.todo') })}
+          icon={Flame} path={MODE_PATHS.harian}
+          cls="bg-white text-ink ring-1 ring-indigo-soft"
+          iconCls={swipe.streak > 0 ? 'bg-danger-soft text-danger' : 'bg-indigo-soft text-ink-soft'}
+          extra={swipe.streak > 0 ? (
+            <span className="flex items-center gap-0.5 rounded-full bg-danger-soft px-2 py-0.5 font-mono text-base font-semibold text-danger">
+              <Flame aria-hidden size={16} strokeWidth={2} className="fill-danger" />
+              {swipe.streak}
+              <span className="sr-only">{t('mode.harian.streak', { n: swipe.streak })}</span>
+            </span>
+          ) : undefined}
         />
         <ModeTile
           title={t('mode.kelas')} sub={t('mode.kelas.sub')} icon={Presentation} path={MODE_PATHS.kelas}
           cls="bg-indigo text-paper" iconCls="bg-paper/15"
         />
+        <LockedTile title={t('mode.sindiket')} icon={VenetianMask} />
       </section>
 
       {tipOpen && (

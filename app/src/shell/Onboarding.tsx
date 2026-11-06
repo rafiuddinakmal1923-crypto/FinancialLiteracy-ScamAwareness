@@ -87,7 +87,7 @@ function SituationStep({ choice }: { choice: CharacterId }) {
       <div className="mt-5 overflow-hidden rounded-2xl bg-indigo text-paper shadow-[0_2px_8px_rgba(28,27,58,.08)]">
         <div className="flex items-center justify-between gap-2 bg-kancil px-4 py-2 text-ink">
           <span className="font-display text-base font-bold">{t('onboarding.card.uni')}</span>
-          <span className="font-mono text-base font-semibold">UCR</span>
+          <span className="font-mono text-base font-semibold">{t('onboarding.card.uniShort')}</span>
         </div>
         <div className="flex items-center gap-4 p-4">
           <span className={`flex h-24 w-20 shrink-0 items-end justify-center overflow-hidden rounded-lg ${CARD_BG[choice]}`}>

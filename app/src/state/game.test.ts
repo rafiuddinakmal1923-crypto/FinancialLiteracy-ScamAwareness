@@ -134,12 +134,12 @@ describe('ended scenario (consequence, flag hunt, debrief)', () => {
     const g = useGame.getState();
     g.startScenario('s1');
     g.endScenario({ id: 's1', outcome: 'scammed', transcript });
-    useGame.getState().huntFlag('greed', 'job');
-    useGame.getState().huntFlag('greed', 'job');
+    useGame.getState().huntFlag('greed', scamMeta);
+    useGame.getState().huntFlag('greed', scamMeta);
     expect(useGame.getState().meters.xp).toBe(BALANCE.xp.flag);
     expect(useGame.getState().lastEnded!.found).toEqual(['greed']);
     useGame.getState().finishHunt();
-    useGame.getState().huntFlag('urgency', 'job');
+    useGame.getState().huntFlag('urgency', scamMeta);
     expect(useGame.getState().cards).toEqual(['greed-job']);
     expect(useGame.getState().lastEnded!.huntDone).toBe(true);
   });
@@ -278,5 +278,47 @@ describe('flushNow', () => {
     await new Promise((r) => setTimeout(r, SAVE_DEBOUNCE_MS + 100));
     stop();
     expect((await db.loadSave())?.game.week).toBe(9);
+  });
+});
+
+describe('milestone-2 review fixes (M2, M6)', () => {
+  const transcript = [{ id: 1, from: 'them' as const, speaker: 'X', text: 'RM300 sehari', flags: [{ tactic: 'greed' as const, phrase: 'RM300 sehari' }] }];
+
+  it('M6: huntFlag awards cards, Imuniti and XP only for scam scenarios', () => {
+    for (const meta of [legitMeta, financeMeta]) {
+      useGame.getState().reset();
+      useGame.getState().startScenario(meta.id);
+      useGame.getState().endScenario({ id: meta.id, outcome: 'safe', transcript });
+      const before = useGame.getState().meters;
+      useGame.getState().huntFlag('greed', meta);
+      const s = useGame.getState();
+      expect(s.cards, meta.type).toEqual([]);
+      expect(s.meters, meta.type).toEqual(before);
+    }
+    useGame.getState().reset();
+    useGame.getState().startScenario('s1');
+    useGame.getState().endScenario({ id: 's1', outcome: 'safe', transcript });
+    useGame.getState().huntFlag('greed', scamMeta);
+    expect(useGame.getState().cards).toEqual(['greed-job']);
+  });
+
+  it('M2: startScenario is a no-op while another ended scenario is pending', () => {
+    const g = useGame.getState();
+    g.startScenario('s1');
+    g.apply([{ kind: 'duit', delta: -400 }]);
+    useGame.getState().endScenario({ id: 's1', outcome: 'scammed', transcript });
+    const before = useGame.getState();
+    useGame.getState().startScenario('s2');
+    const s = useGame.getState();
+    expect(s.active).toEqual(before.active);
+    expect(s.meters).toEqual(before.meters);
+    expect(s.meters.duit).toBe(BALANCE.start.duit - 400);
+    expect(s.lastEnded?.id).toBe('s1');
+    // Same id is a no-op too; after Cuba lagi (lastEnded cleared) it starts again.
+    useGame.getState().startScenario('s1');
+    expect(useGame.getState().meters.duit).toBe(BALANCE.start.duit - 400);
+    useGame.getState().retryScenario();
+    useGame.getState().startScenario('s1');
+    expect(useGame.getState().meters.duit).toBe(BALANCE.start.duit);
   });
 });

@@ -16,6 +16,16 @@ export const OUTCOMES_BY_TYPE: Record<ScenarioType, readonly Outcome[]> = {
   legit: ['safe', 'curiga'],
   finance: ['safe', 'untung', 'rugi', 'hutang', 'curiga'],
 };
+/** Right calls in every scenario type (SDS 5.4); every other outcome is a wrong call. */
+export const RIGHT_OUTCOMES: readonly Outcome[] = ['safe', 'untung'];
+/** The right outcomes a scenario type may end in, e.g. finance: safe, untung. */
+export function rightOutcomes(type: ScenarioType): Outcome[] {
+  return OUTCOMES_BY_TYPE[type].filter((o) => RIGHT_OUTCOMES.includes(o));
+}
+/** The wrong outcomes a scenario type may end in, e.g. finance: rugi, hutang, curiga. */
+export function wrongOutcomes(type: ScenarioType): Outcome[] {
+  return OUTCOMES_BY_TYPE[type].filter((o) => !RIGHT_OUTCOMES.includes(o));
+}
 /** Labur products (D22): Amanah Cempaka (fixed-price fund) and Dana Ekuiti Cempaka (unit trust). */
 export const LABUR_PRODUCTS = ['amanah', 'ekuiti'] as const;
 export type LaburProduct = typeof LABUR_PRODUCTS[number];

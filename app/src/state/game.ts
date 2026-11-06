@@ -43,6 +43,7 @@ export interface GameData {
 }
 
 export interface GameActions {
+  /** Starts (or restarts) a chat from a snapshot. A no-op while an ended chat's aftermath is pending (M2). */
   startScenario(id: string): void;
   apply(effects: Effect[]): void;
   useHint(): boolean;
@@ -51,8 +52,11 @@ export interface GameActions {
   foundFlag(tactic: Tactic, family: Family): void;
   /** Called when the active scenario's story ends: keeps the outcome and transcript for the post-chat screens. */
   endScenario(e: { id: string; outcome: Outcome; missed?: number; transcript: ChatMessage[] }): void;
-  /** Flag hunt progress on lastEnded: a newly found tactic (awards its card via foundFlag) and/or Selesai. */
-  huntFlag(tactic: Tactic, family: Family): void;
+  /**
+   * Flag hunt progress on lastEnded: marks a newly found tactic. Only a scam scenario awards its card, Imuniti
+   * and XP (via foundFlag); legit and finance hunts just count (M6).
+   */
+  huntFlag(tactic: Tactic, meta: Pick<ScenarioMeta, 'type' | 'family'>): void;
   finishHunt(): void;
   hydrate(d: GameData | null): void;
   reset(): void;
@@ -83,7 +87,9 @@ export const useGame = create<GameData & GameActions>()((set, get) => ({
   ...initialGame(),
 
   startScenario: (id) => {
-    const { active, meters } = get();
+    const { active, meters, lastEnded } = get();
+    // Starting any chat now would roll the meters back to the snapshot and lose the ended chat's effects.
+    if (lastEnded) return;
     const base = active ? active.snapshot : meters;
     set({ meters: base, active: { id, snapshot: base, hintUsed: false } });
   },
@@ -128,10 +134,10 @@ export const useGame = create<GameData & GameActions>()((set, get) => ({
     set({ lastEnded: e });
   },
 
-  huntFlag: (tactic, family) => {
+  huntFlag: (tactic, meta) => {
     const { lastEnded } = get();
     if (!lastEnded || lastEnded.huntDone || lastEnded.found.includes(tactic)) return;
-    get().foundFlag(tactic, family);
+    if (meta.type === 'scam') get().foundFlag(tactic, meta.family);
     set({ lastEnded: { ...lastEnded, found: [...lastEnded.found, tactic] } });
   },
 

@@ -194,3 +194,24 @@ describe('meters: finance, Celik and Labur (D22-D24, D29, D30)', () => {
     expect(lo.celik.bajet).toBe(0);
   });
 });
+
+describe('netWorth (S03 home, Task 13 Dompet)', () => {
+  it('is Duit plus both Labur pots', async () => {
+    const { netWorth } = await import('./meters');
+    expect(netWorth(initialMeters())).toBe(BALANCE.start.duit);
+    expect(netWorth({ ...initialMeters(), duit: 1500, labur: { amanah: 300, ekuiti: 120.5 } })).toBe(1920.5);
+  });
+});
+
+describe('right and wrong outcomes come from one place (types.ts)', () => {
+  it('rightOutcomes / wrongOutcomes split OUTCOMES_BY_TYPE and agree with isRight', async () => {
+    const { OUTCOMES_BY_TYPE, rightOutcomes, wrongOutcomes } = await import('./types');
+    expect(rightOutcomes('finance')).toEqual(['safe', 'untung']);
+    expect(wrongOutcomes('finance')).toEqual(['rugi', 'hutang', 'curiga']);
+    expect(rightOutcomes('scam')).toEqual(['safe']);
+    expect(wrongOutcomes('legit')).toEqual(['curiga']);
+    for (const type of ['scam', 'legit', 'finance'] as const) {
+      for (const o of OUTCOMES_BY_TYPE[type]) expect(isRight(o), o).toBe(rightOutcomes(type).includes(o));
+    }
+  });
+});

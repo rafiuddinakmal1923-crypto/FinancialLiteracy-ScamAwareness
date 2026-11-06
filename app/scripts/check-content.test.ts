@@ -160,3 +160,23 @@ describe('rateMarkerProblems (CLAUDE.md rule 11)', () => {
     expect(rateMarkerProblems({ x: { ms: '5%', source: '' } }, 'concepts.json')).toHaveLength(1);
   });
 });
+
+describe('rateMarkerProblems: words for per cent (Task 11 review)', () => {
+  it.each(['Contoh: 5 peratus setahun', 'Contoh: 4.5 Peratus', 'e.g. 5 percent a year', 'e.g. 5 PERCENT', 'Contoh: 5peratus'])(
+    'flags "%s" without a marker', (s) => {
+      expect(rateMarkerProblems({ x: { ms: s } }, 'concepts.json')).toHaveLength(1);
+      expect(rateMarkerProblems({ x: { ms: s, verify: 'TODO-VERIFY' } }, 'concepts.json')).toEqual([]);
+    },
+  );
+  it('does not flag "peratus" without a figure', () => {
+    expect(rateMarkerProblems({ x: { ms: 'Berapa peratus pulangan?' } }, 'concepts.json')).toEqual([]);
+  });
+});
+
+describe('todoVerifyKeys (M5)', () => {
+  it('lists every _todoVerify key of ms.json, including the enforcement steps', async () => {
+    const { todoVerifyKeys } = await import('./check-content');
+    const keys = todoVerifyKeys(fileURLToPath(new URL('../src/shell/i18n/ms.json', import.meta.url)));
+    expect(keys).toEqual(expect.arrayContaining(['akibat.mule.3.text', 'akibat.mule.4.text', 'akibat.frozen.4.text']));
+  });
+});

@@ -1,4 +1,5 @@
 import { Kancil } from '../ui/Kancil';
+import { useT } from './i18n';
 
 /** The open eye that replaces the dot of the "i". */
 function EyeDot() {
@@ -13,8 +14,9 @@ function EyeDot() {
 
 /** "Celik" wordmark: eye-dot on the i, Sang Kancil peeking from behind the C. */
 export function Logo({ size = 64, peek = true }: { size?: number; peek?: boolean }) {
+  const t = useT();
   return (
-    <h1 aria-label="Celik" className="font-display font-extrabold leading-none tracking-tight text-indigo" style={{ fontSize: size }}>
+    <h1 aria-label={t('app.name')} className="font-display font-extrabold leading-none tracking-tight text-indigo" style={{ fontSize: size }}>
       <span aria-hidden="true" className="relative inline-flex items-baseline">
         <span className="relative isolate inline-block">
           {peek && (

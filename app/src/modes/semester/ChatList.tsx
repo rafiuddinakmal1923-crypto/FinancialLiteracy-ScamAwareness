@@ -1,4 +1,4 @@
-import { ArrowLeft, CircleCheck, Search } from 'lucide-react';
+import { ArrowLeft, CircleCheck, Hourglass, Search } from 'lucide-react';
 import { scenarios } from 'virtual:celik-content';
 import { StoryRunner } from '../../engine/story';
 import type { CompiledScenario } from '../../engine/types';
@@ -41,8 +41,11 @@ export function chatIds(results: { id: string }[], activeId: string | null, avai
   return [...out.filter(unread), ...out.filter((id) => !unread(id))];
 }
 
-/** One chat. A finished one (ruling R8) shows "Selesai" and opens read-only in ChatThread. */
-function ChatRow({ id, unread, finished }: { id: string; unread: boolean; finished: boolean }) {
+/**
+ * One chat. A finished one (ruling R8) shows "Selesai" and opens read-only in ChatThread. While an ended chat's
+ * aftermath is pending (`pending` = its id), every row opens that consequence first (M2) and its row says so.
+ */
+function ChatRow({ id, unread, finished, pending }: { id: string; unread: boolean; finished: boolean; pending: string | null }) {
   const t = useT();
   const { meta } = scenarios[id];
   // Unknown numbers show the number, never a made-up name.
@@ -52,7 +55,7 @@ function ChatRow({ id, unread, finished }: { id: string; unread: boolean; finish
     <li>
       <button
         type="button"
-        onClick={() => navigate(`/sembang/${id}`)}
+        onClick={() => navigate(pending ? `/semester/akibat/${pending}` : `/sembang/${id}`)}
         className="flex w-full items-center gap-3 px-4 py-3 text-left transition-colors duration-150 active:bg-indigo-soft/60"
       >
         <Avatar name={name} size={52} />
@@ -66,6 +69,12 @@ function ChatRow({ id, unread, finished }: { id: string; unread: boolean; finish
           {sub && <span className="block truncate text-base text-ink-soft">{sub}</span>}
           <span className="mt-0.5 flex items-center gap-2">
             <span className={`line-clamp-1 flex-1 text-base ${unread ? 'text-ink' : 'text-ink-soft'}`}>{previewOf(scenarios[id])}</span>
+            {pending === id && (
+              <span className="flex shrink-0 items-center gap-1 rounded-full bg-kancil-soft px-2.5 py-0.5 text-base font-semibold text-ink ring-1 ring-kancil/50">
+                <Hourglass aria-hidden size={16} strokeWidth={2} />
+                {t('sembang.pending')}
+              </span>
+            )}
             {finished && (
               <span className="flex shrink-0 items-center gap-1 rounded-full bg-safe-soft px-2.5 py-0.5 text-base font-semibold text-safe">
                 <CircleCheck aria-hidden size={16} strokeWidth={2} />
@@ -90,6 +99,7 @@ export function ChatList() {
   const t = useT();
   const results = useGame((s) => s.results);
   const activeId = useGame((s) => s.active?.id ?? null);
+  const pending = useGame((s) => s.lastEnded?.id ?? null);
   const ids = chatIds(results, activeId);
   const played = new Set(results.map((r) => r.id));
   return (
@@ -116,7 +126,7 @@ export function ChatList() {
         <p className="px-6 py-10 text-center text-base text-ink-soft">{t('sembang.empty')}</p>
       ) : (
         <ul aria-label={t('sembang.listLabel')} className="mt-3 divide-y divide-indigo-soft">
-          {ids.map((id) => <ChatRow key={id} id={id} unread={!played.has(id) && id !== activeId} finished={played.has(id)} />)}
+          {ids.map((id) => <ChatRow key={id} id={id} unread={!played.has(id) && id !== activeId} finished={played.has(id)} pending={pending} />)}
         </ul>
       )}
     </div>

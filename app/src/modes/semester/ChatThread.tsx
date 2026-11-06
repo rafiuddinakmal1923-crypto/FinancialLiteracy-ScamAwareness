@@ -240,16 +240,17 @@ function ReadOnlyThread({ id }: { id: string }) {
 }
 
 /**
- * S06: Sembang chat thread that plays one scenario. Unknown ids go back to the list; a chat that already ended
- * but whose debrief is still open goes to its consequence; a finished one opens read-only, never replayed (R8).
+ * S06: Sembang chat thread that plays one scenario. Unknown ids go back to the list; while an ended chat's
+ * aftermath (consequence, flag hunt, debrief) is still open, opening it or any other chat goes to that
+ * consequence (M2: starting another chat would roll its effects back); a finished one opens read-only (R8).
  */
 export function ChatThread({ params }: { params: Record<string, string> }) {
   const id = params.id ?? '';
   const known = !!scenarios[id] && scenarios[id].meta.ui === 'chat';
   const finished = useGame((s) => s.results.some((r) => r.id === id));
   // Checked once on open: the end of this very thread also sets lastEnded, and must not redirect.
-  const [pending] = useState(() => useGame.getState().lastEnded?.id === id);
-  const redirect = !known ? '/sembang' : pending && !finished ? `/semester/akibat/${id}` : null;
+  const [pending] = useState(() => useGame.getState().lastEnded?.id ?? null);
+  const redirect = !known ? '/sembang' : pending ? `/semester/akibat/${pending}` : null;
   useEffect(() => {
     if (redirect) replaceRoute(redirect);
   }, [redirect]);

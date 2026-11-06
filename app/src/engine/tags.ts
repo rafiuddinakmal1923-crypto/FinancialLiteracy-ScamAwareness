@@ -35,8 +35,12 @@ function concept(s: string, tag: string): Concept {
   return s as Concept;
 }
 
-function list(value: string): string[] {
-  return value.split(',').map((s) => s.trim()).filter(Boolean);
+/** A comma list of codes; a code listed twice is an authoring mistake and fails the build. */
+function list(value: string, tag: string): string[] {
+  const out = value.split(',').map((s) => s.trim()).filter(Boolean);
+  const dup = out.find((s, i) => out.indexOf(s) !== i);
+  if (dup !== undefined) throw new TagError(`Duplicate code "${dup}" in tag "${tag}"`);
+  return out;
 }
 
 function int(s: string, tag: string): number {
@@ -143,8 +147,8 @@ export function parseMeta(globalTags: string[]): ScenarioMeta {
       case 'id': m.id = value; break;
       case 'type': m.type = oneOf(value, TYPES, tag); break;
       case 'family': m.family = oneOf<Family>(value, FAMILIES, tag); break;
-      case 'tactics': m.tactics = list(value).map((s) => tactic(s, tag)); break;
-      case 'concepts': m.concepts = list(value).map((s) => concept(s, tag)); break;
+      case 'tactics': m.tactics = list(value, tag).map((s) => tactic(s, tag)); break;
+      case 'concepts': m.concepts = list(value, tag).map((s) => concept(s, tag)); break;
       case 'contact': m.contact = value; break;
       case 'number':
         if (!NUMBER_RE.test(value)) throw new TagError(`Number must look like 01X-0000 0NNN in tag "${tag}"`);

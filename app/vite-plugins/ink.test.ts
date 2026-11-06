@@ -84,3 +84,35 @@ describe('generateModule', () => {
     }
   });
 });
+
+const NL = String.fromCharCode(10);
+
+describe('ruling R10: real names inside "# apa_patut:" lines of scenarios', () => {
+  const head = ['# id:r10', '# type:scam', '# family:job', '# tactics:greed', '# contact:Tester'];
+  const body = ['Tester: Kerja senang. # flag:greed:Kerja senang', '* [Tak nak] Tester: Ok. # outcome:safe', '-> END'];
+  const write = (lines: string[]) => {
+    const dir = tempContent();
+    writeFileSync(join(dir, 'banned-names.txt'), 'KWSP' + NL + 'Maybank' + NL + 'AKPK' + NL);
+    writeFileSync(join(dir, 'allowed-real-names.txt'), 'KWSP' + NL + 'AKPK' + NL);
+    writeFileSync(join(dir, 'scenarios', 'r10.ink'), lines.join(NL) + NL);
+    return loadCelikContent(dir);
+  };
+
+  it('allows an allowlisted name in an apa_patut line', () => {
+    const r = write([...head, '# apa_patut:Semak penyata KWSP kamu sendiri.', '#apa_patut: Hutang? Hubungi AKPK.', '', ...body]);
+    expect(r.problems).toEqual([]);
+    expect(r.data.scenarios.r10.meta.apaPatut).toEqual(['Semak penyata KWSP kamu sendiri.', 'Hutang? Hubungi AKPK.']);
+  });
+
+  it('still bans the name in dialogue and in other tags, and other brands in apa_patut', () => {
+    const r = write([
+      ...head, '# hint:Tanya KWSP', '# apa_patut:Buka akaun Maybank', '# apa_patut:Semak KWSP.', '',
+      'Tester: Saya pegawai KWSP. # flag:greed:Saya pegawai', '* [Tak nak] Tester: Ok. # outcome:safe', '-> END',
+    ]);
+    const names = r.problems.filter((p) => /real name/.test(p));
+    expect(names).toHaveLength(3);
+    expect(names.some((p) => /r10\.ink:6: .*KWSP/.test(p))).toBe(true); // hint line
+    expect(names.some((p) => /r10\.ink:7: .*Maybank/.test(p))).toBe(true); // apa_patut: other brand
+    expect(names.some((p) => /r10\.ink:10: .*KWSP/.test(p))).toBe(true); // dialogue
+  });
+});

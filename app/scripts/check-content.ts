@@ -10,19 +10,22 @@ export { scanText, readBannedNames, namesFor, rateMarkerProblems } from '../vite
 
 const appDir = fileURLToPath(new URL('..', import.meta.url));
 
-/** `legal.*` keys listed in ms.json `_todoVerify` (placeholders still to verify). */
-export function todoVerifyLegalKeys(msJsonPath: string): string[] {
+/**
+ * Keys listed in ms.json `_todoVerify`: `legal.*` sentences and other copy that makes legal or enforcement
+ * claims (e.g. the mule/frozen consequence steps), still to verify against a source.
+ */
+export function todoVerifyKeys(msJsonPath: string): string[] {
   if (!existsSync(msJsonPath)) return [];
   const ms = JSON.parse(readText(msJsonPath)) as { _todoVerify?: unknown };
   const list = Array.isArray(ms._todoVerify) ? ms._todoVerify : [];
-  return list.filter((k): k is string => typeof k === 'string' && k.startsWith('legal.'));
+  return list.filter((k): k is string => typeof k === 'string');
 }
 
 function main(): number {
   const contentDir = resolve(appDir, '..', 'content');
   const { data, problems } = loadCelikContent(contentDir);
 
-  for (const key of todoVerifyLegalKeys(resolve(appDir, 'src', 'shell', 'i18n', 'ms.json'))) {
+  for (const key of todoVerifyKeys(resolve(appDir, 'src', 'shell', 'i18n', 'ms.json'))) {
     console.warn(`WARN TODO-VERIFY ${key}`);
   }
 

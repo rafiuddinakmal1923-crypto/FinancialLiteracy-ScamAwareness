@@ -25,3 +25,22 @@ describe('translate', () => {
     for (const k of Object.keys(en)) if (!k.startsWith('_')) expect(k in ms).toBe(true);
   });
 });
+
+describe('home v2 copy', () => {
+  it('has a level.<name> key in MS and EN for every level', async () => {
+    const { BALANCE } = await import('../../engine/balance');
+    for (const [name] of BALANCE.levels) {
+      expect(typeof (ms as Record<string, unknown>)[`level.${name}`], name).toBe('string');
+      expect(typeof (en as Record<string, unknown>)[`level.${name}`], name).toBe('string');
+    }
+    expect(translate('ms', 'level.Pemula')).toBe('Pemula');
+  });
+
+  it('lists the mule and frozen enforcement steps under _todoVerify (M5)', () => {
+    const todo = (ms as Record<string, unknown>)._todoVerify as string[];
+    for (const k of ['akibat.mule.3.text', 'akibat.mule.4.text', 'akibat.frozen.1.text', 'akibat.frozen.4.text']) {
+      expect(todo, k).toContain(k);
+      expect(typeof (ms as Record<string, unknown>)[k]).toBe('string');
+    }
+  });
+});

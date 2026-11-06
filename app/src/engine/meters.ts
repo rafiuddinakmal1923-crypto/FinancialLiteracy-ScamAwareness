@@ -1,6 +1,6 @@
 import { BALANCE } from './balance';
 import {
-  CONCEPTS, LABUR_PRODUCTS, OUTCOMES_BY_TYPE, TACTICS,
+  CONCEPTS, LABUR_PRODUCTS, OUTCOMES_BY_TYPE, RIGHT_OUTCOMES, TACTICS,
   type Concept, type Effect, type LaburProduct, type Meters, type Outcome, type ScenarioMeta, type Tactic,
 } from './types';
 
@@ -51,7 +51,7 @@ function bumpCelik(m: Meters, concepts: Concept[], delta: number): Meters {
 
 /** A right call: `safe` or `untung`. Everything else (scammed, mule, frozen, curiga, rugi, hutang) is wrong (SDS 5.4). */
 export function isRight(outcome: Outcome): boolean {
-  return outcome === 'safe' || outcome === 'untung';
+  return RIGHT_OUTCOMES.includes(outcome);
 }
 
 /**
@@ -74,6 +74,11 @@ export function applyOutcome(m: Meters, meta: ScenarioMeta, outcome: Outcome): M
     case 'finance':
       return applyXp(withCelik, right ? BALANCE.xp.financeRight : BALANCE.xp.financeWrong);
   }
+}
+
+/** Net worth (S03 home, S12 Dompet): spendable Duit plus both Labur pots, in RM. */
+export function netWorth(m: Meters): number {
+  return m.duit + LABUR_PRODUCTS.reduce((sum, p) => sum + m.labur[p], 0);
 }
 
 export function applyFlagFound(m: Meters, tactic: Tactic): Meters {

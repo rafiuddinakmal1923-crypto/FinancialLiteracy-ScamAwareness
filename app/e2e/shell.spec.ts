@@ -28,17 +28,30 @@ test('splash -> onboarding -> home', async ({ page }) => {
   await expect(page.getByText(/Saya Sang Kancil\. Saya tahu semua helah\./)).toBeVisible();
   await page.getByRole('button', { name: 'Masuk semester' }).click();
 
-  // Home.
+  // Home v2 (S03).
   await expect(page).toHaveURL(/#\/home$/);
-  await expect(page.getByRole('img', { name: /Imuniti/ })).toBeVisible();
-  await expect(page.getByText('Pemula', { exact: true }).first()).toBeVisible();
+  await expect(page.getByRole('img', { name: /^Celik Kewangan \d+ daripada 100/ })).toBeVisible();
+  await expect(page.getByRole('img', { name: /^Imuniti \d+ daripada 100/ })).toBeVisible();
+  await expect(page.getByText('Celik Kewangan', { exact: true })).toBeVisible();
+  await expect(page.getByText('Imuniti', { exact: true })).toBeVisible();
+  await expect(page.getByText('Pemula', { exact: true })).toBeVisible();
+  await expect(page.getByRole('progressbar', { name: 'XP' })).toBeVisible();
   await expect(page.getByText('Minggu 1 daripada 12')).toBeVisible();
-  for (const app of ['Sembang', 'BankKu', 'Dompet', 'Kad', 'Latihan']) {
-    await expect(page.getByRole('button', { name: app, exact: true })).toBeVisible();
+  await expect(page.getByText('Nilai bersih RM2,000')).toBeVisible();
+  const apps = page.getByRole('navigation', { name: 'Aplikasi' });
+  for (const app of ['Sembang', 'BankKu', 'Dompet', 'Kalkulator', 'Kad', 'Latihan', 'Tetapan']) {
+    await expect(apps.getByRole('button', { name: app, exact: true })).toBeVisible();
   }
-  for (const mode of ['Semester Pertama', 'Mod Sindiket', 'Sahih atau Scam?', 'Mod Kelas']) {
-    await expect(page.getByRole('button', { name: new RegExp(`^${mode.replace('?', '\\?')}`) })).toBeVisible();
-  }
+  await expect(apps.getByRole('button')).toHaveCount(7);
+  const dock = page.getByRole('region', { name: 'Mod permainan' });
+  await expect(dock.getByRole('button', { name: /^Semester Pertama/ })).toBeVisible();
+  await expect(dock.getByRole('button', { name: /^Cek Harian/ })).toContainText('hari ini: belum');
+  await expect(dock.getByRole('button', { name: /^Mod Kelas/ })).toBeVisible();
+  const sindiket = dock.getByText('Mod Sindiket').locator('xpath=ancestor::*[@data-locked][1]');
+  await expect(sindiket).toContainText('Akan datang');
+  await expect(sindiket).toHaveAttribute('aria-disabled', 'true');
+  await expect(dock.getByRole('button')).toHaveCount(3);
+  await page.screenshot({ path: 'e2e/screens/412x915/home-v2.png' });
   await expect(page.getByText('Isn, Minggu 1')).toBeVisible();
   await expect(page.getByTestId('demo-watermark')).toBeVisible();
 });

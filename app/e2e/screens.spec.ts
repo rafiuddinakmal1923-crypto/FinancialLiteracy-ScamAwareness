@@ -26,17 +26,23 @@ async function smallText(page: Page): Promise<string[]> {
 }
 
 /**
- * Visible buttons, links and switches smaller than 48 x 48 px. Inline targets inside a sentence (the flag hunt's
- * tappable words, marked data-inline-target) are exempt, as in WCAG 2.5.8.
+ * Visible buttons, links and switches smaller than 48 x 48 px. A target's size is its own box or, when larger,
+ * its invisible tap zone (an absolutely positioned ::after, as on the flag hunt's inline words, D31).
  */
 async function smallTargets(page: Page): Promise<string[]> {
   return page.evaluate(() => {
     const out: string[] = [];
-    for (const el of Array.from(document.querySelectorAll<HTMLElement>('button:not([data-inline-target]), a[href], [role="switch"]'))) {
+    for (const el of Array.from(document.querySelectorAll<HTMLElement>('button, a[href], [role="switch"]'))) {
       const r = el.getBoundingClientRect();
       if (r.width === 0 || r.height === 0) continue;
-      if (r.width < 47.5 || r.height < 47.5) {
-        out.push(`${el.tagName} "${(el.getAttribute('aria-label') ?? el.textContent ?? '').trim().slice(0, 30)}" ${Math.round(r.width)}x${Math.round(r.height)}`);
+      let { width, height } = r;
+      const zone = getComputedStyle(el, '::after');
+      if (zone.content !== 'none' && zone.position === 'absolute') {
+        width = Math.max(width, parseFloat(zone.width) || 0);
+        height = Math.max(height, parseFloat(zone.height) || 0);
+      }
+      if (width < 47.5 || height < 47.5) {
+        out.push(`${el.tagName} "${(el.getAttribute('aria-label') ?? el.textContent ?? '').trim().slice(0, 30)}" ${Math.round(width)}x${Math.round(height)}`);
       }
     }
     return out;

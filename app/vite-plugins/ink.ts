@@ -123,8 +123,8 @@ export function namesFor(relPath: string, banned: string[], allowed: string[]): 
   return [...banned, ...allowed.filter((n) => !have.has(n.toLowerCase()))];
 }
 
-// A percentage figure such as "5%", "4.5 %" or "30%".
-const PERCENT_RE = /\d(?:[.,]\d+)?\s?%/;
+// A percentage figure such as "5%", "4.5 %", "30%", "5 peratus" or "5 percent" (any case).
+const PERCENT_RE = /\d(?:[.,]\d+)?\s?(?:%|peratus\b|percent\b)/i;
 
 /**
  * CLAUDE.md rule 11: every object in `data` that holds a `rate` field or a string with a % figure must carry
@@ -148,6 +148,29 @@ export function rateMarkerProblems(data: unknown, file: string): string[] {
   };
   visit(data, []);
   return problems;
+}
+
+// A "# apa_patut:" global tag line of a scenario (ruling R10).
+const APA_PATUT_LINE = /^\s*#\s*apa_patut\s*:/;
+
+/**
+ * Scans one content file. In a scenario (.ink), allowlisted real names are also lifted inside "# apa_patut:"
+ * lines only (ruling R10: "where to check" advice); dialogue and every other line keep the full ban. Other
+ * checks (URLs, numbers, other brands) still run on those lines. Line numbers are kept.
+ */
+export function scanContentFile(text: string, relPath: string, banned: string[], allowed: string[]): string[] {
+  const names = namesFor(relPath, banned, allowed);
+  if (!relPath.endsWith('.ink')) return scanText(text, relPath, names);
+  const lines = text.split('\n');
+  const isApa = lines.map((l) => APA_PATUT_LINE.test(l));
+  if (!isApa.some(Boolean)) return scanText(text, relPath, names);
+  // Blank out the other kind of line (same length, newlines kept) so both scans report true line numbers.
+  const keep = (want: boolean) => lines.map((l, i) => (isApa[i] === want ? l : ' '.repeat(l.length))).join('\n');
+  const lift = new Set(allowed.map((n) => n.toLowerCase()));
+  return [
+    ...scanText(keep(false), relPath, names),
+    ...scanText(keep(true), relPath, names.filter((n) => !lift.has(n.toLowerCase()))),
+  ];
 }
 
 function listFiles(dir: string): string[] {
@@ -177,7 +200,7 @@ export function loadCelikContent(contentDir: string): LoadResult {
   for (const f of files) {
     const r = rel(f);
     if (r === BANNED_FILE || r === ALLOWED_FILE || !SCANNED_EXT.test(f)) continue;
-    problems.push(...scanText(readText(f), r, namesFor(r, banned, allowed)));
+    problems.push(...scanContentFile(readText(f), r, banned, allowed));
   }
 
   const conceptsPath = join(dir, REAL_NAMES_FILE);

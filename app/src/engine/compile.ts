@@ -3,11 +3,13 @@ import { Compiler } from 'inkjs/compiler/Compiler';
 import { Story } from 'inkjs';
 import { ContentError } from './schemas';
 import { parseLineTags, parseMeta, TagError } from './tags';
-import { OUTCOMES_BY_TYPE, type CompiledScenario, type Flag, type Outcome, type Tactic } from './types';
+import {
+  OUTCOMES_BY_TYPE, rightOutcomes, wrongOutcomes, type CompiledScenario, type Flag, type Outcome, type Tactic,
+} from './types';
 
-/** Finance right calls and wrong calls (SDS 5.4). */
-const FINANCE_RIGHT: readonly Outcome[] = ['safe', 'untung'];
-const FINANCE_WRONG: readonly Outcome[] = ['rugi', 'hutang', 'curiga'];
+/** Finance right calls and wrong calls (SDS 5.4), derived from types.ts like isRight. */
+const FINANCE_RIGHT = rightOutcomes('finance');
+const FINANCE_WRONG = wrongOutcomes('finance');
 
 /** One line of output on a path through a scenario. */
 export interface WalkLine { text: string; tags: string[] }

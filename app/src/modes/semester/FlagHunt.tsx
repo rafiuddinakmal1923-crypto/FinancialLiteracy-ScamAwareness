@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type MouseEvent as ReactMouseEvent, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { motion } from 'framer-motion';
 import { Flag } from 'lucide-react';
@@ -38,21 +38,51 @@ function CardFlyer({ f, onDone }: { f: Flyer; onDone(): void }) {
 
 type PieceState = 'idle' | 'found' | 'revealed';
 
-/** One tappable piece of a bubble. Inline targets (WCAG 2.5.8 exception), so they sit inside the sentence. */
-function Piece({ seg, state, shake, onTap, label }: {
-  seg: Exclude<Segment, { kind: 'space' }>; state: PieceState; shake: number; onTap(el: HTMLElement): void; label?: string;
+/** The flag phrase in `root` nearest to (x, y), if any of its line boxes is within `slop` px; else null. */
+export function nearestFlag(root: HTMLElement, x: number, y: number, slop: number): HTMLElement | null {
+  let best: HTMLElement | null = null;
+  let bestD = slop;
+  for (const el of Array.from(root.querySelectorAll<HTMLElement>('[data-piece="flag"]'))) {
+    for (const r of Array.from(el.getClientRects())) {
+      const dx = Math.max(r.left - x, 0, x - r.right);
+      const dy = Math.max(r.top - y, 0, y - r.bottom);
+      const d = Math.hypot(dx, dy);
+      if (d <= bestD) { bestD = d; best = el; }
+    }
+  }
+  return best;
+}
+
+/**
+ * Invisible tap zones (D31): each piece keeps its inline text layout but gets an absolutely positioned ::after
+ * of at least 48 x 48 px, centred on the word. Zones sit below every visible piece (negative z inside the
+ * bubble's `isolate` wrapper), so a tap on a word's own text is always that word; where zones overlap, a flag
+ * phrase's zone (6 px wider each side) lies above a plain word's.
+ */
+const ZONE = "after:absolute after:left-1/2 after:top-1/2 after:h-12 after:-translate-x-1/2 after:-translate-y-1/2 after:content-['']";
+const ZONE_WORD = `${ZONE} after:-z-20 after:w-[max(100%,48px)]`;
+const ZONE_FLAG = `${ZONE} after:-z-10 after:w-[max(100%_+_12px,48px)]`;
+
+/**
+ * One tappable piece of a bubble. It has no click handler of its own: the transcript handles every tap (and
+ * Enter/Space on a focused piece) in one place, so a tap just beside a flag phrase can count as that flag.
+ */
+function Piece({ seg, state, shake, label }: {
+  seg: Exclude<Segment, { kind: 'space' }>; state: PieceState; shake: number; label?: string;
 }) {
   const cls =
     state === 'found' ? 'bg-danger-soft font-semibold text-danger underline decoration-danger decoration-2 underline-offset-4'
       : state === 'revealed' ? 'text-ink underline decoration-danger decoration-dashed decoration-2 underline-offset-4'
         : 'active:bg-indigo-soft';
+  const flag = seg.kind === 'flag';
   return (
     <button
       key={shake}
       type="button"
-      data-inline-target=""
-      onClick={(e) => onTap(e.currentTarget)}
-      className={`inline rounded-md px-0.5 -mx-0.5 text-left align-baseline ${shake ? 'flag-shake' : ''} ${cls}`}
+      data-piece={seg.kind}
+      data-key={seg.key}
+      data-tactic={flag ? seg.tactic : undefined}
+      className={`relative inline rounded-md px-0.5 -mx-0.5 text-left align-baseline ${flag ? ZONE_FLAG : ZONE_WORD} ${shake ? 'flag-shake' : ''} ${cls}`}
     >
       {state === 'found' && <Flag aria-hidden size={15} strokeWidth={2.25} className="mr-0.5 inline -translate-y-px fill-danger text-danger" />}
       {seg.text}
@@ -104,7 +134,9 @@ export function FlagHunt({ params }: { params: Record<string, string> }) {
     if (done || tapped.has(key)) return;
     setTapped((s) => new Set(s).add(key));
     if (found.includes(tactic)) return;
-    useGame.getState().huntFlag(tactic, meta.family);
+    useGame.getState().huntFlag(tactic, meta);
+    // Only a scam's flags award Imuniti and a card (M6); other hunts just count.
+    if (meta.type !== 'scam') return;
     toast(t('bendera.toast', { n: BALANCE.imuniti.flag, tactic: tn(tactic) }), 'success');
     const to = kadRef.current?.getBoundingClientRect();
     if (to) setFlyers((fs) => [...fs, { key: ++flyKey.current, from: el.getBoundingClientRect(), to }]);
@@ -115,18 +147,36 @@ export function FlagHunt({ params }: { params: Record<string, string> }) {
     setShakes((s) => ({ ...s, [key]: (s[key] ?? 0) + 1 }));
   };
 
+  /**
+   * One handler for every tap in the transcript (D31). A pointer tap within `flagSlopPx` of a flag phrase is
+   * that flag, even when it lands on a neighbouring word or the space between; otherwise a tapped plain word
+   * is a wrong tap. Keyboard activation (detail 0, no pointer position) counts the focused piece only.
+   */
+  const onLogClick = (e: ReactMouseEvent<HTMLElement>) => {
+    if (done) return;
+    const piece = (e.target as HTMLElement).closest<HTMLElement>('[data-piece]');
+    let flag = piece?.dataset.piece === 'flag' ? piece : null;
+    if (!flag && e.detail > 0) flag = nearestFlag(e.currentTarget, e.clientX, e.clientY, BALANCE.aftermath.flagSlopPx);
+    if (flag) tapFlag(flag.dataset.key!, flag.dataset.tactic as Tactic, flag);
+    else if (piece) tapWord(piece.dataset.key!);
+  };
+
   const render = (m: ChatMessage): ReactNode => {
     const segs = segmentText(m.text, m.flags, String(m.id));
-    return segs.map((seg, i) => {
-      if (seg.kind === 'space') return <span key={`s${i}`}>{seg.text}</span>;
-      if (seg.kind === 'word') {
-        return <Piece key={seg.key} seg={seg} state="idle" shake={shakes[seg.key] ?? 0} onTap={() => tapWord(seg.key)} />;
-      }
-      const state: PieceState = tapped.has(seg.key) ? 'found' : done ? 'revealed' : 'idle';
-      const label = state === 'found' ? t('bendera.flag', { tactic: tn(seg.tactic) })
-        : state === 'revealed' ? t('bendera.missed', { tactic: tn(seg.tactic) }) : undefined;
-      return <Piece key={seg.key} seg={seg} state={state} shake={0} label={label} onTap={(el) => tapFlag(seg.key, seg.tactic, el)} />;
-    });
+    // `isolate` keeps the pieces' negative-z tap zones above the bubble background (see ZONE).
+    return (
+      <span className="isolate">
+        {segs.map((seg, i) => {
+          // Spaces let taps through to the tap zones underneath.
+          if (seg.kind === 'space') return <span key={`s${i}`} className="pointer-events-none">{seg.text}</span>;
+          if (seg.kind === 'word') return <Piece key={seg.key} seg={seg} state="idle" shake={shakes[seg.key] ?? 0} />;
+          const state: PieceState = tapped.has(seg.key) ? 'found' : done ? 'revealed' : 'idle';
+          const label = state === 'found' ? t('bendera.flag', { tactic: tn(seg.tactic) })
+            : state === 'revealed' ? t('bendera.missed', { tactic: tn(seg.tactic) }) : undefined;
+          return <Piece key={seg.key} seg={seg} state={state} shake={0} label={label} />;
+        })}
+      </span>
+    );
   };
 
   const n = targets.length;
@@ -187,7 +237,8 @@ export function FlagHunt({ params }: { params: Record<string, string> }) {
             </div>
           </div>
         </div>
-        <ol>
+        {/* Delegated taps; the pieces themselves are buttons, so keyboard users activate them directly. */}
+        <ol onClick={onLogClick}>
           {transcript.map((m, i) => {
             const prev = transcript[i - 1];
             const same = !!prev && prev.from === m.from && prev.speaker === m.speaker;

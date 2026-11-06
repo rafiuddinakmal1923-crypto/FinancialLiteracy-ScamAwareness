@@ -79,3 +79,44 @@ test('Cuba lagi restores the RM balance and restarts the chat', async ({ page })
   await expect(page.getByLabel('Baki RM2,000')).toBeVisible();
   await expect(page.getByText('Salam dik 😊 Akak Mira, HR dari Bintang Digital Sdn Bhd.')).toBeVisible({ timeout: 5_000 });
 });
+
+test('flag hunt: every word has a 48 px tap zone and a tap just beside a flag phrase counts as found (D31)', async ({ page }) => {
+  await toConsequence(page);
+  await page.getByRole('button', { name: 'Kumpul bendera merah' }).click();
+  const hunt = page.locator('[data-screen="bendera"]');
+  await expect(hunt.getByText('Tekan 3 bendera merah dalam perbualan ini.')).toBeVisible();
+  const kad = page.getByTestId('kad-count');
+  const tries = hunt.getByText(/Salah tekan: \d daripada 3/);
+
+  // Every tappable word: its tap zone (the ::after box) is at least 48 px tall and wide.
+  const zones = await hunt.locator('[role="log"] button').evaluateAll((els) => els.map((el) => {
+    const z = getComputedStyle(el, '::after');
+    return { text: el.textContent, pos: z.position, w: parseFloat(z.width), h: parseFloat(z.height) };
+  }));
+  expect(zones.length).toBeGreaterThan(20);
+  for (const z of zones) {
+    expect(z.pos, z.text ?? '').toBe('absolute');
+    expect(z.h, z.text ?? '').toBeGreaterThanOrEqual(48);
+    expect(z.w, z.text ?? '').toBeGreaterThanOrEqual(48);
+  }
+
+  // 5 px left of "RM300 sehari" (over the space or the end of "dapat"), then 5 px below "slot tinggal 3".
+  const flag = hunt.getByRole('button', { name: /RM300 sehari/ });
+  await flag.scrollIntoViewIfNeeded();
+  const a = (await flag.boundingBox())!;
+  await page.mouse.click(a.x - 5, a.y + a.height / 2);
+  await expect(kad).toHaveText('1');
+  await expect(tries).toHaveText('Salah tekan: 0 daripada 3');
+
+  const slot = hunt.getByRole('button', { name: /slot tinggal 3/i });
+  await slot.scrollIntoViewIfNeeded();
+  const b = (await slot.boundingBox())!;
+  await page.mouse.click(b.x + b.width / 2, b.y + b.height + 5);
+  await expect(kad).toHaveText('2');
+  await expect(tries).toHaveText('Salah tekan: 0 daripada 3');
+
+  // A plain word far from any flag is still a wrong tap.
+  await hunt.getByRole('button', { name: 'Salam', exact: true }).click();
+  await expect(tries).toHaveText('Salah tekan: 1 daripada 3');
+  await expect(kad).toHaveText('2');
+});
