@@ -16,6 +16,12 @@ describe('harian store', () => {
     useGame.getState().playHarian(5, '2026-11-08');
     expect(useGame.getState().harian).toMatchObject({ streak: 2, lastScore: 5, lastDeckDate: '2026-11-08' });
   });
+  it('playHarian changes nothing when the clock moved back', () => {
+    useGame.getState().playHarian(4, '2026-11-07');
+    const before = useGame.getState().harian;
+    useGame.getState().playHarian(2, '2026-11-03');
+    expect(useGame.getState().harian).toEqual(before);
+  });
   it('does not touch the 60-second round stand-in fields', () => {
     useGame.getState().playHarian(3, '2026-11-07');
     expect(useGame.getState().swipe).toEqual({ best: 0, streak: 0, lastPlayed: null });

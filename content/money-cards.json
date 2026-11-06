@@ -123,7 +123,7 @@
     "id": "m017", "kind": "truefalse", "concept": "hutang",
     "text": { "ms": "Pemberi pinjaman yang sah tidak akan minta kad ATM atau PIN anda sebagai cagaran.", "en": "A legitimate lender will not ask for your ATM card or PIN as security." },
     "answer": true,
-    "why": { "ms": "Kad dan PIN anda kunci kepada duit anda. Minta benda itu ialah tanda pinjaman haram.", "en": "Your card and PIN are the key to your money. Asking for them is a sign of an illegal loan." }
+    "why": { "ms": "Kad dan PIN anda kunci kepada duit anda. Minta benda itu ialah tanda pinjaman tidak berlesen.", "en": "Your card and PIN are the key to your money. Asking for them is a sign of an unlicensed loan." }
   },
   {
     "id": "m018", "kind": "truefalse", "concept": "semak",

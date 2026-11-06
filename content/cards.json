@@ -36,8 +36,8 @@
     "why": { "ms": "Anda tak masuk cabutan pun, tapi hadiah minta butiran akaun. Itu umpan.", "en": "You never entered a draw, yet the prize wants your account details. That is bait." }
   },
   {
-    "id": "c007", "channel": "chat", "sender": "Abang Rafi",
-    "text": { "ms": "Sayang, abang kecemasan kat luar negara. Tolong transfer RM800 sekarang ya. Jangan cerita kat family dulu, nanti abang ganti.", "en": "Darling, I have an emergency abroad. Please transfer RM800 right now. Do not tell your family yet, I will pay you back." },
+    "id": "c007", "channel": "chat", "sender": "Abang Rafi (kenalan online)",
+    "text": { "ms": "Sayang, abang kecemasan kat luar negara. Kita kenal online je, tapi abang percaya awak. Tolong transfer RM800 sekarang ya. Jangan cerita kat family dulu, nanti abang ganti.", "en": "Darling, I have an emergency abroad. We only know each other online, but I trust you. Please transfer RM800 right now. Do not tell your family yet, I will pay you back." },
     "answer": "scam", "tactics": ["urgency", "secrecy"],
     "why": { "ms": "Orang yang kenal lama online dan minta duit sambil suruh rahsia ialah tanda penipuan cinta.", "en": "An online-only partner asking for money and secrecy is a love scam sign." }
   },
@@ -163,9 +163,9 @@
   },
   {
     "id": "c028", "channel": "sms", "sender": "Klinik Cempaka",
-    "text": { "ms": "Peringatan: temujanji gigi anda esok 9:30 pagi. Nak tukar masa? Telefon klinik di 011-0000 0123.", "en": "Reminder: your dental appointment is tomorrow at 9:30 am. Want to change the time? Call the clinic on 011-0000 0123." },
+    "text": { "ms": "Peringatan: temujanji gigi anda esok 9:30 pagi. Nak tukar masa? Telefon klinik guna nombor pada slip temujanji anda.", "en": "Reminder: your dental appointment is tomorrow at 9:30 am. Want to change the time? Call the clinic using the number on your appointment slip." },
     "answer": "legit", "tactics": [],
-    "why": { "ms": "Peringatan biasa tanpa bayaran atau pautan, dan ada nombor klinik untuk disahkan.", "en": "A normal reminder with no payment or link, and a clinic number you can check." }
+    "why": { "ms": "Tiada bayaran atau pautan; telefon klinik guna nombor yang kamu sendiri simpan.", "en": "No payment or link; call the clinic on a number you saved yourself." }
   },
   {
     "id": "c029", "channel": "chat", "sender": "Kak Mira (Kedai Kasut)",
@@ -175,8 +175,8 @@
   },
   {
     "id": "c030", "channel": "email", "sender": "Bintang Digital Sdn Bhd",
-    "text": { "ms": "Resit #1042: langganan bulanan RM9.90, tarikh 7 Nov. Tak kenal pembelian ini? Telefon kami di 011-0000 0456 atau semak dalam apl anda.", "en": "Receipt #1042: monthly subscription RM9.90, 7 Nov. Don't recognise this purchase? Call us on 011-0000 0456 or check in your app." },
+    "text": { "ms": "Resit #1042: langganan bulanan RM9.90, tarikh 7 Nov. Tak kenal pembelian ini? Semak penyata bank dalam apl anda sendiri.", "en": "Receipt #1042: monthly subscription RM9.90, 7 Nov. Don't recognise this purchase? Check your bank statement in your own app." },
     "answer": "legit", "tactics": [],
-    "why": { "ms": "Resit sahaja, tiada pautan bayar, dan ada nombor untuk disahkan.", "en": "A receipt only, with no payment link and a number to verify." }
+    "why": { "ms": "Tiada pautan, tiada nombor untuk dihubungi; semak dalam apl sendiri.", "en": "No link and no number to call; check in your own app." }
   }
 ]

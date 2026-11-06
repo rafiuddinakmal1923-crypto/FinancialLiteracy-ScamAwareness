@@ -329,7 +329,8 @@ export const useGame = create<GameData & GameActions>()((set, get) => ({
 
   playHarian: (score, today) => {
     const { harian } = get();
-    if (harian.lastPlayed === today) return;
+    // Same day (already played) or a clock moved back: nothing changes, not even the last result.
+    if (harian.lastPlayed !== null && today <= harian.lastPlayed) return;
     set({ harian: { ...harian, ...updateHarianStreak(harian, today), lastScore: score, lastDeckDate: today } });
   },
 

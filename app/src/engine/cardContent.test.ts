@@ -52,8 +52,38 @@ describe('cards.json', () => {
   });
 });
 
+describe('cards.json hygiene', () => {
+  const cards = parseContent(CardsFileSchema, load('cards.json'), 'cards.json');
+  const PHONE = /(?<![\d+])(?:\+?6)?0\d{1,2}[-\s.]?\d{3,4}[-\s.]?\d{4}(?!\d)/g;
+  const texts = (c: (typeof cards)[number]) => [c.text.ms, c.text.en ?? '', c.why.ms, c.why.en ?? ''];
+  it('every URL-like token ends in .test', () => {
+    for (const c of cards) {
+      for (const t of texts(c)) {
+        for (const m of t.matchAll(/[a-z0-9-]+(?:\.[a-z0-9-]+)*\.[a-z]{2,}(?:\/\S*)?/gi)) {
+          expect(m[0].split('/')[0], `${c.id}: ${m[0]}`).toMatch(/\.test$/);
+        }
+      }
+    }
+  });
+  it('every phone number is 01X-0000 0NNN, and legit cards have none', () => {
+    for (const c of cards) {
+      for (const t of texts(c)) {
+        for (const m of t.matchAll(PHONE)) expect(m[0], c.id).toMatch(/^01\d-0000 0\d{3}$/);
+        if (c.answer === 'legit') expect(t.match(PHONE), `${c.id} legit has a number`).toBeNull();
+      }
+    }
+  });
+});
+
 describe('money-cards.json', () => {
   const cards = parseContent(MoneyCardsFileSchema, load('money-cards.json'), 'money-cards.json');
+  it('has en on text, why and options', () => {
+    for (const c of cards) {
+      expect(c.text.en, c.id).toBeTruthy();
+      expect(c.why.en, c.id).toBeTruthy();
+      if (c.kind === 'pick') for (const o of c.options) expect(o.en, c.id).toBeTruthy();
+    }
+  });
   it('has 20 cards, every concept >= 3, both kinds, unique ids', () => {
     expect(cards).toHaveLength(20);
     for (const c of CONCEPTS) expect(cards.filter((m) => m.concept === c).length, c).toBeGreaterThanOrEqual(3);
