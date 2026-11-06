@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { MotionConfig } from 'framer-motion';
+import { DemoWatermark } from './shell/DemoWatermark';
 import { PhoneFrame } from './shell/PhoneFrame';
 import { RouteErrorBoundary } from './shell/ErrorScreen';
 import { FALLBACK_PATH, ROUTE_TABLE } from './shell/routes';
@@ -56,6 +57,18 @@ export default function App() {
 
   const { route, params } = match;
   const Screen = route.component;
+  if (route.layout === 'full') {
+    return (
+      <MotionConfig reducedMotion={reducedMotion ? 'always' : 'user'}>
+        <div className="relative min-h-dvh w-full">
+          <RouteErrorBoundary key={path}>
+            <Screen params={params} />
+          </RouteErrorBoundary>
+          <DemoWatermark />
+        </div>
+      </MotionConfig>
+    );
+  }
   return (
     <MotionConfig reducedMotion={reducedMotion ? 'always' : 'user'}>
       <PhoneFrame

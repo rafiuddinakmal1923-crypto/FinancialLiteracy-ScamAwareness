@@ -25,7 +25,7 @@ export function hashString(s: string): number {
 }
 
 /** Fisher-Yates on a copy. */
-function shuffle<T>(list: readonly T[], rand: () => number): T[] {
+export function shuffle<T>(list: readonly T[], rand: () => number): T[] {
   const a = [...list];
   for (let i = a.length - 1; i > 0; i--) {
     const j = Math.floor(rand() * (i + 1));

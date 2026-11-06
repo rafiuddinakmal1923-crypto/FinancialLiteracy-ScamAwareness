@@ -1,6 +1,21 @@
 // Routes captured by screens.spec.ts. Later tasks append their screens here.
 import type { Page } from '@playwright/test';
-import { acceptMuleOffer, patchSavedGame, playHarianCards, playScenario1ToEnd, SAMPLE_TX } from './helpers';
+import { acceptMuleOffer, patchSavedGame, playHarianCards, playKelasRounds, playScenario1ToEnd, SAMPLE_TX } from './helpers';
+
+/** A fresh Mod Kelas played up to the given state (Merah takes its first button, Biru its second). */
+function kelasAt(state: 'question' | 'reveal' | 'scores' | 'winner') {
+  return async (page: Page): Promise<void> => {
+    await page.goto('/#/home');
+    await page.goto('/#/kelas');
+    if (state === 'winner') { await playKelasRounds(page, 10); return; }
+    await page.getByRole('button', { name: 'Mula', exact: true }).click();
+    if (state === 'question') return;
+    await page.getByRole('group', { name: 'Pasukan Merah' }).getByRole('button').first().click();
+    await page.getByRole('group', { name: 'Pasukan Biru' }).getByRole('button').nth(1).click();
+    await page.getByRole('button', { name: 'Dedahkan', exact: true }).click();
+    if (state === 'scores') await page.getByRole('button', { name: 'Papan skor', exact: true }).click();
+  };
+}
 
 /** Confirms the starting split (Simpanan 10%, RM200: under the RM300 emergency target). */
 async function confirmBudget(page: Page): Promise<void> {
@@ -56,6 +71,12 @@ export const ROUTES: ScreenRoute[] = [
   { path: '/harian', name: 'harian-esok', screen: 'harian', waitFor: 'Datang lagi esok', setup: async (page) => { await page.goto('/#/home'); await page.goto('/#/harian'); } },
   { path: '/swipe', name: 'swipe', waitFor: 'Mula' },
   { path: '/swipe', name: 'swipe-main', screen: 'swipe', waitFor: 'Skor 0', setup: async (page) => { await page.goto('/#/swipe'); await page.getByRole('button', { name: 'Mula' }).click(); } },
+  // Mod Kelas (projector layout, no phone frame): lobby, a question, the reveal, the scoreboard, the winner.
+  { path: '/kelas', name: 'kelas', waitFor: 'Pilih set kad' },
+  { path: '/kelas', name: 'kelas-soalan', screen: 'kelas', waitFor: 'Pusingan 1 / 10', setup: kelasAt('question') },
+  { path: '/kelas', name: 'kelas-dedah', screen: 'kelas', waitFor: 'Papan skor', setup: kelasAt('reveal') },
+  { path: '/kelas', name: 'kelas-skor', screen: 'kelas', waitFor: 'Pusingan seterusnya', setup: kelasAt('scores') },
+  { path: '/kelas', name: 'kelas-pemenang', screen: 'kelas', waitFor: 'Main lagi', setup: kelasAt('winner') },
   // In-game fake page on its own route (a link scenario opens the same page over the chat).
   { path: '/laman/kurierkilat-bayar.test', name: 'laman', screen: 'fakepage' },
   // The mule demo preset (resets the game): the chat with the urgency cue, then the BankKu transfer and its TAC.

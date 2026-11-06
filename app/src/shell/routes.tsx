@@ -14,6 +14,7 @@ import { WeekIntro } from '../modes/semester/WeekIntro';
 import { Kalkulator } from '../modes/kalkulator/Kalkulator';
 import { CekHarian } from '../modes/harian/CekHarian';
 import { SwipeGame } from '../modes/harian/SwipeGame';
+import { ClassMode } from '../modes/classmode/ClassMode';
 import { DemoScene } from './DemoScene';
 import { HomeScreen } from './HomeScreen';
 import { Onboarding } from './Onboarding';
@@ -32,6 +33,8 @@ export interface RouteDef {
   /** i18n key for the desktop Kancil tip panel, and his mood there. */
   tip: string;
   mood?: KancilMood;
+  /** 'full' renders the screen on its own, with no phone frame or side panels (Mod Kelas on a projector). */
+  layout?: 'phone' | 'full';
 }
 
 export const ROUTE_TABLE: RouteDef[] = [
@@ -50,6 +53,7 @@ export const ROUTE_TABLE: RouteDef[] = [
   { pattern: '/kalkulator/:tab', name: 'kalkulator-tab', component: Kalkulator, statusBar: 'dark', needsGame: true, tip: 'side.tip.kalkulator', mood: 'smile' },
   { pattern: '/harian', name: 'harian', component: CekHarian, statusBar: 'dark', needsGame: true, tip: 'side.tip.harian', mood: 'smile' },
   { pattern: '/swipe', name: 'swipe', component: SwipeGame, statusBar: 'dark', needsGame: true, tip: 'side.tip.swipe', mood: 'neutral' },
+  { pattern: '/kelas', name: 'kelas', component: ClassMode, layout: 'full', tip: 'side.tip.home' },
   { pattern: '/semester/minggu', name: 'minggu', component: WeekIntro, statusBar: 'dark', needsGame: true, tip: 'side.tip.minggu', mood: 'neutral' },
   { pattern: '/laman/:url', name: 'laman', component: FakePageScreen, statusBar: 'light', needsGame: true, tip: 'side.tip.laman', mood: 'worried' },
   { pattern: '/demo/:scene', name: 'demo', component: DemoScene, statusBar: 'light', tip: 'side.tip.demo', mood: 'neutral' },

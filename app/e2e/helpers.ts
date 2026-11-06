@@ -139,3 +139,22 @@ export async function playHarianCards(page: Page, until: number, finish = false)
     await page.getByRole('button', { name: 'Seterusnya' }).click();
   }
 }
+
+/**
+ * Mod Kelas, from the lobby (default Campur, 2 teams): Mula, then plays `rounds` rounds. Pasukan Merah always takes
+ * its first button and Pasukan Biru its second, so the scores depend on the cards but stay in multiples of 100.
+ * Stops on the scoreboard of the last round played unless `through` is set; then it moves on past it.
+ */
+export async function playKelasRounds(page: Page, rounds: number, through = true): Promise<void> {
+  await page.getByRole('button', { name: 'Mula', exact: true }).click();
+  for (let r = 1; r <= rounds; r++) {
+    await expect(page.getByText(`Pusingan ${r} / 10`)).toBeVisible();
+    await page.getByRole('group', { name: 'Pasukan Merah' }).getByRole('button').first().click();
+    await page.getByRole('group', { name: 'Pasukan Biru' }).getByRole('button').nth(1).click();
+    await page.getByRole('button', { name: 'Dedahkan', exact: true }).click();
+    await page.getByRole('button', { name: 'Papan skor', exact: true }).click();
+    if (r < rounds || through) {
+      await page.getByRole('button', { name: r === 10 ? 'Lihat pemenang' : 'Pusingan seterusnya', exact: true }).click();
+    }
+  }
+}
