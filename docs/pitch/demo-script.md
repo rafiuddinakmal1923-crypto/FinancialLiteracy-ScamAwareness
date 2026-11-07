@@ -7,8 +7,9 @@ and fix the timings.
 ## Setup (before going on stage)
 - Two phones on the **deployed link**, opened once online, then **airplane mode on** (status bar visible on the projector).
 - DEMO watermark on. Notifications off.
-- Main phone state: a game at week 5 with a goal picked (Matlamat), some Duit left, Kedai not used yet.
-  Asked Akmal for a `#/demo/pitch` scene (REQ 3 in docs/pitch/demo-check.md); record the final URL here.
+- Main phone state: open **`<deployed link>/#/demo/pitch`** on both phones (Akmal, 8 Nov). It opens the home screen
+  at week 5 with RM1,120 Duit, the emergency-fund goal at RM200 / RM300, four chats played, and Kedai and Suapan untouched.
+  Open it again between rehearsals to reset.
 - **Dry run status:** docs/pitch/demo-check.md. Re-run it after each evening merge.
 - Backup: the offline screen recording Akmal makes on Tue 17 Nov (A9), ready to play if a phone fails.
 

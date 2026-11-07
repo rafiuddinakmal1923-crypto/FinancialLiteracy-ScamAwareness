@@ -4,13 +4,18 @@ Walked the 18 Nov demo path (docs/pitch/demo-script.md, SRS 5.2b) on the dev ser
 (`dbc066b`) plus `lane/wafi` (`de7d335`, W2-W4, not merged yet), merged only in a local test branch that was then
 deleted. Re-run this after every evening merge until the demo passes end to end.
 
+**Latest run (8 Nov, `main` `557e4a5` + `lane/wafi` `abea6f8`, from `#/demo/pitch`):** 8 of 9 checks pass. Home at week 5,
+Semak → 137,640.8% + Terlalu Lumayan, Kedai with RM1,120 Duit, Kos Sebenar RM120 / RM1,320, goal bar, report card.
+Only Tonton fails (still a placeholder). Wafi's W2-W4 are not in `main` yet, so on the live app Suapan has no
+Percaya/Semak/Lapor and Kedai is a placeholder until Akmal merges `lane/wafi`.
+
 | Demo step | Result | Blocker |
 | --- | --- | --- |
 | Suapan feed shows the "2% a day" post (`p004`, Abang Duit Pantas) | ✅ Works (W1 on `main`; Percaya/Semak/Lapor from W2) | - |
 | Semak → debrief sheet ("Ini hype: sah, tetapi mengelirukan", +10 XP) | ✅ Works | - |
 | Semak → **Semak Pulangan with Terlalu Lumayan** | ✅ Fixed by Danish (`8064a40`, re-tested 8 Nov): 137,640.8% a year + Terlalu Lumayan. Reaches the live app after Akmal merges `lane/danish` and `lane/wafi` | ~~REQ 1~~ done |
 | Kedai Kampus: phone on instalment → **Kos Sebenar before confirming** | ✅ Fixed by Danish (`8064a40`, re-tested 8 Nov): RM110.00 a month, RM1,320.00 total, RM120.00 true cost, about 18% a year | ~~REQ 2~~ done |
-| Matlamat goal bar in Dompet | ⚠️ Not seen: the demo preset starts at week 1 with no goal picked, so GoalBar renders nothing (expected) | **REQ 3** (Akmal) |
+| Matlamat goal bar in Dompet | ✅ With Akmal's `#/demo/pitch` (`557e4a5`): "Matlamat: Dana kecemasan RM200 / RM300" (screenshot `img/dompet-goal.png`) | ~~REQ 3~~ done |
 | Tonton explainer in Kad Ilmu | ⏳ Placeholder ("Akan datang") | Wafi W7 |
 | Papan Markah, Kad Keputusan | ⏳ Not built yet | Wafi W5, W6 |
 
