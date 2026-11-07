@@ -8,6 +8,8 @@ test('report card, Kad book and a Kad Ilmu from a finished semester', async ({ p
   await expect(page.getByRole('heading', { name: 'Laporan semester' })).toBeVisible();
   await expect(page.getByRole('img', { name: /^Gred semester: [ABCD]/ })).toBeVisible();
   await expect(page.getByText('Paling perlu dilatih:', { exact: false })).toBeVisible();
+  await expect(page.getByText('Celik Kewangan setiap konsep')).toBeVisible();
+  await expect(page.getByText('Imuniti setiap helah')).toBeVisible();
   await expect(page.getByRole('progressbar')).toHaveCount(13);
   await expect(page.getByText('Semester belum tamat')).toHaveCount(0);
 

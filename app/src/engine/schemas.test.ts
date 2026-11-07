@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { CONCEPTS, TACTICS } from './types';
-import { CONTENT_FILES, CardsFileSchema, ConceptsFileSchema, ContentError, PagesFileSchema, TacticsFileSchema, parseContent } from './schemas';
+import { CONTENT_FILES, CardsFileSchema, ConceptsFileSchema, ContentError, DrillsFileSchema, PagesFileSchema, TacticsFileSchema, parseContent } from './schemas';
 
 const loc = (ms: string) => ({ ms });
 const tactic = (code: string) => ({
@@ -104,5 +104,30 @@ describe('pages.json (Task 15, fake .test pages)', () => {
     const parsed = parseContent(PagesFileSchema, raw, 'pages.json');
     expect(parsed['kurierkilat-bayar.test']?.asksTac).toBe(true);
     expect(parsed['cryptonaga.test']?.asksTac).toBe(false);
+  });
+});
+
+describe('drills.json (Task 27, S16)', () => {
+  const raw = JSON.parse(readFileSync(new URL('../../../content/drills.json', import.meta.url), 'utf8'));
+  it('is registered and parses', () => {
+    expect(CONTENT_FILES['drills.json']).toBe(DrillsFileSchema);
+    const d = parseContent(DrillsFileSchema, raw, 'drills.json');
+    expect(d.call997.steps.length).toBeGreaterThanOrEqual(5);
+    expect(d.call997.checklist.length).toBeGreaterThanOrEqual(3);
+    expect(d.actions.map((a) => a.id)).toEqual(['save-997', 'bookmark-semak', 'bank-alerts', 'savings-goal', 'check-licence', 'tell-family']);
+    expect(d.actions.every((a) => a.stars === 1)).toBe(true);
+  });
+  it('knows the mule account (3 reports) and a clean one (0)', () => {
+    const d = parseContent(DrillsFileSchema, raw, 'drills.json');
+    expect(d.semak.accounts).toContainEqual({ number: '0000-0000-0638', reports: 3 });
+    expect(d.semak.accounts).toContainEqual({ number: '0000-0000-0111', reports: 0 });
+  });
+  it('rejects a real-looking account number', () => {
+    const bad = { ...raw, semak: { ...raw.semak, accounts: [{ number: '1234-5678-9012', reports: 1 }] } };
+    expect(() => parseContent(DrillsFileSchema, bad, 'drills.json')).toThrow(ContentError);
+  });
+  it('rejects duplicate action ids', () => {
+    const bad = { ...raw, actions: [raw.actions[0], raw.actions[0]] };
+    expect(() => parseContent(DrillsFileSchema, bad, 'drills.json')).toThrow(/duplicate/);
   });
 });

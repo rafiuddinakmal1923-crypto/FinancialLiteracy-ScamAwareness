@@ -19,6 +19,8 @@ export const BALANCE = {
   },
   /** Semester loop: how long the "Mesej baru dari ..." banner shows before the chat opens (Task 25). */
   loop: { bannerMs: 1200 },
+  /** Latihan: how long the simulated 997 call "connects", and how long a checklist confetti burst shows. */
+  drill: { connectMs: 1200, burstMs: 1100 },
   desperation: { simpananBelow: 100, tekananUp: 10, cueAt: 60 },
   adaptive: { base: 100, bonus: 10, scamShareMin: 0.35, scamShareMax: 0.45 },
   /**

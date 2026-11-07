@@ -82,11 +82,12 @@ test('saved game: Mula goes straight home; unknown routes go home', async ({ pag
   await expect(page.getByText('Minggu 1 daripada 12')).toBeVisible();
 });
 
-test('tiles without a screen yet show an "Akan datang" toast', async ({ page }) => {
+test('the Latihan tile opens the Latihan Tindakan menu (every home tile now has a screen)', async ({ page }) => {
   await seedGame(page);
   await page.getByRole('button', { name: 'Latihan', exact: true }).click();
-  await expect(page.getByRole('status').filter({ hasText: 'Akan datang' })).toBeVisible();
-  await expect(page).toHaveURL(/#\/home$/);
+  await expect(page).toHaveURL(/#\/latihan$/);
+  await expect(page.getByRole('heading', { name: 'Latihan Tindakan' })).toBeVisible();
+  await expect(page.getByRole('status').filter({ hasText: 'Akan datang' })).toHaveCount(0);
 });
 
 test('language toggle switches to English and back', async ({ page }) => {

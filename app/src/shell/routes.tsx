@@ -21,6 +21,10 @@ import { Kalkulator } from '../modes/kalkulator/Kalkulator';
 import { CekHarian } from '../modes/harian/CekHarian';
 import { SwipeGame } from '../modes/harian/SwipeGame';
 import { ClassMode } from '../modes/classmode/ClassMode';
+import { Checklist } from '../modes/drills/Checklist';
+import { Drill997 } from '../modes/drills/Drill997';
+import { Latihan } from '../modes/drills/Latihan';
+import { SemakSim } from '../modes/drills/SemakSim';
 import { DemoScene } from './DemoScene';
 import { HomeScreen } from './HomeScreen';
 import { Onboarding } from './Onboarding';
@@ -67,6 +71,10 @@ export const ROUTE_TABLE: RouteDef[] = [
   { pattern: '/semester/rapor', name: 'rapor', component: ReportCard, statusBar: 'light', needsGame: true, tip: 'side.tip.rapor', mood: 'proud' },
   { pattern: '/kad', name: 'kad', component: KadBook, statusBar: 'dark', needsGame: true, tip: 'side.tip.kad', mood: 'smile' },
   { pattern: '/kad/ilmu/:code', name: 'kad-ilmu', component: KadIlmu, statusBar: 'dark', needsGame: true, tip: 'side.tip.kad', mood: 'smile' },
+  { pattern: '/latihan', name: 'latihan', component: Latihan, statusBar: 'light', needsGame: true, tip: 'side.tip.latihan', mood: 'smile' },
+  { pattern: '/latihan/997', name: 'latihan-997', component: Drill997, statusBar: 'light', needsGame: true, tip: 'side.tip.latihan997', mood: 'worried' },
+  { pattern: '/latihan/semak', name: 'latihan-semak', component: SemakSim, statusBar: 'light', needsGame: true, tip: 'side.tip.latihanSemak', mood: 'neutral' },
+  { pattern: '/latihan/senarai', name: 'latihan-senarai', component: Checklist, statusBar: 'light', needsGame: true, tip: 'side.tip.latihanSenarai', mood: 'proud' },
   { pattern: '/laman/:url', name: 'laman', component: FakePageScreen, statusBar: 'light', needsGame: true, tip: 'side.tip.laman', mood: 'worried' },
   { pattern: '/demo/:scene', name: 'demo', component: DemoScene, statusBar: 'light', tip: 'side.tip.demo', mood: 'neutral' },
 ];

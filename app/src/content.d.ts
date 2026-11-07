@@ -7,7 +7,7 @@ declare module 'virtual:celik-content' {
   export const moneyCards: import('./engine/schemas').MoneyCard[] | null;
   export const concepts: import('./engine/schemas').ConceptInfo[] | null;
   export const sindiket: unknown;
-  export const drills: unknown;
+  export const drills: import('./engine/schemas').DrillsFile | null;
   export const semester: { weeks: import('./engine/schemas').WeekDef[] } | null;
   export const calcPresets: import('./engine/schemas').CalcPreset[] | null;
   export const pages: Record<string, import('./engine/schemas').FakePageDef> | null;

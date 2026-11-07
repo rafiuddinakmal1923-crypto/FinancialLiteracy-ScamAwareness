@@ -45,12 +45,17 @@ export async function patchSavedGame(page: Page, patch: Record<string, unknown>,
       req.onsuccess = () => resolve(req.result);
       req.onerror = () => reject(req.error);
     });
-    const store = db.transaction('save', 'readwrite').objectStore('save');
-    const row = await new Promise<{ id: string; data: { game: Record<string, unknown> } }>((resolve, reject) => {
-      const req = store.get('main');
-      req.onsuccess = () => resolve(req.result);
+    type Row = { id: string; data: { game: Record<string, unknown> } };
+    const read = () => new Promise<Row | undefined>((resolve, reject) => {
+      const req = db.transaction('save', 'readonly').objectStore('save').get('main');
+      req.onsuccess = () => resolve(req.result as Row | undefined);
       req.onerror = () => reject(req.error);
     });
+    // The app's pagehide save (from leaving the app page) can still be committing: wait for the row instead of racing it.
+    let row = await read();
+    for (let i = 0; !row && i < 50; i++) { await new Promise((r) => setTimeout(r, 100)); row = await read(); }
+    if (!row) throw new Error('patchSavedGame: no saved game in IndexedDB');
+    const store = db.transaction('save', 'readwrite').objectStore('save');
     const game = row.data.game;
     for (const [k, v] of Object.entries(p)) {
       game[k] = k === 'meters' ? { ...(game.meters as object), ...(v as object) } : v;

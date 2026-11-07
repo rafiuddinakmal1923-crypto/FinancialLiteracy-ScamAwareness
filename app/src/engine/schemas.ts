@@ -168,6 +168,43 @@ export const CalcPresetsFileSchema = z.array(CalcPresetSchema).superRefine((list
   });
 });
 
+/**
+ * Latihan Tindakan (Task 27, UI-SPEC S16). `semak.accounts` are in-game fictional numbers only ("0000-0000-0NNN").
+ * Real names allowed in the copy: NSRC, 997, Semak Mule (the correct actions); anything else stays banned.
+ */
+export const FICTIONAL_ACCOUNT_RE = /^0000-0000-0\d{3}$/;
+export const DrillsFileSchema = z.strictObject({
+  call997: z.strictObject({
+    steps: z.array(LocalizedSchema).min(1),
+    checklist: z.array(LocalizedSchema).min(1),
+    why: LocalizedSchema,
+  }),
+  semak: z.strictObject({
+    accounts: z.array(z.strictObject({
+      number: z.string().regex(FICTIONAL_ACCOUNT_RE, 'must be a fictional 0000-0000-0NNN account'),
+      reports: z.number().int().min(0),
+    })).min(1),
+    hint: LocalizedSchema,
+  }),
+  actions: z.array(z.strictObject({
+    id: z.string().regex(/^[a-z0-9-]+$/),
+    label: LocalizedSchema,
+    stars: z.number().int().min(1),
+  })).min(1),
+}).superRefine((f, ctx) => {
+  const seen = new Set<string>();
+  f.actions.forEach((a, i) => {
+    if (seen.has(a.id)) ctx.addIssue({ code: 'custom', path: ['actions', i, 'id'], message: `duplicate action id "${a.id}"` });
+    seen.add(a.id);
+  });
+  const nums = new Set<string>();
+  f.semak.accounts.forEach((a, i) => {
+    if (nums.has(a.number)) ctx.addIssue({ code: 'custom', path: ['semak', 'accounts', i, 'number'], message: `duplicate account "${a.number}"` });
+    nums.add(a.number);
+  });
+});
+export type DrillsFile = z.infer<typeof DrillsFileSchema>;
+
 /** Registry of content file name -> schema. Owner tasks register theirs here. */
 export const CONTENT_FILES: Record<string, ZodType> = {
   'tactics.json': TacticsFileSchema,
@@ -177,6 +214,7 @@ export const CONTENT_FILES: Record<string, ZodType> = {
   'semester.json': SemesterFileSchema,
   'pages.json': PagesFileSchema,
   'calc-presets.json': CalcPresetsFileSchema,
+  'drills.json': DrillsFileSchema,
 };
 
 export function parseContent<T>(schema: ZodType<T>, data: unknown, file: string): T {

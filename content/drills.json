@@ -1,0 +1,97 @@
+{
+  "call997": {
+    "steps": [
+      {
+        "ms": "Beritahu apa yang berlaku. Contoh: \"Saya terpindah duit kepada orang yang minta bayaran dulu, dan saya rasa saya kena tipu.\"",
+        "en": "Say what happened. Example: \"I transferred money to someone who asked for payment first, and I think I was scammed.\""
+      },
+      {
+        "ms": "Beritahu bila ia berlaku. Sebut tarikh dan masa, anggaran pun boleh.",
+        "en": "Say when it happened. Give the date and time; an estimate is fine."
+      },
+      {
+        "ms": "Beritahu jumlah duit dan ke mana ia pergi. Sebut jumlah, nama bank dan cara kamu bayar.",
+        "en": "Say how much and where it went. Give the amount, the bank and how you paid."
+      },
+      {
+        "ms": "Bacakan nombor akaun penerima perlahan-lahan, satu digit demi satu digit. Dalam latihan ini: 0000-0000-0638 (contoh).",
+        "en": "Read the receiving account number slowly, one digit at a time. In this drill: 0000-0000-0638 (example)."
+      },
+      {
+        "ms": "Beritahu apa yang sudah kamu buat: contohnya sudah telefon bank, atau sudah simpan tangkapan skrin perbualan.",
+        "en": "Say what you have already done, for example called your bank or saved screenshots of the chat."
+      },
+      {
+        "ms": "Kekal di talian, dan beri nombor telefon kamu sendiri supaya mereka boleh hubungi kamu semula.",
+        "en": "Stay on the line, and give your own phone number so they can call you back."
+      }
+    ],
+    "checklist": [
+      {
+        "ms": "Tangkapan skrin perbualan, resit dan butiran pemindahan",
+        "en": "Screenshots of the chat, the receipt and the transfer details"
+      },
+      {
+        "ms": "Nombor akaun penerima dan nama bank",
+        "en": "The receiving account number and bank name"
+      },
+      {
+        "ms": "Jumlah dan masa pemindahan",
+        "en": "The amount and the time of the transfer"
+      },
+      {
+        "ms": "Nombor telefon kamu sendiri yang boleh dihubungi",
+        "en": "Your own phone number, reachable right now"
+      }
+    ],
+    "why": {
+      "ms": "Minit-minit pertama paling penting. Semakin cepat kamu melapor, semakin cepat bank dan pihak berkuasa boleh bertindak, dan semakin besar peluang duit itu dapat dikesan sebelum dipindahkan lagi.",
+      "en": "The first minutes matter most. The sooner you report, the sooner the bank and the authorities can act, and the better the chance the money is traced before it moves again."
+    }
+  },
+  "semak": {
+    "accounts": [
+      { "number": "0000-0000-0638", "reports": 3 },
+      { "number": "0000-0000-0111", "reports": 0 }
+    ],
+    "hint": {
+      "ms": "Cuba nombor akaun contoh dalam cerita Sewa Akaun. Ia nombor rekaan, bukan akaun sebenar.",
+      "en": "Try the example account from the Sewa Akaun story. It is made up, not a real account."
+    }
+  },
+  "actions": [
+    {
+      "id": "save-997",
+      "label": { "ms": "Simpan 997 dalam kenalan telefon kamu", "en": "Save 997 in your phone contacts" },
+      "stars": 1
+    },
+    {
+      "id": "bookmark-semak",
+      "label": { "ms": "Tanda halaman Semak Mule dalam pelayar telefon kamu", "en": "Bookmark Semak Mule in your phone browser" },
+      "stars": 1
+    },
+    {
+      "id": "bank-alerts",
+      "label": { "ms": "Hidupkan notifikasi transaksi dalam aplikasi bank kamu", "en": "Turn on transaction alerts in your bank app" },
+      "stars": 1
+    },
+    {
+      "id": "savings-goal",
+      "label": { "ms": "Tetapkan matlamat simpanan sebenar, walaupun kecil", "en": "Set a real savings goal, even a small one" },
+      "stars": 1
+    },
+    {
+      "id": "check-licence",
+      "label": {
+        "ms": "Sebelum bayar untuk pelaburan, semak sama ada penjual dan produk berlesen (daftar lesen pengawal selia pasaran modal)",
+        "en": "Before paying for an investment, check that the seller and product are licensed (capital market regulator licence register)"
+      },
+      "stars": 1
+    },
+    {
+      "id": "tell-family",
+      "label": { "ms": "Beritahu keluarga tentang permainan ini dan apa yang kamu belajar", "en": "Tell your family about this game and what you learned" },
+      "stars": 1
+    }
+  ]
+}

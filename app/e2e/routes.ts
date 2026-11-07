@@ -41,6 +41,18 @@ async function seedReport(page: Page): Promise<void> {
   await page.getByRole('heading', { name: 'Laporan semester' }).waitFor();
 }
 
+/** In the 997 drill: taps 9, 9, 7 on the dialler and waits for the call to connect. */
+export async function dial997(page: Page): Promise<void> {
+  for (const k of ['9', '9', '7']) await page.getByRole('button', { name: k, exact: true }).click();
+  await page.getByRole('heading', { name: 'Kenapa minit pertama penting' }).waitFor();
+}
+
+/** In a connected 997 drill: ticks every step (they appear one by one) and every item to have ready. */
+export async function finish997(page: Page): Promise<void> {
+  const open = page.getByRole('checkbox', { checked: false });
+  while (await open.count()) await open.first().click();
+}
+
 export interface ScreenRoute {
   path: string;
   name: string;
@@ -118,4 +130,29 @@ export const ROUTES: ScreenRoute[] = [
     setup: async (page) => { await seedReport(page); await page.goto('/#/kad'); await page.getByRole('button', { name: /^Kad bendera merah/ }).first().click(); },
   },
   { path: '/kad/ilmu/bajet', name: 'kad-ilmu', screen: 'kad-ilmu', waitFor: 'Kad ini menerangkan', setup: async (page) => { await seedReport(page); await page.goto('/#/kad/ilmu/bajet'); } },
+  // Task 27: Latihan menu, the 997 drill (dialler, then in the call, then finished), Semak sim (empty, then a reported account) and the checklist.
+  { path: '/latihan', name: 'latihan', waitFor: 'Senarai tindakan' },
+  { path: '/latihan/997', name: 'latihan-997', waitFor: 'Tekan 9, 9, 7 untuk mula panggilan simulasi.' },
+  {
+    path: '/latihan/997', name: 'latihan-997-panggilan', screen: 'latihan-997', waitFor: 'Kenapa minit pertama penting',
+    setup: async (page) => { await page.goto('/#/latihan'); await page.goto('/#/latihan/997'); await dial997(page); },
+  },
+  {
+    path: '/latihan/997', name: 'latihan-997-siap', screen: 'latihan-997', waitFor: 'Latihan selesai',
+    setup: async (page) => { await page.goto('/#/latihan'); await page.goto('/#/latihan/997'); await dial997(page); await finish997(page); },
+  },
+  { path: '/latihan/semak', name: 'latihan-semak', waitFor: 'Buka Semak Mule sebenar' },
+  {
+    path: '/latihan/semak', name: 'latihan-semak-hasil', screen: 'latihan-semak', waitFor: 'Dilaporkan dalam 3 kes',
+    setup: async (page) => { await page.goto('/#/latihan'); await page.goto('/#/latihan/semak'); await page.getByRole('button', { name: /Cuba: 0000-0000-0638/ }).click(); await page.getByRole('button', { name: 'Semak', exact: true }).click(); },
+  },
+  {
+    path: '/latihan/semak', name: 'latihan-semak-bersih', screen: 'latihan-semak', waitFor: 'Tiada laporan setakat ini',
+    setup: async (page) => { await page.goto('/#/latihan'); await page.goto('/#/latihan/semak'); await page.getByRole('button', { name: /Cuba: 0000-0000-0111/ }).click(); await page.getByRole('button', { name: 'Semak', exact: true }).click(); },
+  },
+  { path: '/latihan/senarai', name: 'latihan-senarai', waitFor: 'Ini untuk kamu sendiri — tiada siapa semak.' },
+  {
+    path: '/latihan/senarai', name: 'latihan-senarai-tick', screen: 'latihan-senarai', waitFor: '2 / 6 tindakan',
+    setup: async (page) => { await page.goto('/#/latihan/senarai'); await page.getByRole('checkbox').nth(0).click(); await page.getByRole('checkbox').nth(4).click(); },
+  },
 ];

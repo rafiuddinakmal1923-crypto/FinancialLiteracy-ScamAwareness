@@ -33,6 +33,9 @@ function fillGame(d: GameData): GameData {
     harian: { ...initialHarian(), ...d.harian },
     active: d.active ? { ...d.active, snapshot: fillMeters(d.active.snapshot) } : null,
     kadIlmu: d.kadIlmu ?? [],
+    drills: d.drills ?? [],
+    // A save from before actionsPaid existed: every action it had ticked was already paid.
+    actionsPaid: d.actionsPaid ?? d.actions ?? [],
     results: (d.results ?? []).map((r) => ({ ...r, concepts: r.concepts ?? [] })),
   };
 }
@@ -101,7 +104,13 @@ export interface GameData {
   harianProgress: HarianProgress | null;
   /** Local date on which the 60-second round already gave its XP (XP once a day, no farming). */
   swipeXpDate: string | null;
-  actions: string[]; incomeTotal: number;
+  /** Latihan Tindakan checklist ids currently ticked (self-reported). */
+  actions: string[];
+  /** Action ids whose +25 XP was already paid (ticking again after an untick pays nothing). */
+  actionsPaid: string[];
+  /** Latihan drills completed ('997', 'semak'), +40 XP each once. */
+  drills: string[];
+  incomeTotal: number;
   active: { id: string; snapshot: Meters; hintUsed: boolean } | null;
   /** The chat that just ended, until its debrief is closed (or Cuba lagi). */
   lastEnded: EndedScenario | null;
@@ -168,6 +177,12 @@ export interface GameActions {
   recordSwipe(score: number, today: string): void;
   /** Awards each concept's Kad Ilmu the first time (+BALANCE.xp.kadIlmu XP each). Returns the newly awarded ones. */
   awardKadIlmu(concepts: Concept[]): Concept[];
+  /** Drill `id` finished: +BALANCE.xp.drill XP the first time only. Returns true when XP was just awarded. */
+  completeDrill(id: string): boolean;
+  /** Ticks a real-action checklist item: +BALANCE.xp.action XP the first time only. Returns true when XP was just awarded. */
+  tickAction(id: string): boolean;
+  /** Unticks an item. The XP already paid stays paid. */
+  untickAction(id: string): void;
   hydrate(d: GameData | null): void;
   reset(): void;
   set(p: Partial<GameData>): void;
@@ -177,14 +192,14 @@ export function initialGame(): GameData {
   return {
     character: 'aina', name: 'Aina', onboarded: false, week: 0, meters: initialMeters(), budget: null,
     results: [], cards: [], badges: [], swipe: { best: 0, streak: 0, lastPlayed: null }, harian: initialHarian(), harianProgress: null, swipeXpDate: null,
-    actions: [], incomeTotal: 0, active: null, lastEnded: null, transcripts: {}, weekIntroOpen: false,
+    actions: [], actionsPaid: [], drills: [], incomeTotal: 0, active: null, lastEnded: null, transcripts: {}, weekIntroOpen: false,
     txLog: [], calcUsed: [], calcResume: null, calcFlagged: [], kadIlmu: [],
   };
 }
 
 const DATA_KEYS: (keyof GameData)[] = [
   'character', 'name', 'onboarded', 'week', 'meters', 'budget', 'results', 'cards', 'badges',
-  'swipe', 'harian', 'harianProgress', 'swipeXpDate', 'actions', 'incomeTotal', 'active', 'lastEnded', 'transcripts', 'weekIntroOpen', 'txLog',
+  'swipe', 'harian', 'harianProgress', 'swipeXpDate', 'actions', 'actionsPaid', 'drills', 'incomeTotal', 'active', 'lastEnded', 'transcripts', 'weekIntroOpen', 'txLog',
   'calcUsed', 'calcResume', 'calcFlagged', 'kadIlmu',
 ];
 
@@ -387,6 +402,23 @@ export const useGame = create<GameData & GameActions>()((set, get) => ({
     if (fresh.length) set({ ...bumpXp(get(), fresh.length * BALANCE.xp.kadIlmu), kadIlmu: [...kadIlmu, ...fresh] });
     return fresh;
   },
+
+  completeDrill: (id) => {
+    const { drills } = get();
+    if (drills.includes(id)) return false;
+    set({ ...bumpXp(get(), BALANCE.xp.drill), drills: [...drills, id] });
+    return true;
+  },
+
+  tickAction: (id) => {
+    const { actions, actionsPaid } = get();
+    const next = actions.includes(id) ? actions : [...actions, id];
+    if (actionsPaid.includes(id)) { set({ actions: next }); return false; }
+    set({ ...bumpXp(get(), BALANCE.xp.action), actions: next, actionsPaid: [...actionsPaid, id] });
+    return true;
+  },
+
+  untickAction: (id) => set({ actions: get().actions.filter((a) => a !== id) }),
 
   hydrate: (saved) => {
     if (!saved) { set(initialGame()); return; }
