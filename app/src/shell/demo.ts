@@ -4,7 +4,7 @@ import { BALANCE } from '../engine/balance';
 import type { Concept, Family, Meters, Outcome, ScenarioResult, Tactic } from '../engine/types';
 import { fillMeters, initialGame, useGame, type GameData, type TxEntry } from '../state/game';
 
-export const DEMO_SCENES = ['job', 'mule', 'report', 'kelas', 'kalkulator'] as const;
+export const DEMO_SCENES = ['job', 'mule', 'report', 'kelas', 'kalkulator', 'pitch'] as const;
 export type DemoScene = (typeof DEMO_SCENES)[number];
 
 export interface DemoPreset {
@@ -38,6 +38,18 @@ const REPORT_RESULTS: ScenarioResult[] = RESULT_ROWS.map(([id, family, outcome, 
 
 const BUDGET = { needs: 50, wants: 30, savings: 20 };
 
+/** BankKu history up to week 5 (content/semester.json): RM2,000 less these is the pitch preset's RM1,120. */
+const WEEK_1_TO_5_TX: TxEntry[] = [
+  ...WEEK_1_TO_3_TX,
+  { id: 9, week: 4, label: 'bankku.tx.income', amount: 400 },
+  { id: 10, week: 4, label: 'Makan', amount: -80 },
+  { id: 11, week: 4, label: 'Pengangkutan', amount: -20 },
+  { id: 12, week: 5, label: 'Makan', amount: -80 },
+  { id: 13, week: 5, label: 'Pengangkutan', amount: -20 },
+  { id: 14, week: 5, label: 'Baiki laptop', amount: -150 },
+];
+const PITCH_PLAYED = ['kerja_sambilan', 'dompet_minggu0', 'sewa_akaun', 'gaji_pertama'];
+
 export const DEMO_PRESETS: Record<DemoScene, DemoPreset> = {
   job: {
     route: '/sembang/kerja_sambilan',
@@ -67,6 +79,15 @@ export const DEMO_PRESETS: Record<DemoScene, DemoPreset> = {
     },
   },
   kelas: { route: '/kelas', game: { onboarded: true, week: 1 } },
+  // The 18 Nov demo: one ready state on both phones, with Kedai and Suapan untouched.
+  pitch: {
+    route: '/home',
+    game: {
+      onboarded: true, week: 5, budget: BUDGET, goal: 'kecemasan', incomeTotal: 400, txLog: WEEK_1_TO_5_TX,
+      results: REPORT_RESULTS.filter((r) => PITCH_PLAYED.includes(r.id)),
+      meters: { duit: 1120, simpanan: 200, tekanan: 30 },
+    },
+  },
   kalkulator: {
     route: '/kalkulator/pulangan',
     game: { onboarded: true, week: 8, budget: BUDGET, meters: { duit: 1350, simpanan: 300, tekanan: 30 } },

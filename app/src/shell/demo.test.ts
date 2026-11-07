@@ -6,8 +6,8 @@ import { applyPreset, DEMO_PRESETS, DEMO_SCENES } from './demo';
 beforeEach(() => useGame.getState().reset());
 
 describe('DEMO_PRESETS', () => {
-  it('lists job, mule, report, kelas and kalkulator, each with a route', () => {
-    expect([...DEMO_SCENES].sort()).toEqual(['job', 'kalkulator', 'kelas', 'mule', 'report']);
+  it('lists job, mule, report, kelas, kalkulator and pitch, each with a route', () => {
+    expect([...DEMO_SCENES].sort()).toEqual(['job', 'kalkulator', 'kelas', 'mule', 'pitch', 'report']);
     for (const s of DEMO_SCENES) expect(DEMO_PRESETS[s].route).toMatch(/^\//);
   });
 
@@ -35,6 +35,26 @@ describe('DEMO_PRESETS', () => {
     expect(g.active).toBeNull();
     // The BankKu history adds up to the preset balance (RM2,000 start less weeks 1-3 costs).
     expect(BALANCE.start.duit + g.txLog.reduce((a, e) => a + e.amount, 0)).toBe(1070);
+  });
+
+  it('pitch preset is ready at week 5 with a goal and nothing bought or judged', () => {
+    expect(applyPreset('pitch')).toBe(true);
+    const g = useGame.getState();
+    expect(g.week).toBe(5);
+    expect(g.weekIntroOpen).toBe(false);
+    expect(g.budget).not.toBeNull();
+    expect(g.goal).not.toBeNull();
+    expect(g.meters.duit).toBeGreaterThan(0);
+    expect(g.purchases).toEqual([]);
+    expect(g.feed).toEqual({});
+    expect(g.results.map((r) => r.id).sort()).toEqual(['dompet_minggu0', 'gaji_pertama', 'kerja_sambilan', 'sewa_akaun']);
+    expect(DEMO_PRESETS.pitch.route).toBe('/home');
+  });
+
+  it('pitch preset BankKu history adds up to its balance', () => {
+    applyPreset('pitch');
+    const g = useGame.getState();
+    expect(BALANCE.start.duit + g.txLog.reduce((a, e) => a + e.amount, 0)).toBe(g.meters.duit);
   });
 
   it('unknown preset returns false and leaves the game alone', () => {

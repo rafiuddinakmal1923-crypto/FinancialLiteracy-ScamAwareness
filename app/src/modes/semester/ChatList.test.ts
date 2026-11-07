@@ -5,7 +5,7 @@ describe('availableChats (simple rule until Task 25)', () => {
   it('keeps the table of opening weeks in one place', () => {
     expect(CHAT_WEEKS).toEqual({
       kerja_sambilan: 0, dompet_minggu0: 2, sewa_akaun: 3, gaji_pertama: 4, kawan_labur: 5, alert_bankku: 6,
-      crypto_naga: 8, bayar_nanti: 9, buku_terpakai: 10, panggilan_mahkamah: 11,
+      crypto_naga: 8, bayar_nanti: 9, buku_terpakai: 10, panggilan_mahkamah: 11, raya_duit: 12,
     });
   });
 

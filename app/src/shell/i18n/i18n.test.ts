@@ -52,10 +52,8 @@ describe('home v2 copy', () => {
     expect(translate('ms', 'level.Pemula')).toBe('Pemula');
   });
 
-  it('lists the mule and frozen enforcement steps under _todoVerify (M5)', () => {
-    const todo = (ms as Record<string, unknown>)._todoVerify as string[];
+  it('has the mule and frozen enforcement steps (M5; sources in docs/verification-log.md)', () => {
     for (const k of ['akibat.mule.3.text', 'akibat.mule.4.text', 'akibat.frozen.1.text', 'akibat.frozen.4.text']) {
-      expect(todo, k).toContain(k);
       expect(typeof (ms as Record<string, unknown>)[k]).toBe('string');
     }
   });

@@ -371,13 +371,13 @@ Simpanan, labur measures both Labur pots.
 
 ```ts
 suapan:   { xpRight: 10 },
-kedai:    { prices: { snek: 15, konsert: 99, earfon: 59, basikal: 150, buku: 60, telefon: 1200 },
+kedai:    { prices: { snek: 15, konsert: 79, earfon: 49, basikal: 150, buku: 60, kipas: 20, lampu: 15, telefon: 1200 },
             transportSaving: 10, instalment: { telefon: { monthly: 110, months: 12 } }, tipAbove: 100 },
 matlamat: { targets: { kecemasan: 300, laptop: 500, raya: 250, labur: 200 }, nudgeWeeks: [4, 8], xpReached: 100 },
 papan:    { grades: [42, 51, 58, 63, 67, 71, 76, 82, 90] },
 ```
 
-The cash items together cost RM383, under one part-time pay (RM400). A unit test plays a "buy nothing" and a "buy
+The cash items together cost RM388, under one part-time pay (RM400). A unit test plays a "buy nothing" and a "buy
 everything" semester; both must reach week 12.
 
 **i18n for new modes.** Each new mode keeps its UI strings in `modes/<mode>/i18n.ms.json` and `i18n.en.json`;

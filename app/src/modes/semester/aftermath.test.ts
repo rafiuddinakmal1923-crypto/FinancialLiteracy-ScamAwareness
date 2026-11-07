@@ -28,9 +28,7 @@ describe('consequence copy variants (Task 16 fix)', () => {
     expect(steps[2]!.text).toMatch(/Baki/);
   });
 
-  it('lists the mule and early-report enforcement claims in _todoVerify', () => {
-    for (const k of ['akibat.mule.1.text', 'akibat.mule.2.text', 'akibat.mule.3.text', 'akibat.mule.4.text', 'legal.penalCode', 'akibat.sewa_akaun.frozen.2.text']) {
-      expect(ms._todoVerify).toContain(k);
-    }
+  it('keeps the Penal Code line in _todoVerify until it is checked (V1)', () => {
+    expect(ms._todoVerify).toContain('legal.penalCode');
   });
 });

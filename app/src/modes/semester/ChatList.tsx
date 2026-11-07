@@ -19,6 +19,8 @@ export const FIRST_SCENARIO = 'kerja_sambilan';
 export const CHAT_WEEKS: Record<string, number> = {
   kerja_sambilan: 0, dompet_minggu0: 2, sewa_akaun: 3, gaji_pertama: 4, kawan_labur: 5, alert_bankku: 6,
   crypto_naga: 8, bayar_nanti: 9, buku_terpakai: 10, panggilan_mahkamah: 11,
+  // Optional event outside the semester plan (A10): it appears once content/scenarios has the file.
+  raya_duit: 12,
 };
 
 /** Chats on offer this week: every scenario whose week has come, the newest first (kerja_sambilan always, last). */
