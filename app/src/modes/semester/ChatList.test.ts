@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { availableChats, chatIds, CHAT_WEEKS } from './ChatList';
+import { availableChats, chatIds, chatLocked, CHAT_WEEKS } from './ChatList';
 
 describe('availableChats (simple rule until Task 25)', () => {
   it('keeps the table of opening weeks in one place', () => {
@@ -31,5 +31,17 @@ describe('availableChats (simple rule until Task 25)', () => {
 
   it('keeps the call scenario out of the chat list until the call screen exists (Task 25)', () => {
     expect(chatIds([], null, availableChats(11))).not.toContain('panggilan_mahkamah');
+  });
+});
+
+describe('chatLocked (A6)', () => {
+  it('locks a chat until its week', () => {
+    expect(chatLocked('sewa_akaun', 2)).toBe(true);
+    expect(chatLocked('sewa_akaun', 3)).toBe(false);
+  });
+
+  it('never locks the first chat or an id outside the table', () => {
+    expect(chatLocked('kerja_sambilan', 0)).toBe(false);
+    expect(chatLocked('tiada', 0)).toBe(false);
   });
 });

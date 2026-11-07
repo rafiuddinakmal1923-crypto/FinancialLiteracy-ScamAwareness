@@ -159,7 +159,7 @@ export interface GameActions {
   finishHunt(): void;
   /** Week 0: stores the budget split and sets Simpanan. Throws RangeError on a bad split. */
   setBudget(split: BudgetSplit): void;
-  /** Advances to the next week, applies its intro and opens it. Returns null (no-op) at week 12 or while an intro is open. `def` is that week's content. */
+  /** Advances to the next week, applies its intro and opens it. Returns null (no-op) at week 12, or while an intro, a chat or an aftermath is open. `def` is that week's content. */
   beginWeek(def: WeekDef): IntroSummary | null;
   closeWeekIntro(): void;
   moveLabur(product: LaburProduct, delta: number): MoveResult;
@@ -355,8 +355,9 @@ export const useGame = create<GameData & GameActions>()((set, get) => ({
   },
 
   beginWeek: (def) => {
-    const { week, weekIntroOpen, meters, incomeTotal, txLog } = get();
-    if (week >= BALANCE.semesterWeeks || weekIntroOpen) return null;
+    const { week, weekIntroOpen, meters, incomeTotal, txLog, active, lastEnded } = get();
+    // The rest of canBeginWeek (every earlier scenario finished) needs the content, so WeekIntro checks it.
+    if (week >= BALANCE.semesterWeeks || weekIntroOpen || active || lastEnded) return null;
     if (def.week !== week + 1) throw new Error(`beginWeek: expected week ${week + 1}, got ${def.week}`);
     const summary = applyWeekIntro(meters, def);
     const tx = [

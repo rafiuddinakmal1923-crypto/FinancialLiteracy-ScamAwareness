@@ -157,3 +157,11 @@ test('a finished chat cannot be played again, and a call id is not a chat', asyn
   await page.goto('/#/sembang/panggilan_mahkamah');
   await expect(page).toHaveURL(/#\/sembang$/);
 });
+
+test('a typed URL cannot play a scenario before its week (A6)', async ({ page }) => {
+  await seedGame(page);
+  await page.goto('/#/sembang/sewa_akaun');
+  await expect(page).toHaveURL(/#\/sembang$/);
+  await page.goto('/#/panggilan/panggilan_mahkamah');
+  await expect(page).toHaveURL(/#\/home$/);
+});

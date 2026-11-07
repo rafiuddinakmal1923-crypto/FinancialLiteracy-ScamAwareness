@@ -249,3 +249,35 @@ describe('scenario mode (Kira dulu)', () => {
     navigate('/home');
   });
 });
+
+describe('opened from outside a chat (A6)', () => {
+  it('prefills a preset with no chat waiting, and gives no chat XP', () => {
+    open('pulangan', '?preset=naga30w');
+    expect(screen.getByText(/Janji 30% seminggu/)).toBeTruthy();
+    expect(useGame.getState().meters.xp).toBe(0);
+  });
+
+  it('opens the tab the preset belongs to when the path names none', () => {
+    open(undefined, '?preset=naga30w');
+    expect(screen.getByRole('tab', { name: 'Semak Pulangan' }).getAttribute('aria-selected')).toBe('true');
+    expect(screen.getByText(/Janji 30% seminggu/)).toBeTruthy();
+  });
+
+  it('goes back to the screen named by ?back=', () => {
+    open('kos', '?preset=bayar1000&back=/suapan');
+    fireEvent.click(screen.getByRole('button', { name: 'Kembali' }));
+    expect(window.location.hash).toBe('#/suapan');
+  });
+
+  it('keeps ?back= across a tab change', () => {
+    open('kos', '?preset=bayar1000&back=/suapan');
+    fireEvent.click(screen.getByRole('tab', { name: 'Mesin Masa' }));
+    expect(window.location.hash).toBe('#/kalkulator/masa?back=/suapan');
+  });
+
+  it('ignores a ?back= that is not an in-app path', () => {
+    open('kos', '?back=evil.test');
+    fireEvent.click(screen.getByRole('button', { name: 'Kembali' }));
+    expect(window.location.hash).toBe('#/home');
+  });
+});

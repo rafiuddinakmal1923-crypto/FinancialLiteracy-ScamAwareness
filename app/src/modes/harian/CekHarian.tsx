@@ -103,9 +103,19 @@ function HeaderInfo({ today }: { today: string }) {
   );
 }
 
-function ComeBack({ today }: { today: string }) {
+function ComeBack({ today, onNewDay }: { today: string; onNewDay: (day: string) => void }) {
   const t = useT();
   const left = useCountdown();
+  // The countdown ends at midnight: the new day's cards open without a reload.
+  useEffect(() => {
+    const check = () => { if (localDate() !== today) onNewDay(localDate()); };
+    const id = setInterval(check, 30_000);
+    document.addEventListener('visibilitychange', check);
+    return () => {
+      clearInterval(id);
+      document.removeEventListener('visibilitychange', check);
+    };
+  }, [today, onNewDay]);
   const { lastScore } = useGame((s) => s.harian);
   return (
     <div data-screen="harian" className="flex min-h-0 flex-1 flex-col">
@@ -198,8 +208,12 @@ function MissWhy({ dc }: { dc: DeckCard }) {
 }
 
 export function CekHarian(_props: { params: Record<string, string> }) {
+  const [today, setToday] = useState(() => localDate());
+  return <Round key={today} today={today} onNewDay={setToday} />;
+}
+
+function Round({ today, onNewDay }: { today: string; onNewDay: (day: string) => void }) {
   const t = useT();
-  const today = useMemo(() => localDate(), []);
   const deck = useMemo(() => (cards && moneyCards ? dailyDeck(today, cards, moneyCards) : []), [today]);
   const [phase, setPhase] = useState<Phase>(() => {
     const lp = useGame.getState().harian.lastPlayed;
@@ -230,7 +244,7 @@ export function CekHarian(_props: { params: Record<string, string> }) {
   }, []);
 
   if (deck.length < DECK_SIZE) return <Unavailable title={t('harian.title')} />;
-  if (phase === 'done') return <ComeBack today={today} />;
+  if (phase === 'done') return <ComeBack today={today} onNewDay={onNewDay} />;
   if (phase === 'results') return <Results deck={deck} answers={answers} today={today} />;
 
   const index = revealed ? answers.length - 1 : answers.length;

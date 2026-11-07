@@ -29,6 +29,11 @@ export function availableChats(week: number): string[] {
     .map(([id]) => id);
 }
 
+/** True while a scenario's week has not come, so a typed URL cannot play it early. */
+export function chatLocked(id: string, week: number): boolean {
+  return week < (CHAT_WEEKS[id] ?? 0);
+}
+
 /** Keyed by the scenario object: each language version has its own. */
 const previews = new WeakMap<CompiledScenario, string>();
 

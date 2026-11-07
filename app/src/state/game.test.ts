@@ -519,3 +519,21 @@ describe('awardKadIlmu (Task 25)', () => {
     expect(useGame.getState().feed).toEqual({ p1: 'semak' });
   });
 });
+
+describe('beginWeek store guard (A6)', () => {
+  const def = { week: 1, scenario: null, context: { ms: 'x' }, costs: [] };
+
+  it('is a no-op while a chat is running', () => {
+    useGame.getState().reset();
+    useGame.getState().set({ active: { id: 's1', snapshot: useGame.getState().meters, hintUsed: false } });
+    expect(useGame.getState().beginWeek(def)).toBeNull();
+    expect(useGame.getState().week).toBe(0);
+  });
+
+  it('is a no-op while an aftermath is pending', () => {
+    useGame.getState().reset();
+    useGame.getState().set({ lastEnded: { id: 's1', outcome: 'safe', transcript: [], found: [], huntDone: false } });
+    expect(useGame.getState().beginWeek(def)).toBeNull();
+    expect(useGame.getState().week).toBe(0);
+  });
+});

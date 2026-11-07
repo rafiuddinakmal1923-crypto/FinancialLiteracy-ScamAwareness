@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { content, MONEY, SWIPE } from './testContent';
 import { useGame } from '../../state/game';
@@ -188,5 +188,19 @@ describe('Cek Harian', () => {
     useGame.getState().set({ harian: { ...useGame.getState().harian, freezeWeek: '2026-W45' } });
     render(<CekHarian params={{}} />);
     expect(screen.getByLabelText('Beku mingguan: sudah digunakan')).toBeTruthy();
+  });
+});
+
+describe('past midnight on the come-back screen (A6)', () => {
+  afterEach(() => { vi.useRealTimers(); });
+
+  it('opens the cards of the new day without a reload', () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date(2026, 10, 7, 23, 59, 0));
+    useGame.getState().set({ harian: { ...useGame.getState().harian, lastPlayed: TODAY, lastScore: 3 } });
+    render(<CekHarian params={{}} />);
+    expect(() => current()).toThrow();
+    act(() => { vi.advanceTimersByTime(120_000); });
+    expect(current()).toBeTruthy();
   });
 });
