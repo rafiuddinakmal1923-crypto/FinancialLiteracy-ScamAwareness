@@ -6,7 +6,7 @@ Plans: docs/superpowers/plans/2026-11-06-celik-mvp.md (tasks 1-10, done) and ...
 
 ## Left to do
 1. Final whole-branch review (Opus, effort medium per the user), then ONE fix wave. Triage the deferred minors below.
-2. Milestone 7 stretch (finalists, by 18 Nov): Task 28 Mod Sindiket (v1 Tasks 16-17), Task 29 adaptive order + share card (full English is done, D34), Task 30 sounds + performance pass (4x CPU throttle, lazy-loaded modes).
+2. Finals work (10-18 Nov): follow docs/IMPLEMENTATION-PLAN.md and D35-D44. They replace the old milestone 7 list; Mod Sindiket is now roadmap (D42).
 3. Not code: team must verify every `TODO-VERIFY` / `_todoVerify` legal line and example rate against official sources; have a native speaker read the BM copy and a fluent reader check the English, including `content/scenarios/en/`; film the video (acceptance checklist: docs/SRS.md 5.2); fill submission/form-answers.md; deploy only when the user says so.
 
 ## Deferred minors worth fixing in the fix wave
