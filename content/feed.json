@@ -1,5 +1,38 @@
 [
   {
+    "id": "p001",
+    "kind": "advice",
+    "author": { "name": "Kak Liyana Bijak", "handle": "@kakliyanabijak", "followers": "12.4K" },
+    "text": {
+      "ms": "Elaun masuk? Sebelum belanja satu sen, bahagi dulu: keperluan (makan, sewa, tambang), kehendak, dan simpanan. Simpan dulu, baru belanja, bukan sebaliknya.",
+      "en": "Allowance just came in? Before you spend a cent, split it first: needs (food, rent, transport), wants and savings. Save first, then spend, not the other way round."
+    },
+    "concept": "bajet",
+    "semak": { "kad": "bajet" }
+  },
+  {
+    "id": "p002",
+    "kind": "advice",
+    "author": { "name": "Abang Faiz Kewangan", "handle": "@faiz_kewangan", "followers": "8.9K" },
+    "text": {
+      "ms": "Tabung kecemasan tak perlu mula besar. RM5 seminggu pun jadi. Bila laptop rosak atau tambang balik kampung naik, korang tak perlu pinjam dengan sesiapa.",
+      "en": "An emergency fund doesn't have to start big. Even RM5 a week works. When your laptop breaks or the fare home goes up, you won't need to borrow from anyone."
+    },
+    "concept": "kecemasan",
+    "semak": { "kad": "kecemasan" }
+  },
+  {
+    "id": "p003",
+    "kind": "advice",
+    "author": { "name": "Cikgu Nisa Pintar", "handle": "@cikgunisa", "followers": "21.7K" },
+    "text": {
+      "ms": "Simpan RM50 sebulan dari umur 19 nampak kecil. Tapi masa ialah kawan baik duit: lagi awal mula, lagi lama duit itu sempat berkembang. Kira sendiri, jangan percaya cakap saya je.",
+      "en": "Saving RM50 a month from age 19 looks small. But time is money's best friend: the earlier you start, the longer it has to grow. Do the maths yourself, don't just take my word for it."
+    },
+    "concept": "kompaun",
+    "semak": { "calc": "labur50" }
+  },
+  {
     "id": "p004",
     "kind": "hype",
     "author": {
@@ -18,6 +51,226 @@
     "debrief": {
       "ms": "Tiada lesen, tiada risiko disebut, pulangan mustahil. Semak lesen dahulu.",
       "en": "No licence, no mention of risk, an impossible return. Check the licence first."
+    }
+  },
+  {
+    "id": "p005",
+    "kind": "scam",
+    "author": { "name": "Kerja Rumah Online", "handle": "@kerjarumah_online", "followers": "3.1K" },
+    "text": {
+      "ms": "KERJA SAMBILAN! Like dan share video je, dapat RM300 sehari. Sesuai untuk pelajar. Daftar di kerja-mudah.test/daftar, bayar deposit RM50 untuk aktifkan akaun.",
+      "en": "PART-TIME JOB! Just like and share videos, earn RM300 a day. Perfect for students. Sign up at kerja-mudah.test/daftar and pay a RM50 deposit to activate your account."
+    },
+    "tactics": ["greed", "payfirst"],
+    "semak": { "kad": "semak" },
+    "debrief": {
+      "ms": "Majikan sebenar bayar anda, bukan minta anda bayar dulu. Gaji RM300 sehari untuk tekan like memang terlalu lumayan.",
+      "en": "Real employers pay you, they don't ask you to pay first. RM300 a day for pressing like is far too good to be true."
+    }
+  },
+  {
+    "id": "p006",
+    "kind": "advice",
+    "author": { "name": "Kak Liyana Bijak", "handle": "@kakliyanabijak", "followers": "12.4K" },
+    "text": {
+      "ms": "Beli sekarang, bayar nanti nampak murah sebab ansurannya kecil. Sebelum tekan butang, kira jumlah penuh yang korang akan bayar, termasuk caj dan denda lewat.",
+      "en": "Buy now, pay later looks cheap because each instalment is small. Before you tap the button, add up the full amount you'll pay, including charges and late fees."
+    },
+    "concept": "hutang",
+    "semak": { "calc": "bayar1000" }
+  },
+  {
+    "id": "p007",
+    "kind": "hype",
+    "author": { "name": "Syaz Hidup Mewah", "handle": "@syazmewah", "followers": "156K" },
+    "text": {
+      "ms": "Pelajar tahun 2, dah simpan RM10,000! Kalau saya boleh, korang pun boleh. Disiplin je semua ni.",
+      "en": "Second-year student and I've already saved RM10,000! If I can do it, so can you. It's all about discipline."
+    },
+    "concept": "bajet",
+    "semak": { "kad": "bajet" },
+    "debrief": {
+      "ms": "Tiada cerita dari mana duit itu datang: biasiswa besar, bantuan keluarga, atau kerja? Jangan banding bajet anda dengan angka orang lain yang tak lengkap.",
+      "en": "No word on where the money came from: a big scholarship, family help, or a job? Don't compare your budget with someone else's incomplete numbers."
+    }
+  },
+  {
+    "id": "p008",
+    "kind": "scam",
+    "author": { "name": "Peluang Emas Cepat", "handle": "@peluang_cepat", "followers": "1.8K" },
+    "text": {
+      "ms": "Ada akaun bank yang jarang guna? Sewakan kepada kami, dapat RM1,500 sebulan. Tak perlu buat apa-apa. Rahsiakan ya, PM sekarang.",
+      "en": "Got a bank account you hardly use? Rent it to us for RM1,500 a month. You don't have to do anything. Keep it secret, PM now."
+    },
+    "tactics": ["greed", "secrecy"],
+    "semak": { "kad": "semak" },
+    "debrief": {
+      "ms": "Ini tawaran akaun keldai. Duit mangsa scam akan lalu akaun anda, dan anda yang disiasat. Jangan sesekali beri akaun, kad bank atau kata laluan kepada orang lain.",
+      "en": "This is a mule-account offer. Scam victims' money will pass through your account, and you are the one investigated. Never give your account, bank card or password to anyone."
+    }
+  },
+  {
+    "id": "p009",
+    "kind": "advice",
+    "author": { "name": "Abang Faiz Kewangan", "handle": "@faiz_kewangan", "followers": "8.9K" },
+    "text": {
+      "ms": "Sebelum melabur, tanya tiga soalan: syarikat ini berlesen? apa risikonya? dan apa yang jadi kalau saya nak keluarkan duit? Kalau tak boleh jawab, jangan labur dulu.",
+      "en": "Before you invest, ask three questions: is this company licensed? what is the risk? and what happens if I want my money back? If you can't answer, don't invest yet."
+    },
+    "concept": "semak",
+    "semak": { "kad": "semak" }
+  },
+  {
+    "id": "p010",
+    "kind": "hype",
+    "author": { "name": "Koin Purnama Official", "handle": "@koinpurnama", "followers": "92.3K" },
+    "text": {
+      "ms": "Koin Purnama naik 300% minggu lepas! Yang beli awal dah untung besar. Jangan jadi orang terakhir yang menyesal.",
+      "en": "Koin Purnama went up 300% last week! Early buyers made a fortune. Don't be the last one with regrets."
+    },
+    "concept": "risiko",
+    "semak": { "kad": "risiko" },
+    "debrief": {
+      "ms": "Kenaikan minggu lepas tak janji apa-apa untuk minggu depan. Aset yang boleh naik 300% juga boleh jatuh sama laju. Takut ketinggalan bukan sebab untuk melabur.",
+      "en": "Last week's rise promises nothing about next week. An asset that can rise 300% can fall just as fast. Fear of missing out is not a reason to invest."
+    }
+  },
+  {
+    "id": "p011",
+    "kind": "scam",
+    "author": { "name": "Hadiah Kampus Rasmi", "handle": "@hadiahkampus", "followers": "6.5K" },
+    "text": {
+      "ms": "TAHNIAH! Anda pemenang telefon baharu cabutan bertuah pelajar. Tuntut dalam 24 jam di hadiah-kampus.test/tuntut, bayar kos penghantaran RM25 sahaja.",
+      "en": "CONGRATULATIONS! You've won a new phone in the student lucky draw. Claim it within 24 hours at hadiah-kampus.test/tuntut and just pay RM25 for delivery."
+    },
+    "tactics": ["greed", "urgency", "payfirst"],
+    "semak": { "kad": "semak" },
+    "debrief": {
+      "ms": "Anda tak masuk apa-apa cabutan, tapi tiba-tiba menang. Had masa 24 jam dan bayaran dulu ialah tanda scam. Hadiah sebenar tak minta anda bayar untuk menuntutnya.",
+      "en": "You never entered a draw, yet you suddenly won. A 24-hour limit and paying first are signs of a scam. Real prizes don't ask you to pay to claim them."
+    }
+  },
+  {
+    "id": "p012",
+    "kind": "advice",
+    "author": { "name": "Cikgu Nisa Pintar", "handle": "@cikgunisa", "followers": "21.7K" },
+    "text": {
+      "ms": "Pulangan tinggi selalu datang dengan risiko tinggi. Jangan letak semua duit dalam satu tempat, dan hanya labur duit yang korang mampu tunggu lama.",
+      "en": "High returns always come with high risk. Don't put all your money in one place, and only invest money you can afford to leave for a long time."
+    },
+    "concept": "risiko",
+    "semak": { "kad": "risiko" }
+  },
+  {
+    "id": "p013",
+    "kind": "hype",
+    "author": { "name": "Pinjaman Kilat Pelajar", "handle": "@pinjamkilat", "followers": "15.0K" },
+    "text": {
+      "ms": "Pinjaman peribadi RM5,000 untuk pelajar! Lulus dalam sehari, ansuran cuma RM201 sebulan. Belanja dulu, fikir kemudian!",
+      "en": "RM5,000 personal loan for students! Approved in a day, instalments of just RM201 a month. Spend now, think later!"
+    },
+    "concept": "hutang",
+    "semak": { "kad": "hutang" },
+    "debrief": {
+      "ms": "Iklan ini hanya tunjuk ansuran bulanan. Ia tak sebut tempoh tiga tahun atau jumlah penuh yang perlu dibayar balik, iaitu lebih RM7,000.",
+      "en": "This ad only shows the monthly instalment. It doesn't mention the three-year term or the full amount to repay, which is more than RM7,000."
+    }
+  },
+  {
+    "id": "p014",
+    "kind": "scam",
+    "author": { "name": "Dana Untung Jamin", "handle": "@danauntungjamin", "followers": "27.9K" },
+    "text": {
+      "ms": "Labur RM500, dapat untung 15% SEMINGGU, dijamin tanpa risiko! Ramai pelajar dah join, tengok screenshot keuntungan mereka. Daftar di dana-jamin.test.",
+      "en": "Invest RM500 and earn 15% A WEEK, guaranteed with no risk! Lots of students have joined, see their profit screenshots. Sign up at dana-jamin.test."
+    },
+    "tactics": ["greed", "social"],
+    "semak": { "kad": "semak" },
+    "debrief": {
+      "ms": "Tiada pelaburan sah yang jamin untung tinggi tanpa risiko. Screenshot keuntungan mudah dipalsukan. Semak lesen dahulu, dan jika sudah terkena, hubungi NSRC 997 segera.",
+      "en": "No legal investment guarantees high profit with no risk. Profit screenshots are easy to fake. Check the licence first, and if you've been caught, call NSRC 997 right away."
+    }
+  },
+  {
+    "id": "p015",
+    "kind": "advice",
+    "author": { "name": "Kak Liyana Bijak", "handle": "@kakliyanabijak", "followers": "12.4K" },
+    "text": {
+      "ms": "Cuba catat setiap perbelanjaan selama seminggu, termasuk air kotak dan kopi. Ramai terkejut berapa banyak duit hilang pada benda kecil.",
+      "en": "Try writing down every expense for a week, even drinks and coffee. Many people are shocked how much money disappears on small things."
+    },
+    "concept": "bajet",
+    "semak": { "kad": "bajet" }
+  },
+  {
+    "id": "p016",
+    "kind": "hype",
+    "author": { "name": "Guru Dropship Jutawan", "handle": "@gurudropship", "followers": "210K" },
+    "text": {
+      "ms": "Kursus dropship RM1,999 saja. Pelajar saya buat RM5,000 sebulan pendapatan pasif dari bilik asrama! Slot terhad.",
+      "en": "Dropship course for only RM1,999. My students make RM5,000 a month in passive income from their hostel room! Limited slots."
+    },
+    "concept": "semak",
+    "semak": { "kad": "semak" },
+    "debrief": {
+      "ms": "Hanya kisah kejayaan ditunjuk, bukan yang rugi. Pendapatan RM5,000 tiada bukti, dan yang pasti untung ialah penjual kursus. Cari ulasan bebas sebelum bayar.",
+      "en": "Only success stories are shown, not the losses. The RM5,000 income has no proof, and the one sure to profit is the course seller. Look for independent reviews before you pay."
+    }
+  },
+  {
+    "id": "p017",
+    "kind": "scam",
+    "author": { "name": "Tiket Murah Kampus", "handle": "@tiketmurah_kampus", "followers": "2.4K" },
+    "text": {
+      "ms": "Jual 2 tiket konsert hujung minggu ni, harga separuh! Tinggal last 2, transfer dulu baru saya hantar tiket. Siapa cepat dia dapat.",
+      "en": "Selling 2 concert tickets for this weekend at half price! Only 2 left, transfer first and then I'll send the tickets. First come, first served."
+    },
+    "tactics": ["urgency", "payfirst"],
+    "semak": { "kad": "semak" },
+    "debrief": {
+      "ms": "Harga terlalu murah, desakan 'tinggal last 2', dan minta pindah wang dulu kepada orang yang anda tak kenal. Beli hanya dari penjual rasmi.",
+      "en": "A price that's too cheap, pressure with 'only 2 left', and a request to transfer money first to a stranger. Only buy from official sellers."
+    }
+  },
+  {
+    "id": "p018",
+    "kind": "advice",
+    "author": { "name": "Abang Faiz Kewangan", "handle": "@faiz_kewangan", "followers": "8.9K" },
+    "text": {
+      "ms": "Simpan tabung kecemasan dalam akaun berasingan daripada duit belanja harian. Bila tak nampak, kurang godaan nak guna.",
+      "en": "Keep your emergency fund in a separate account from your daily spending money. Out of sight means less temptation to use it."
+    },
+    "concept": "kecemasan",
+    "semak": { "kad": "kecemasan" }
+  },
+  {
+    "id": "p019",
+    "kind": "hype",
+    "author": { "name": "Emas Digital Kita", "handle": "@emasdigitalkita", "followers": "33.6K" },
+    "text": {
+      "ms": "Harga emas SENTIASA naik! Beli emas digital dari RM10, simpanan paling selamat untuk pelajar.",
+      "en": "Gold prices ALWAYS go up! Buy digital gold from RM10, the safest savings for students."
+    },
+    "concept": "risiko",
+    "semak": { "kad": "risiko" },
+    "debrief": {
+      "ms": "Harga emas boleh naik dan turun. Iklan ini tak sebut risiko, caj jual beli, atau sama ada platform itu berlesen. Tiada pelaburan yang 'sentiasa naik'.",
+      "en": "Gold prices can go up and down. This ad doesn't mention the risk, the buy and sell charges, or whether the platform is licensed. No investment 'always goes up'."
+    }
+  },
+  {
+    "id": "p020",
+    "kind": "scam",
+    "author": { "name": "Unit Bantuan Pelajar", "handle": "@unit_bantuanpelajar", "followers": "4.0K" },
+    "text": {
+      "ms": "NOTIS: Pinjaman pendidikan anda akan DIBATALKAN hari ini kerana maklumat tidak lengkap. Kemas kini segera di bantuan-pelajar.test/kemaskini atau hubungi pegawai kami di 011-0000 0147.",
+      "en": "NOTICE: Your education loan will be CANCELLED today because your details are incomplete. Update them now at bantuan-pelajar.test/kemaskini or call our officer at 011-0000 0147."
+    },
+    "tactics": ["authority", "fear", "urgency"],
+    "semak": { "kad": "semak" },
+    "debrief": {
+      "ms": "Agensi sebenar tak ugut melalui media sosial dengan had masa hari ini. Jangan klik pautan atau telefon nombor dalam hantaran. Buka laman atau apl rasmi sendiri untuk semak.",
+      "en": "Real agencies don't threaten you on social media with a same-day deadline. Don't click the link or call the number in the post. Open the official site or app yourself to check."
     }
   }
 ]

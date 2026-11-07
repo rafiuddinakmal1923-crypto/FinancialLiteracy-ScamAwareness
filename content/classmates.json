@@ -3,5 +3,45 @@
     "id": "k1",
     "name": "Mei Ling",
     "avatar": "a1"
+  },
+  {
+    "id": "k2",
+    "name": "Aiman",
+    "avatar": "a2"
+  },
+  {
+    "id": "k3",
+    "name": "Kavitha",
+    "avatar": "a3"
+  },
+  {
+    "id": "k4",
+    "name": "Haziq",
+    "avatar": "a4"
+  },
+  {
+    "id": "k5",
+    "name": "Nur Syafiqah",
+    "avatar": "a5"
+  },
+  {
+    "id": "k6",
+    "name": "Jonathan Lee",
+    "avatar": "a6"
+  },
+  {
+    "id": "k7",
+    "name": "Farah Ain",
+    "avatar": "a7"
+  },
+  {
+    "id": "k8",
+    "name": "Ravindran",
+    "avatar": "a8"
+  },
+  {
+    "id": "k9",
+    "name": "Amirul",
+    "avatar": "a9"
   }
 ]

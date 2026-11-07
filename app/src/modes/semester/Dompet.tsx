@@ -2,7 +2,7 @@ import { useState, type CSSProperties, type ReactNode } from 'react';
 import { ArrowLeft, CalendarClock, CircleCheck, Telescope } from 'lucide-react';
 import { BALANCE } from '../../engine/balance';
 import { netWorth } from '../../engine/meters';
-import type { BudgetSplit } from '../../engine/week';
+import { weekCosts, type BudgetSplit } from '../../engine/week';
 import { FINALIST } from '../../shell/features';
 import { useT } from '../../shell/i18n';
 import { navigate } from '../../shell/router';
@@ -262,16 +262,17 @@ function WeekCosts({ week }: { week: number }) {
   const t = useT();
   const lang = useSettings((s) => s.lang);
   const def = weekDef(week);
-  if (!def || def.costs.length === 0) return null;
+  const costs = def ? weekCosts(def, useGame.getState().purchases) : [];
+  if (costs.length === 0) return null;
   return (
     <section aria-label={t('dompet.costs', { week })} className="mx-4 mt-5">
       <h2 className="font-display text-xl font-bold text-ink">{t('dompet.costs', { week })}</h2>
       <ul className="mt-2 divide-y divide-indigo-soft rounded-2xl bg-white px-4 shadow-[0_2px_8px_rgba(28,27,58,.08)]">
-        {def.costs.map((c, i) => (
+        {costs.map((c, i) => (
           <li key={i} className="flex min-h-12 items-center gap-3 py-2">
             <CircleCheck aria-hidden size={22} strokeWidth={1.75} className="shrink-0 text-safe" />
             <span className="flex-1 text-base text-ink">
-              {loc(c.label, lang)}
+              {'labelKey' in c ? t(c.labelKey) : loc(c.label, lang)}
               <span className="sr-only">, {t('dompet.costs.paid')}</span>
             </span>
             <span className="font-mono text-base font-semibold text-ink">{formatMoney(-c.amount)}</span>

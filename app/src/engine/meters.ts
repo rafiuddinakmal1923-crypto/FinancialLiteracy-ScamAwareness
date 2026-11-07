@@ -37,13 +37,13 @@ export function applyXp(m: Meters, delta: number): Meters {
   return { ...m, xp: Math.max(0, m.xp + delta) };
 }
 
-function bump(m: Meters, tactics: Tactic[], delta: number): Meters {
+export function bump(m: Meters, tactics: Tactic[], delta: number): Meters {
   const imuniti = { ...m.imuniti };
   for (const t of tactics) imuniti[t] = clamp(imuniti[t] + delta, 0, 100);
   return { ...m, imuniti };
 }
 
-function bumpCelik(m: Meters, concepts: Concept[], delta: number): Meters {
+export function bumpCelik(m: Meters, concepts: Concept[], delta: number): Meters {
   if (concepts.length === 0) return m;
   const celik = { ...m.celik };
   for (const c of concepts) celik[c] = clamp(celik[c] + delta, 0, 100);

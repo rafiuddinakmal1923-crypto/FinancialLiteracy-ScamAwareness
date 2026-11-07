@@ -1,4 +1,8 @@
 {
   "suapan.app": "Suapan",
-  "suapan.tip": "Semak dahulu sebelum percaya."
+  "suapan.tip": "Semak dahulu sebelum percaya.",
+  "suapan.subtitle": "Nilai setiap hantaran: percaya, semak atau lapor.",
+  "suapan.feedLabel": "Hantaran dalam suapan",
+  "suapan.followers": "{n} pengikut",
+  "suapan.empty": "Belum ada hantaran."
 }

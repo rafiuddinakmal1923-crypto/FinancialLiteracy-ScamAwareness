@@ -246,11 +246,18 @@ export const ShopFileSchema: ZodType<ShopItem[]> = z.array(ShopItemSchema).min(1
   list.forEach((it, i) => {
     if (!(it.id in BALANCE.kedai.prices)) ctx.addIssue({ code: 'custom', path: [i, 'id'], message: `"${it.id}" has no price in balance.ts kedai.prices` });
     if (it.effect === 'instalment' && !(it.id in BALANCE.kedai.instalment)) ctx.addIssue({ code: 'custom', path: [i, 'effect'], message: `"${it.id}" has no terms in balance.ts kedai.instalment` });
+    if (it.effect === 'transport' && it.id !== BALANCE.kedai.transportItem) ctx.addIssue({ code: 'custom', path: [i, 'effect'], message: `"${it.id}" cannot lower transport; balance.ts names ${BALANCE.kedai.transportItem}` });
   });
 });
 
 const GoalSchema = z.strictObject({ id: z.enum(GOAL_IDS), measure: z.enum(GOAL_MEASURES), name: LocalizedSchema });
-export const GoalsFileSchema: ZodType<Goal[]> = z.array(GoalSchema).min(1).superRefine(uniqueIds);
+export const GoalsFileSchema: ZodType<Goal[]> = z.array(GoalSchema).min(1).superRefine((list, ctx) => {
+  uniqueIds(list, ctx);
+  list.forEach((g, i) => {
+    const want = BALANCE.matlamat.measures[g.id];
+    if (g.measure !== want) ctx.addIssue({ code: 'custom', path: [i, 'measure'], message: `"${g.id}" must measure ${want}, as in balance.ts` });
+  });
+});
 
 const ClassmateSchema = z.strictObject({ id: z.string().regex(/^k\d+$/), name: z.string().min(1), avatar: z.string().min(1) });
 export const ClassmatesFileSchema: ZodType<Classmate[]> = z.array(ClassmateSchema).min(1).max(BALANCE.papan.grades.length).superRefine(uniqueIds);

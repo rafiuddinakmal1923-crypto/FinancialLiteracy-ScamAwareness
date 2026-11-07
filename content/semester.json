@@ -20,7 +20,8 @@
             "ms": "Pengangkutan",
             "en": "Transport"
           },
-          "amount": 20
+          "amount": 20,
+          "kind": "transport"
         },
         {
           "label": {
@@ -51,7 +52,8 @@
             "ms": "Pengangkutan",
             "en": "Transport"
           },
-          "amount": 20
+          "amount": 20,
+          "kind": "transport"
         }
       ]
     },
@@ -75,7 +77,8 @@
             "ms": "Pengangkutan",
             "en": "Transport"
           },
-          "amount": 20
+          "amount": 20,
+          "kind": "transport"
         },
         {
           "label": {
@@ -106,7 +109,8 @@
             "ms": "Pengangkutan",
             "en": "Transport"
           },
-          "amount": 20
+          "amount": 20,
+          "kind": "transport"
         }
       ]
     },
@@ -130,7 +134,8 @@
             "ms": "Pengangkutan",
             "en": "Transport"
           },
-          "amount": 20
+          "amount": 20,
+          "kind": "transport"
         },
         {
           "label": {
@@ -161,7 +166,8 @@
             "ms": "Pengangkutan",
             "en": "Transport"
           },
-          "amount": 20
+          "amount": 20,
+          "kind": "transport"
         }
       ]
     },
@@ -185,7 +191,8 @@
             "ms": "Pengangkutan",
             "en": "Transport"
           },
-          "amount": 20
+          "amount": 20,
+          "kind": "transport"
         }
       ]
     },
@@ -209,7 +216,8 @@
             "ms": "Pengangkutan",
             "en": "Transport"
           },
-          "amount": 20
+          "amount": 20,
+          "kind": "transport"
         }
       ]
     },
@@ -233,7 +241,8 @@
             "ms": "Pengangkutan",
             "en": "Transport"
           },
-          "amount": 20
+          "amount": 20,
+          "kind": "transport"
         },
         {
           "label": {
@@ -264,7 +273,8 @@
             "ms": "Pengangkutan",
             "en": "Transport"
           },
-          "amount": 20
+          "amount": 20,
+          "kind": "transport"
         }
       ]
     },
@@ -288,7 +298,8 @@
             "ms": "Pengangkutan",
             "en": "Transport"
           },
-          "amount": 20
+          "amount": 20,
+          "kind": "transport"
         }
       ]
     },
@@ -312,7 +323,8 @@
             "ms": "Pengangkutan",
             "en": "Transport"
           },
-          "amount": 20
+          "amount": 20,
+          "kind": "transport"
         }
       ]
     }

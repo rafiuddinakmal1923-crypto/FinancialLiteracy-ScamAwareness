@@ -1,6 +1,7 @@
 import 'fake-indexeddb/auto';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { gameData, useGame, initialGame } from './game';
+import type { FeedPost } from '../engine/types';
 import { settingsData, useSettings } from './settings';
 import { initialMeters, netWorth } from '../engine/meters';
 import { BALANCE } from '../engine/balance';
@@ -535,5 +536,71 @@ describe('beginWeek store guard (A6)', () => {
     useGame.getState().set({ lastEnded: { id: 's1', outcome: 'safe', transcript: [], found: [], huntDone: false } });
     expect(useGame.getState().beginWeek(def)).toBeNull();
     expect(useGame.getState().week).toBe(0);
+  });
+});
+
+describe('finalist actions (A2-A4)', () => {
+  const scam = {
+    id: 'p9', kind: 'scam', author: { name: 'A', handle: '@a', followers: '1' }, text: { ms: 'x' }, tactics: ['greed'], semak: { kad: 'risiko' },
+  } as const satisfies FeedPost;
+
+  it('judgeFeed moves the meters once', () => {
+    useGame.getState().reset();
+    const before = useGame.getState().meters;
+    expect(useGame.getState().judgeFeed(scam, 'lapor')).toEqual({ verdict: 'right' });
+    expect(useGame.getState().meters.imuniti.greed).toBe(before.imuniti.greed + BALANCE.imuniti.swipeRight);
+    expect(useGame.getState().meters.xp).toBe(BALANCE.suapan.xpRight);
+    expect(useGame.getState().judgeFeed(scam, 'percaya')).toBeNull();
+    expect(useGame.getState().meters.xp).toBe(BALANCE.suapan.xpRight);
+  });
+
+  it('buyItem pays, records the purchase and logs it by pot in BankKu', () => {
+    useGame.getState().reset();
+    expect('state' in useGame.getState().buyItem('basikal', 'kehendak')).toBe(true);
+    expect(useGame.getState().meters.duit).toBe(BALANCE.start.duit - 150);
+    expect(useGame.getState().purchases).toEqual([{ item: 'basikal', week: 0, pot: 'kehendak' }]);
+    expect(useGame.getState().txLog.at(-1)).toMatchObject({ label: 'bankku.tx.kedai.kehendak', amount: -150 });
+  });
+
+  it('a failed buyItem changes nothing', () => {
+    useGame.getState().reset();
+    expect(useGame.getState().buyItem('tiada')).toEqual({ error: 'unknown-item' });
+    expect(useGame.getState().purchases).toEqual([]);
+    expect(useGame.getState().txLog).toEqual([]);
+  });
+
+  it('a purchase during a chat survives the chat rolling back', () => {
+    useGame.getState().reset();
+    useGame.getState().startScenario('s1');
+    useGame.getState().buyItem('buku');
+    useGame.getState().retryScenario();
+    expect(useGame.getState().meters.duit).toBe(BALANCE.start.duit - 60);
+  });
+
+  it('beginWeek charges the changed costs', () => {
+    useGame.getState().reset();
+    useGame.getState().set({ week: 7, purchases: [{ item: 'telefon', week: 1 }] });
+    const duit = useGame.getState().meters.duit;
+    useGame.getState().beginWeek({ week: 8, scenario: null, context: { ms: 'x' }, costs: [] });
+    expect(useGame.getState().meters.duit).toBe(duit + BALANCE.income - BALANCE.kedai.instalment.telefon.monthly);
+    expect(useGame.getState().txLog.at(-1)).toMatchObject({ label: 'bankku.tx.instalment', amount: -110 });
+  });
+
+  it('claimGoalXp pays once, at week 12, when the goal is reached', () => {
+    useGame.getState().reset();
+    useGame.getState().setGoal('raya');
+    expect(useGame.getState().claimGoalXp()).toBe(false);
+    useGame.getState().set({ week: 12 });
+    expect(useGame.getState().claimGoalXp()).toBe(true);
+    expect(useGame.getState().meters.xp).toBe(BALANCE.matlamat.xpReached);
+    expect(useGame.getState().claimGoalXp()).toBe(false);
+    expect(useGame.getState().meters.xp).toBe(BALANCE.matlamat.xpReached);
+  });
+
+  it('claimGoalXp pays nothing when the goal is missed', () => {
+    useGame.getState().reset();
+    useGame.getState().setGoal('kecemasan');
+    useGame.getState().set({ week: 12 });
+    expect(useGame.getState().claimGoalXp()).toBe(false);
   });
 });

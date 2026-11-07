@@ -85,7 +85,7 @@
   },
   {
     "id": "c015", "channel": "sms", "sender": "Sembang Admin",
-    "text": { "ms": "Akaun Sembang anda akan DIPADAM hari ni kerana aduan. Klik sembang-sah.test/p untuk elak dipadam.", "en": "Your Sembang account will be DELETED today due to a complaint. Click sembang-sah.test/p to stop it." },
+    "text": { "ms": "Akaun Sembang anda akan DIPADAM hari ni kerana aduan. Klik sembang-sah.test/p untuk elak dipadam.", "en": "Your Chat account will be DELETED today due to a complaint. Click sembang-sah.test/p to stop it." },
     "answer": "scam", "tactics": ["fear", "urgency"],
     "why": { "ms": "Ugutan padam akaun dengan pautan pelik. Buka apl sendiri untuk semak.", "en": "A deletion threat with an odd link. Open the app yourself to check." }
   },

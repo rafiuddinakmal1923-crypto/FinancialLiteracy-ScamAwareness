@@ -220,3 +220,24 @@ describe('todoVerifyKeys (M5)', () => {
     expect(keys).toEqual(expect.arrayContaining(['akibat.mule.3.text', 'akibat.mule.4.text', 'akibat.frozen.4.text']));
   });
 });
+
+describe('finalist content against balance.ts', () => {
+  const tempDir = () => {
+    const dir = mkdtempSync(join(tmpdir(), 'celik-'));
+    mkdirSync(join(dir, 'scenarios'));
+    writeFileSync(join(dir, 'banned-names.txt'), 'Maybank');
+    return dir;
+  };
+
+  it('fails when a goal measures something balance.ts does not', () => {
+    const dir = tempDir();
+    writeFileSync(join(dir, 'goals.json'), JSON.stringify([{ id: 'raya', measure: 'labur', name: { ms: 'x' } }]));
+    expect(loadCelikContent(dir).problems.join()).toContain('measure');
+  });
+
+  it('fails when the wrong item lowers transport', () => {
+    const dir = tempDir();
+    writeFileSync(join(dir, 'shop.json'), JSON.stringify([{ id: 'buku', name: { ms: 'x' }, pot: 'keperluan', effect: 'transport', tip: { ms: 'x' } }]));
+    expect(loadCelikContent(dir).problems.join()).toContain('transport');
+  });
+});

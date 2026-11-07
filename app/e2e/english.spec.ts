@@ -4,8 +4,8 @@ import { expect, test, type Page } from '@playwright/test';
 import { patchSavedGame } from './helpers';
 
 /** Fictional names and real items that are the same in both languages; removed before looking for BM words. */
-// Swipe card c015 still names the BM app; REQ to Danish: use "Chat" in its English text, then remove both entries.
-const NAMES = ['Sembang Admin', 'Your Sembang account', 
+const NAMES = [
+  'Sembang Admin',
   'Amanah Cempaka', 'Dana Ekuiti Cempaka', 'Universiti Cempaka Raya', 'Kafe Cempaka', 'Teratai Emas Enterprise', 'Bintang Digital Sdn Bhd',
   'BayarNanti', 'BankKu', 'KedaiOnline', 'KurierKilat', 'Semak Mule', 'Bahasa Melayu', 'Sang Kancil', 'Abang Zul', 'Kak Mira', 'Kak Sofea', 'Kak Wani',
 ];

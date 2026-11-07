@@ -4,7 +4,7 @@ import { BALANCE } from './balance';
 import { initialMeters, netWorth } from './meters';
 import { round2 } from './money';
 import { CONTENT_FILES, parseContent, SemesterFileSchema } from './schemas';
-import { applyBudget, applyWeekIntro, moveLabur, type WeekDef } from './week';
+import { applyBudget, applyWeekIntro, moveLabur, weekCosts, type WeekDef } from './week';
 
 const wk = (week: number, costs: { label: string; amount: number }[] = []): WeekDef => ({
   week, scenario: null, context: { ms: 'x' }, costs: costs.map((c) => ({ label: { ms: c.label }, amount: c.amount })),
@@ -177,5 +177,44 @@ describe('semester.json', () => {
   it('is registered in CONTENT_FILES', () => {
     expect(CONTENT_FILES['semester.json']).toBe(SemesterFileSchema);
     expect(BALANCE.incomeWeeks).toEqual([4, 8, 12]);
+  });
+});
+
+describe('weekCosts with purchases (A3)', () => {
+  const transport = (week: number): WeekDef => ({
+    week, scenario: null, context: { ms: 'x' },
+    costs: [{ label: { ms: 'Makan' }, amount: 80 }, { label: { ms: 'Pengangkutan' }, amount: 20, kind: 'transport' }],
+  });
+
+  it('lowers the transport cost from the week after the bicycle is bought', () => {
+    expect(weekCosts(transport(5), [{ item: 'basikal', week: 4 }]).map((c) => c.amount)).toEqual([80, 10]);
+  });
+
+  it('does not change the week it was bought in', () => {
+    expect(weekCosts(transport(4), [{ item: 'basikal', week: 4 }]).map((c) => c.amount)).toEqual([80, 20]);
+  });
+
+  it('never makes a cost negative', () => {
+    const cheap: WeekDef = { week: 5, scenario: null, context: { ms: 'x' }, costs: [{ label: { ms: 'P' }, amount: 5, kind: 'transport' }] };
+    expect(weekCosts(cheap, [{ item: 'basikal', week: 1 }]).map((c) => c.amount)).toEqual([0]);
+  });
+
+  it('adds the instalment in weeks 4, 8 and 12 only, after the purchase', () => {
+    const p = [{ item: 'telefon', week: 5 }];
+    expect(weekCosts(wk(4), p)).toEqual([]);
+    expect(weekCosts(wk(7), p)).toEqual([]);
+    expect(weekCosts(wk(8), p)).toEqual([{ labelKey: 'bankku.tx.instalment', amount: BALANCE.kedai.instalment.telefon.monthly }]);
+    expect(weekCosts(wk(12), p)).toHaveLength(1);
+  });
+
+  it('applyWeekIntro pays the changed costs', () => {
+    const r = applyWeekIntro(base(), transport(5), BALANCE, [{ item: 'basikal', week: 1 }]);
+    expect(r.meters.duit).toBe(910);
+    expect(r.costs.map((c) => c.amount)).toEqual([80, 10]);
+  });
+
+  it('applyWeekIntro reports the instalment by its i18n key', () => {
+    const r = applyWeekIntro(base(), wk(8), BALANCE, [{ item: 'telefon', week: 1 }]);
+    expect(r.costs).toEqual([{ label: 'bankku.tx.instalment', amount: 110 }]);
   });
 });
