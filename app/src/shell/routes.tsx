@@ -29,6 +29,7 @@ import { Drill997 } from '../modes/drills/Drill997';
 import { Latihan } from '../modes/drills/Latihan';
 import { SemakSim } from '../modes/drills/SemakSim';
 import { DemoScene } from './DemoScene';
+import { FINALIST } from './features';
 import { HomeScreen } from './HomeScreen';
 import { Onboarding } from './Onboarding';
 import { setRouteTable } from './router';
@@ -79,9 +80,11 @@ export const ROUTE_TABLE: RouteDef[] = [
   { pattern: '/latihan/semak', name: 'latihan-semak', component: SemakSim, statusBar: 'light', needsGame: true, tip: 'side.tip.latihanSemak', mood: 'neutral' },
   { pattern: '/latihan/senarai', name: 'latihan-senarai', component: Checklist, statusBar: 'light', needsGame: true, tip: 'side.tip.latihanSenarai', mood: 'proud' },
   { pattern: '/laman/:url', name: 'laman', component: FakePageScreen, statusBar: 'light', needsGame: true, tip: 'side.tip.laman', mood: 'worried' },
-  { pattern: '/suapan', name: 'suapan', component: Suapan, statusBar: 'dark', needsGame: true, tip: 'suapan.tip', mood: 'neutral' },
-  { pattern: '/kedai', name: 'kedai', component: Kedai, statusBar: 'dark', needsGame: true, tip: 'kedai.tip', mood: 'smile' },
-  { pattern: '/papan', name: 'papan', component: Papan, statusBar: 'dark', needsGame: true, tip: 'papan.tip', mood: 'proud' },
+  ...(FINALIST ? [
+    { pattern: '/suapan', name: 'suapan', component: Suapan, statusBar: 'dark', needsGame: true, tip: 'suapan.tip', mood: 'neutral' },
+    { pattern: '/kedai', name: 'kedai', component: Kedai, statusBar: 'dark', needsGame: true, tip: 'kedai.tip', mood: 'smile' },
+    { pattern: '/papan', name: 'papan', component: Papan, statusBar: 'dark', needsGame: true, tip: 'papan.tip', mood: 'proud' },
+  ] satisfies RouteDef[] : []),
   { pattern: '/demo/:scene', name: 'demo', component: DemoScene, statusBar: 'light', tip: 'side.tip.demo', mood: 'neutral' },
 ];
 

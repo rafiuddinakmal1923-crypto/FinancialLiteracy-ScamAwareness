@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { concepts } from 'virtual:celik-content';
 import type { ConceptInfo } from '../../engine/schemas';
+import { FINALIST } from '../../shell/features';
 import { useT } from '../../shell/i18n';
 import { navigate, replaceRoute } from '../../shell/router';
 import { useGame } from '../../state/game';
@@ -59,7 +60,7 @@ export function KadIlmu({ params }: { params: Record<string, string> }) {
         <Section title={t('ilmu.semak')} text={info.caraSemak} />
         <p className="mt-5 border-t border-kancil/50 pt-3 text-base italic text-ink-soft">{t('ilmu.footer')}</p>
       </article>
-      <ExplainerSlot concept={info.code} />
+      {FINALIST && <ExplainerSlot concept={info.code} />}
     </div>
   );
 }

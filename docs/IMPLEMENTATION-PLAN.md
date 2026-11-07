@@ -3,9 +3,8 @@
 > Written 7 Nov 2026 from docs/feature-plan.md. Decisions D35-D44 in docs/DECISIONS.md back every rule here and win
 > if anything disagrees. Requirements: docs/SRS.md section 3.8. Design: docs/SDS.md sections 3, 4.6, 5.9 and 6.4.
 
-Four people build seven finalist features in parallel, each editing only the files they own. Akmal writes the shared
-contracts on Tue 10 Nov by 13:00; after that nobody waits for anybody. Code freezes on Sun 15 Nov at 20:00; the
-pitch is Wed 18 Nov.
+Four people build seven finalist features in parallel, each editing only the files they own. The shared contracts
+(A1) are done and on `main`, so nobody waits for anybody. Code freezes on Sun 15 Nov at 20:00; the pitch is Wed 18 Nov.
 
 | Person | Lane | Total (P0-P2) |
 | --- | --- | --- |
@@ -13,6 +12,27 @@ pitch is Wed 18 Nov.
 | **B. Wafi** | Builder: the new feature screens and their tests | 26 h |
 | **C. Danish** | Content: content files, BM/EN wording, fact checks | 15 h (+5 h P2) |
 | **D. Aimar** | Pitch: business model, validation test, explainer art, slides, demo | 27 h |
+
+---
+
+## Start here (everyone)
+
+You need write access to the GitHub repo (ask Akmal), Node 24 and Git.
+
+```bash
+git clone --branch main https://github.com/rafiuddinakmal1923-crypto/FinancialLiteracy-ScamAwareness.git
+cd FinancialLiteracy-ScamAwareness
+git switch lane/<yourname>
+cd app
+npm ci
+npx playwright install chromium
+npm run check
+npm run dev
+```
+
+`npm run check` must pass before you start. `npm run dev` shows the finalist screens; the live site hides them until
+A9 (D45). Then read section G and paste your starter prompt from section H into Claude Code. Commit only to your lane
+branch and push it; Akmal merges at 20:00 each evening (section E).
 
 ---
 
@@ -61,7 +81,7 @@ and the settings reference for `maxEffortLevel`. Confirm the key names there if 
 
 ---
 
-## B. Contracts (Akmal, Tue 10 Nov, merged by 13:00)
+## B. Contracts (Akmal; done 7 Nov, on `main`)
 
 The contracts are the only time one person creates files that another person then owns. Each file below is created
 once by Akmal, merged to `main`, and then **handed over**: from that moment only the new owner edits it.
@@ -113,7 +133,7 @@ the contracts or at earlier tasks, so there are no cycles. Engine stubs mean Waf
 | A6 | Akmal | Fix wave from HANDOFF (code items only: chat order guard, `canBeginWeek`, autosave flush, Cek Harian hidden-tab clock, midnight ComeBack, Kalkulator preset outside a chat (W2 and W3 need it), SemakSim dash match) | Files named in HANDOFF, all in Akmal's lane | A1 | 4 | Each item has a test or a Playwright check |
 | A7 | Akmal | Daily merges at 20:00 (Tue-Sun) | `main` | A1 | 3 | Every merge followed by green `npm run check` and Playwright |
 | A8 | Akmal | Performance pass: 4x CPU throttle, lazy-load the new modes, size check | `vite.config.ts`, `shell/routes.tsx` | A2-A5, W1-W7 | 3 | `npm run size` under 8 MB; 30 fps at 4x throttle |
-| A9 | Akmal | Deploy to Netlify, offline check on 2 phones, backup demo recording | `netlify.toml`, `main` | A8 | 3 | Deployed link works in airplane mode on 2 phones |
+| A9 | Akmal | Turn finalist screens on (`VITE_FINALIST = "1"` in `netlify.toml`, D45), deploy to Netlify, offline check on 2 phones, backup demo recording | `netlify.toml`, `main` | A8 | 3 | Deployed link works in airplane mode on 2 phones |
 | W1 | Wafi | Suapan feed: post cards, author, scroll | `modes/suapan/*` | A1 | 4 | Renders `content/feed.json` at 3 viewports |
 | W2 | Wafi | Suapan actions: Percaya / Semak / Lapor, debrief sheet, Semak opens Kalkulator or Kad Ilmu | `modes/suapan/*`, `app/e2e/suapan.spec.ts` | W1, A6 (Kalkulator preset) | 4 | Playwright: "2% a day" post → Semak → Semak Pulangan shows the Terlalu Lumayan flag |
 | W3 | Wafi | Kedai Kampus: shelf, confirm sheet, instalment item shows total cost first | `modes/kedai/*`, `app/e2e/kedai.spec.ts` | A1, A6 (Kalkulator preset) | 5 | Playwright: buying the phone shows Kos Sebenar before confirm |
@@ -198,7 +218,7 @@ No file appears under two owners. A10 is the one place two lanes meet: Akmal ask
 
 | Day | A. Akmal | B. Wafi | C. Danish | D. Aimar |
 | --- | --- | --- | --- | --- |
-| **Tue 10** | A1 contracts by 13:00; A6 fix wave | Sketch screens until 13:00; W1 | Draft posts in a doc; C1 after 13:00 | D1 book students; D2 |
+| **Tue 10** | A6 fix wave | W1 | C1 | D1 book students; D2 |
 | **Wed 11** | A2; merge | W2 | C1 finish, C2 | D2 finish; D3 |
 | **Thu 12** (shortlist) | A3; merge | W3 | C3, C4 | If shortlisted: D5 starts. If not: stop and write up |
 | **Fri 13** | A4, A5; merge | W4, W5 | C5 | D5 (compound growth) |
@@ -246,7 +266,7 @@ never let a session edit files outside your lane.
 
 ## H. Starter prompts (paste into your first Claude Code session)
 
-Each person opens Claude Code in `D:\FinancialLiteracy-ScamAwareness` on their own branch.
+Each person opens Claude Code in their own clone of the repo, on their own branch (see Start here).
 
 ### A. Akmal
 
@@ -264,7 +284,7 @@ Then A6. Stop and ask me before changing a hard rule or a file outside my lane.
 
 ```
 I am Wafi, the Builder for Celik. Read CLAUDE.md, docs/DECISIONS.md (D35-D44), docs/IMPLEMENTATION-PLAN.md,
-docs/UI-SPEC.md, docs/SRS.md 3.8 and docs/SDS.md 4.6 and 5.9. Work on branch lane/wafi, rebased on main after A1.
+docs/UI-SPEC.md, docs/SRS.md 3.8 and docs/SDS.md 4.6 and 5.9. Work on branch lane/wafi, rebased on main each morning.
 My lane: app/src/modes/{suapan,kedai,matlamat,papan,kongsi,tonton}/ including their i18n.ms.json and i18n.en.json,
 and the new e2e specs for those features. Edit nothing else; ask the owner with a REQ.
 Today: W1, then W2. Code against the engine stubs from A1; do not reimplement engine logic in the UI.
@@ -282,6 +302,8 @@ allowed-real-names.txt, banned-names.txt, docs/verification-log.md. Edit nothing
 Today: C1, 20 feed posts in BM (8 advice, 6 hype, 6 scam), fictional accounts only, .test links and 01X-0000 0NNN
 numbers only, every hype post with a debrief, no product recommendations. Validate with npm run check:content.
 Mark any legal line or rate I cannot source as TODO-VERIFY. Stop and ask before using a real name.
+Also: swipe card c015 in content/cards.json still says "Sembang" in English; change it to "Chat", and tell Akmal so
+the matching exception in app/e2e/english.spec.ts can go.
 ```
 
 ### D. Aimar

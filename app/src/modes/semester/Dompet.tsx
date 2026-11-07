@@ -3,6 +3,7 @@ import { ArrowLeft, CalendarClock, CircleCheck, Telescope } from 'lucide-react';
 import { BALANCE } from '../../engine/balance';
 import { netWorth } from '../../engine/meters';
 import type { BudgetSplit } from '../../engine/week';
+import { FINALIST } from '../../shell/features';
 import { useT } from '../../shell/i18n';
 import { navigate } from '../../shell/router';
 import { useSettings } from '../../state/settings';
@@ -311,8 +312,8 @@ function WeeklyView({ split }: { split: BudgetSplit }) {
           </p>
         )}
 
-        <GoalPicker />
-        <GoalBar />
+        {FINALIST && <GoalPicker />}
+        {FINALIST && <GoalBar />}
         <EmergencyFund />
         <BudgetBar split={split} />
         <WeekCosts week={week} />

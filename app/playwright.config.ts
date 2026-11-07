@@ -11,6 +11,8 @@ export default defineConfig({
     url: 'http://localhost:4173',
     reuseExistingServer: false,
     timeout: 180_000,
+    // Tests cover the finalist screens; VITE_FINALIST=0 runs them against what the live site serves (D45).
+    env: { VITE_FINALIST: process.env.VITE_FINALIST ?? '1' },
   },
   use: { baseURL: 'http://localhost:4173' },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],

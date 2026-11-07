@@ -18,6 +18,7 @@ import { formatRM } from '../ui/format';
 import { MeterBar } from '../ui/MeterBar';
 import { meanScore, ScoreRing } from '../ui/ScoreRing';
 import { toast } from '../ui/Toast';
+import { FINALIST } from './features';
 import { useT } from './i18n';
 import { isKnownPath, navigate } from './router';
 import { homeTile, loopState, nextStep } from '../modes/semester/loop';
@@ -33,9 +34,11 @@ export const APP_TILES: { id: string; path: string; icon: string | LucideIcon; l
   { id: 'kalkulator', path: '/kalkulator', icon: kalkulator },
   { id: 'kad', path: '/kad', icon: kad },
   { id: 'latihan', path: '/latihan', icon: latihan },
-  { id: 'suapan', path: '/suapan', icon: Newspaper, label: 'suapan.app' },
-  { id: 'kedai', path: '/kedai', icon: Store, label: 'kedai.app' },
-  { id: 'papan', path: '/papan', icon: Trophy, label: 'papan.app' },
+  ...(FINALIST ? [
+    { id: 'suapan', path: '/suapan', icon: Newspaper, label: 'suapan.app' },
+    { id: 'kedai', path: '/kedai', icon: Store, label: 'kedai.app' },
+    { id: 'papan', path: '/papan', icon: Trophy, label: 'papan.app' },
+  ] : []),
   { id: 'tetapan', path: '/settings', icon: Gear },
 ];
 export const MODE_PATHS = { semester: '/semester/minggu', harian: '/harian', kelas: '/kelas', sindiket: '/sindiket' } as const;

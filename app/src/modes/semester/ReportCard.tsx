@@ -5,6 +5,7 @@ import { scenarios } from 'virtual:celik-content';
 import { BALANCE } from '../../engine/balance';
 import type { GradeLetter } from '../../engine/grade';
 import { reportModel } from '../../engine/report';
+import { FINALIST } from '../../shell/features';
 import { useT } from '../../shell/i18n';
 import { navigate } from '../../shell/router';
 import { flushNow } from '../../state/persist';
@@ -125,8 +126,8 @@ export function ReportCard() {
           </div>
         </section>
 
-        <GoalResult />
-        <ShareButton />
+        {FINALIST && <GoalResult />}
+        {FINALIST && <ShareButton />}
 
         <section className="flex flex-col gap-3 rounded-2xl bg-kancil-soft p-4">
           <p className="flex items-start gap-2 text-base font-semibold leading-snug text-ink">
