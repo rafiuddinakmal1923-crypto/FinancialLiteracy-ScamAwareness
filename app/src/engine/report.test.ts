@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { BALANCE } from './balance';
 import { gradeSemester, semesterInputs } from './grade';
+import { initialMeters } from './meters';
 import { reportModel, type ReportSnapshot } from './report';
 import { CONCEPTS, TACTICS } from './types';
 
@@ -90,5 +91,22 @@ describe('reportModel', () => {
     const low = reportModel(snap({ results: [res('s1', false, 0, 3)] }, { celik: flatC(0), imuniti: flatI(0), simpanan: 0, rekod: 'Didakwa' }), 2000, catalog);
     expect(low.grade).toBe('D');
     expect(low.rekodCapped).toBe(false);
+  });
+});
+
+describe('goal on the report (A4)', () => {
+  const g = { week: 12, results: [], meters: initialMeters(), incomeTotal: 0 };
+
+  it('is null without a goal', () => {
+    expect(reportModel(g, 2000, {}).goal).toBeNull();
+  });
+
+  it('says whether the goal was reached', () => {
+    expect(reportModel({ ...g, goal: 'raya' }, 2000, {}).goal).toMatchObject({ goal: 'raya', reached: true });
+    expect(reportModel({ ...g, goal: 'kecemasan' }, 2000, {}).goal).toMatchObject({ goal: 'kecemasan', reached: false });
+  });
+
+  it('does not change the grade (D38)', () => {
+    expect(reportModel({ ...g, goal: 'raya' }, 2000, {}).score).toBe(reportModel(g, 2000, {}).score);
   });
 });

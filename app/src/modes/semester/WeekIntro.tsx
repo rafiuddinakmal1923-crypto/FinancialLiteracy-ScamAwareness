@@ -6,6 +6,7 @@ import { LABUR_PRODUCTS, type LaburProduct } from '../../engine/types';
 import { useT } from '../../shell/i18n';
 import { navigate, replaceRoute } from '../../shell/router';
 import { tekananLevel } from '../../shell/StatusBar';
+import { weekCosts } from '../../engine/week';
 import { useGame } from '../../state/game';
 import { useSettings } from '../../state/settings';
 import { formatMoney, formatSignedMoney } from '../../ui/format';
@@ -98,7 +99,7 @@ export function WeekIntro() {
   }
 
   const def = weekDef(week);
-  const costs = def?.costs ?? [];
+  const costs = def ? weekCosts(def, useGame.getState().purchases) : [];
   const totalCosts = costs.reduce((s, c) => s + c.amount, 0);
   const income = (BALANCE.incomeWeeks as readonly number[]).includes(week) ? BALANCE.income : 0;
   const growth = growthByWeek.get(week);
@@ -134,7 +135,7 @@ export function WeekIntro() {
         <ul aria-label={t('minggu.costs')} className="mt-2 divide-y divide-indigo-soft rounded-2xl bg-white px-4 shadow-[0_2px_8px_rgba(28,27,58,.08)]">
           {costs.map((c, i) => (
             <li key={i} className="flex min-h-12 items-center justify-between gap-3 py-2">
-              <span className="text-base text-ink">{loc(c.label, lang)}</span>
+              <span className="text-base text-ink">{'labelKey' in c ? t(c.labelKey) : loc(c.label, lang)}</span>
               <span className="font-mono text-base font-semibold text-ink">{formatMoney(-c.amount)}</span>
             </li>
           ))}

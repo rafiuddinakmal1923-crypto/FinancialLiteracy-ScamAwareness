@@ -1,5 +1,5 @@
 // S13: the semester report card. All counting lives in engine/report.ts; this file only lays it out.
-import { useMemo, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { CircleCheck, CircleX, Dumbbell } from 'lucide-react';
 import { scenarios } from 'virtual:celik-content';
 import { BALANCE } from '../../engine/balance';
@@ -43,14 +43,16 @@ export function ReportCard() {
   const results = useGame((s) => s.results);
   const meters = useGame((s) => s.meters);
   const incomeTotal = useGame((s) => s.incomeTotal);
+  const goal = useGame((s) => s.goal);
   const character = useGame((s) => s.character);
   const name = useGame((s) => s.name);
   const [confirming, setConfirming] = useState(false);
 
   const m = useMemo(
-    () => reportModel({ week, results, meters, incomeTotal }, BALANCE.start.duit, scenarios),
-    [week, results, meters, incomeTotal],
+    () => reportModel({ week, results, meters, incomeTotal, goal }, BALANCE.start.duit, scenarios),
+    [week, results, meters, incomeTotal, goal],
   );
+  useEffect(() => { useGame.getState().claimGoalXp(); }, []);
   const weakestName = m.weakest.kind === 'concept' ? conceptName(m.weakest.code as never) : tactic(m.weakest.code as never);
   const money = (n: number) => formatMoney(n);
 

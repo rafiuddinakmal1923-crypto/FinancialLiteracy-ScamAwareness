@@ -6,9 +6,10 @@ import { round2 } from '../engine/money';
 import { applyEffect, applyFlagFound, applyMoneyAnswer, applyOutcome, applySwipeAnswer, applyXp, initialMeters, isRight } from '../engine/meters';
 import { updateHarianStreak } from '../engine/harian';
 import { dayDiff } from '../engine/dates';
-import { judgePost, type FeedResult } from '../engine/feed';
+import { applyFeedResult, judgePost, type FeedResult } from '../engine/feed';
+import { goalReached } from '../engine/goals';
 import { buyItem as engineBuyItem, type BuyResult } from '../engine/shop';
-import type { ChatMessage, TrailStep, Concept, Effect, EndedScenario, Family, FeedCall, FeedPost, GoalId, LaburProduct, Meters, Outcome, Purchase, ScenarioMeta, ScenarioResult, Tactic } from '../engine/types';
+import type { ChatMessage, TrailStep, Concept, Effect, EndedScenario, Family, FeedCall, FeedPost, GoalId, LaburProduct, Meters, Outcome, Purchase, ScenarioMeta, ShopPot, ScenarioResult, Tactic } from '../engine/types';
 
 /**
  * Fills meter fields an older save does not have (milestone 2 saves have no `celik` or `labur`) from the
@@ -134,6 +135,8 @@ export interface GameData {
   kadIlmu: Concept[];
   /** Matlamat Semester goal picked after the week-0 split, or null (D38). */
   goal: GoalId | null;
+  /** True once the goal XP bonus was paid. */
+  goalPaid: boolean;
   /** Kedai Kampus items bought, oldest first (D37). */
   purchases: Purchase[];
   /** Suapan calls by post id; a post is judged once (D36). */
@@ -195,8 +198,10 @@ export interface GameActions {
   untickAction(id: string): void;
   /** Picks the semester goal (or clears it with null). */
   setGoal(goal: GoalId | null): void;
-  /** Buys a Kedai Kampus item. On an error nothing changes. */
-  buyItem(itemId: string): BuyResult;
+  /** Buys a Kedai Kampus item and logs it in BankKu under its pot. On an error nothing changes. */
+  buyItem(itemId: string, pot?: ShopPot): BuyResult;
+  /** Pays the goal XP bonus once, at week 12, if the goal was reached. Returns true when it was just paid. */
+  claimGoalXp(): boolean;
   /** Judges one Suapan call and saves it. Returns null, changing nothing, if the post was already judged. */
   judgeFeed(post: FeedPost, call: FeedCall): FeedResult | null;
   hydrate(d: GameData | null): void;
@@ -209,14 +214,14 @@ export function initialGame(): GameData {
     character: 'aina', name: 'Aina', onboarded: false, week: 0, meters: initialMeters(), budget: null,
     results: [], cards: [], badges: [], swipe: { best: 0, streak: 0, lastPlayed: null }, harian: initialHarian(), harianProgress: null, swipeXpDate: null,
     actions: [], actionsPaid: [], drills: [], incomeTotal: 0, active: null, lastEnded: null, transcripts: {}, trails: {}, weekIntroOpen: false,
-    txLog: [], calcUsed: [], calcResume: null, calcFlagged: [], kadIlmu: [], goal: null, purchases: [], feed: {},
+    txLog: [], calcUsed: [], calcResume: null, calcFlagged: [], kadIlmu: [], goal: null, goalPaid: false, purchases: [], feed: {},
   };
 }
 
 const DATA_KEYS: (keyof GameData)[] = [
   'character', 'name', 'onboarded', 'week', 'meters', 'budget', 'results', 'cards', 'badges',
   'swipe', 'harian', 'harianProgress', 'swipeXpDate', 'actions', 'actionsPaid', 'drills', 'incomeTotal', 'active', 'lastEnded', 'transcripts', 'trails', 'weekIntroOpen', 'txLog',
-  'calcUsed', 'calcResume', 'calcFlagged', 'kadIlmu', 'goal', 'purchases', 'feed',
+  'calcUsed', 'calcResume', 'calcFlagged', 'kadIlmu', 'goal', 'goalPaid', 'purchases', 'feed',
 ];
 
 /** Picks only the persisted data fields (no actions) from the store state. */
@@ -355,11 +360,11 @@ export const useGame = create<GameData & GameActions>()((set, get) => ({
   },
 
   beginWeek: (def) => {
-    const { week, weekIntroOpen, meters, incomeTotal, txLog, active, lastEnded } = get();
+    const { week, weekIntroOpen, meters, incomeTotal, txLog, active, lastEnded, purchases } = get();
     // The rest of canBeginWeek (every earlier scenario finished) needs the content, so WeekIntro checks it.
     if (week >= BALANCE.semesterWeeks || weekIntroOpen || active || lastEnded) return null;
     if (def.week !== week + 1) throw new Error(`beginWeek: expected week ${week + 1}, got ${def.week}`);
-    const summary = applyWeekIntro(meters, def);
+    const summary = applyWeekIntro(meters, def, BALANCE, purchases);
     const tx = [
       { label: 'bankku.tx.income', amount: summary.income },
       ...summary.costs.map((c) => ({ label: c.label, amount: -c.amount })),
@@ -442,18 +447,34 @@ export const useGame = create<GameData & GameActions>()((set, get) => ({
 
   setGoal: (goal) => set({ goal }),
 
-  buyItem: (itemId) => {
-    const { meters, week, purchases } = get();
+  buyItem: (itemId, pot) => {
+    const { meters, week, purchases, txLog } = get();
     const r = engineBuyItem({ meters, week, purchases }, itemId);
-    if ('state' in r) set({ meters: r.state.meters, purchases: r.state.purchases });
+    if ('error' in r) return r;
+    const amount = round2(r.state.meters.duit - meters.duit);
+    const bought = r.state.purchases.map((p) => (p.item === itemId && pot ? { ...p, pot } : p));
+    set({
+      // Also on the open chat's snapshot, so rewinding a chat does not refund the purchase.
+      ...bumpMeters(get(), (m) => applyEffect(m, { kind: 'duit', delta: amount })),
+      purchases: bought,
+      txLog: appendTx(txLog, week, [{ label: pot ? `bankku.tx.kedai.${pot}` : 'bankku.tx.kedai', amount }]),
+    });
     return r;
+  },
+
+  claimGoalXp: () => {
+    const { goal, goalPaid, meters, week } = get();
+    if (goalPaid || week < BALANCE.semesterWeeks || !goalReached({ goal, meters })) return false;
+    set({ ...bumpXp(get(), BALANCE.matlamat.xpReached), goalPaid: true });
+    return true;
   },
 
   judgeFeed: (post, call) => {
     const { feed } = get();
     if (feed[post.id]) return null;
-    set({ feed: { ...feed, [post.id]: call } });
-    return judgePost(post, call);
+    const result = judgePost(post, call);
+    set({ ...bumpMeters(get(), (m) => applyFeedResult(m, post, result.verdict)), feed: { ...feed, [post.id]: call } });
+    return result;
   },
 
   hydrate: (saved) => {

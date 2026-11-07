@@ -54,8 +54,8 @@ export const SHOP_EFFECTS = ['none', 'transport', 'instalment'] as const;
 export type ShopEffect = typeof SHOP_EFFECTS[number];
 /** A Kedai Kampus item; its price is in BALANCE.kedai.prices. `instalment` opens Kalkulator preset `kedai-<id>`. */
 export interface ShopItem { id: string; name: LocalizedText; pot: ShopPot; effect: ShopEffect; tip: LocalizedText }
-/** One bought item and the week it was bought. */
-export interface Purchase { item: string; week: number }
+/** One bought item, the week it was bought and the pot it was logged under. */
+export interface Purchase { item: string; week: number; pot?: ShopPot }
 export const GOAL_IDS = ['kecemasan', 'laptop', 'raya', 'labur'] as const;
 export type GoalId = typeof GOAL_IDS[number];
 export const GOAL_MEASURES = ['simpanan', 'labur', 'duit'] as const;

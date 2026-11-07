@@ -92,10 +92,19 @@ export const BALANCE = {
   /** Prices in RM. The cash items total RM383, under one part-time pay (D37). Instalment terms are examples. */
   kedai: {
     prices: { snek: 15, konsert: 99, earfon: 59, basikal: 150, buku: 60, telefon: 1200 },
+    /** The item that lowers each later weekly transport cost by transportSaving. */
+    transportItem: 'basikal',
     transportSaving: 10,
     instalment: { telefon: { monthly: 110, months: 12 } },
+    /** Weeks an instalment is charged, once the item is bought. */
+    instalmentWeeks: [4, 8, 12],
     tipAbove: 100,
   },
-  matlamat: { targets: { kecemasan: 300, laptop: 500, raya: 250, labur: 200 }, nudgeWeeks: [4, 8], xpReached: 100 },
+  matlamat: {
+    targets: { kecemasan: 300, laptop: 500, raya: 250, labur: 200 },
+    /** What each goal counts; content/goals.json must say the same. */
+    measures: { kecemasan: 'simpanan', laptop: 'simpanan', raya: 'duit', labur: 'labur' },
+    nudgeWeeks: [4, 8], xpReached: 100,
+  },
   papan: { grades: [42, 51, 58, 63, 67, 71, 76, 82, 90] },
 } as const;
