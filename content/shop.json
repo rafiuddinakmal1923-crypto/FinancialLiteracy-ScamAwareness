@@ -1,0 +1,15 @@
+[
+  {
+    "id": "basikal",
+    "name": {
+      "ms": "Basikal terpakai",
+      "en": "Used bicycle"
+    },
+    "pot": "kehendak",
+    "effect": "transport",
+    "tip": {
+      "ms": "Jimat tambang setiap minggu.",
+      "en": "Saves on fares every week."
+    }
+  }
+]

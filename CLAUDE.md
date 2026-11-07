@@ -31,3 +31,5 @@ requirements, UI-SPEC wins for look and copy, the SDS wins for structure and num
     labelled "contoh" (example). All money maths lives in `app/src/engine/finance.ts` with unit tests.
 13. **Direction (D18):** financial literacy is the core loop; scams are the high-stakes events inside it. When a
     trade-off comes up, protect the video path in SRS 5.2.
+14. **Sessions (D44):** run Opus 5.5 with effort no higher than medium, subagents included; `.claude/settings.json` enforces it.
+15. **Lanes (D43):** edit only files your lane owns (docs/IMPLEMENTATION-PLAN.md, file-to-owner table); ask the owner for anything else.

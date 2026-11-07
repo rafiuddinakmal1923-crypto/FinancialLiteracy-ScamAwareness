@@ -1,0 +1,22 @@
+[
+  {
+    "id": "kompaun",
+    "concept": "kompaun",
+    "frames": [
+      {
+        "svg": "kompaun-1",
+        "caption": {
+          "ms": "Mula dengan simpanan kecil setiap bulan.",
+          "en": "Start with a small saving each month."
+        }
+      },
+      {
+        "svg": "kompaun-2",
+        "caption": {
+          "ms": "Lama-kelamaan, pulangan turut menjana pulangan. Contoh sahaja.",
+          "en": "Over time, returns earn returns too. Example only."
+        }
+      }
+    ]
+  }
+]

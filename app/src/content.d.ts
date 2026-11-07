@@ -11,4 +11,9 @@ declare module 'virtual:celik-content' {
   export const semester: { weeks: import('./engine/schemas').WeekDef[] } | null;
   export const calcPresets: import('./engine/schemas').CalcPreset[] | null;
   export const pages: Record<string, import('./engine/schemas').FakePageDef> | null;
+  export const feed: import('./engine/types').FeedPost[] | null;
+  export const shop: import('./engine/types').ShopItem[] | null;
+  export const goals: import('./engine/types').Goal[] | null;
+  export const classmates: import('./engine/types').Classmate[] | null;
+  export const explainers: import('./engine/types').Explainer[] | null;
 }

@@ -500,4 +500,22 @@ describe('awardKadIlmu (Task 25)', () => {
     useGame.getState().hydrate(d as never);
     expect(useGame.getState().kadIlmu).toEqual([]);
   });
+
+  it('fills the finalist fields on an older save and keeps them across a save (A1)', () => {
+    const { goal: _g, purchases: _p, feed: _f, ...old } = initialGame();
+    useGame.getState().hydrate(old as never);
+    expect(useGame.getState().goal).toBeNull();
+    expect(useGame.getState().purchases).toEqual([]);
+    expect(useGame.getState().feed).toEqual({});
+    useGame.getState().setGoal('raya');
+    expect(gameData(useGame.getState()).goal).toBe('raya');
+  });
+
+  it('judges a Suapan post once (A1)', () => {
+    useGame.getState().reset();
+    const post = { id: 'p1', kind: 'advice', author: { name: 'A', handle: '@a', followers: '1' }, text: { ms: 'x' }, concept: 'bajet', semak: { kad: 'bajet' } } as const;
+    expect(useGame.getState().judgeFeed(post, 'semak')).not.toBeNull();
+    expect(useGame.getState().judgeFeed(post, 'lapor')).toBeNull();
+    expect(useGame.getState().feed).toEqual({ p1: 'semak' });
+  });
 });

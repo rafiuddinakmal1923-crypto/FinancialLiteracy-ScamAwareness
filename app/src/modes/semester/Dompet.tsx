@@ -10,6 +10,8 @@ import { useGame } from '../../state/game';
 import { formatMoney } from '../../ui/format';
 import { Kancil } from '../../ui/Kancil';
 import { MeterBar } from '../../ui/MeterBar';
+import { GoalBar } from '../matlamat/GoalBar';
+import { GoalPicker } from '../matlamat/GoalPicker';
 import { LaburPot } from './LaburPot';
 import { richT } from './rich';
 import { DEFAULT_SPLIT, rebalance, SPLIT_KEYS, SPLIT_STEP, SUGGESTED_SPLIT, type SplitKey } from './split';
@@ -309,6 +311,8 @@ function WeeklyView({ split }: { split: BudgetSplit }) {
           </p>
         )}
 
+        <GoalPicker />
+        <GoalBar />
         <EmergencyFund />
         <BudgetBar split={split} />
         <WeekCosts week={week} />

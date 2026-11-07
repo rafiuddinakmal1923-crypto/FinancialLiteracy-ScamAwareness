@@ -1,5 +1,9 @@
 import { z, type ZodType } from 'zod';
-import { CONCEPTS, TACTICS } from './types';
+import { BALANCE } from './balance';
+import {
+  CONCEPTS, FEED_KINDS, GOAL_IDS, GOAL_MEASURES, SHOP_EFFECTS, SHOP_POTS, TACTICS,
+  type Classmate, type Explainer, type FeedPost, type Goal, type ShopItem,
+} from './types';
 
 export class ContentError extends Error {
   constructor(message: string) {
@@ -113,7 +117,8 @@ export const WeekDefSchema = z.object({
   week: z.number().int().min(1).max(12),
   scenario: z.string().min(1).nullable(),
   context: LocalizedSchema,
-  costs: z.array(z.object({ label: LocalizedSchema, amount: z.number().nonnegative() })),
+  /** `kind: transport` marks the cost a bought bicycle lowers (FR-82). */
+  costs: z.array(z.object({ label: LocalizedSchema, amount: z.number().nonnegative(), kind: z.literal('transport').optional() })),
 });
 export type WeekDef = z.infer<typeof WeekDefSchema>;
 export const SemesterFileSchema = z.object({ weeks: z.array(WeekDefSchema).length(12) }).superRefine((f, ctx) => {
@@ -205,6 +210,58 @@ export const DrillsFileSchema = z.strictObject({
 });
 export type DrillsFile = z.infer<typeof DrillsFileSchema>;
 
+/** Adds an issue for each entry whose `id` repeats an earlier one. */
+function uniqueIds(list: { id: string }[], ctx: z.RefinementCtx): void {
+  const seen = new Set<string>();
+  list.forEach((e, i) => {
+    if (seen.has(e.id)) ctx.addIssue({ code: 'custom', path: [i, 'id'], message: `duplicate id "${e.id}"` });
+    seen.add(e.id);
+  });
+}
+
+const FeedPostSchema = z.strictObject({
+  id: z.string().min(1),
+  kind: z.enum(FEED_KINDS),
+  author: z.strictObject({ name: z.string().min(1), handle: z.string().min(1), followers: z.string().min(1) }),
+  text: LocalizedSchema,
+  concept: ConceptSchema.optional(),
+  tactics: z.array(TacticSchema).optional(),
+  semak: z.union([z.strictObject({ calc: z.string().min(1) }), z.strictObject({ kad: ConceptSchema })]),
+  debrief: LocalizedSchema.optional(),
+});
+export const FeedFileSchema: ZodType<FeedPost[]> = z.array(FeedPostSchema).min(1).superRefine((list, ctx) => {
+  uniqueIds(list, ctx);
+  list.forEach((p, i) => {
+    if (p.kind !== 'scam' && !p.concept) ctx.addIssue({ code: 'custom', path: [i, 'concept'], message: `${p.kind} post needs a concept` });
+    if (p.kind === 'scam' && !p.tactics?.length) ctx.addIssue({ code: 'custom', path: [i, 'tactics'], message: 'scam post needs tactics' });
+    if (p.kind !== 'advice' && !p.debrief) ctx.addIssue({ code: 'custom', path: [i, 'debrief'], message: `${p.kind} post needs a debrief (D36)` });
+  });
+});
+
+const ShopItemSchema = z.strictObject({
+  id: z.string().min(1), name: LocalizedSchema, pot: z.enum(SHOP_POTS), effect: z.enum(SHOP_EFFECTS), tip: LocalizedSchema,
+});
+export const ShopFileSchema: ZodType<ShopItem[]> = z.array(ShopItemSchema).min(1).superRefine((list, ctx) => {
+  uniqueIds(list, ctx);
+  list.forEach((it, i) => {
+    if (!(it.id in BALANCE.kedai.prices)) ctx.addIssue({ code: 'custom', path: [i, 'id'], message: `"${it.id}" has no price in balance.ts kedai.prices` });
+    if (it.effect === 'instalment' && !(it.id in BALANCE.kedai.instalment)) ctx.addIssue({ code: 'custom', path: [i, 'effect'], message: `"${it.id}" has no terms in balance.ts kedai.instalment` });
+  });
+});
+
+const GoalSchema = z.strictObject({ id: z.enum(GOAL_IDS), measure: z.enum(GOAL_MEASURES), name: LocalizedSchema });
+export const GoalsFileSchema: ZodType<Goal[]> = z.array(GoalSchema).min(1).superRefine(uniqueIds);
+
+const ClassmateSchema = z.strictObject({ id: z.string().regex(/^k\d+$/), name: z.string().min(1), avatar: z.string().min(1) });
+export const ClassmatesFileSchema: ZodType<Classmate[]> = z.array(ClassmateSchema).min(1).max(BALANCE.papan.grades.length).superRefine(uniqueIds);
+
+const ExplainerSchema = z.strictObject({
+  id: z.string().min(1),
+  concept: ConceptSchema,
+  frames: z.array(z.strictObject({ svg: z.string().regex(/^[a-z0-9-]+$/), caption: LocalizedSchema })).min(1),
+});
+export const ExplainersFileSchema: ZodType<Explainer[]> = z.array(ExplainerSchema).min(1).superRefine(uniqueIds);
+
 /** Registry of content file name -> schema. Owner tasks register theirs here. */
 export const CONTENT_FILES: Record<string, ZodType> = {
   'tactics.json': TacticsFileSchema,
@@ -215,6 +272,11 @@ export const CONTENT_FILES: Record<string, ZodType> = {
   'pages.json': PagesFileSchema,
   'calc-presets.json': CalcPresetsFileSchema,
   'drills.json': DrillsFileSchema,
+  'feed.json': FeedFileSchema,
+  'shop.json': ShopFileSchema,
+  'goals.json': GoalsFileSchema,
+  'classmates.json': ClassmatesFileSchema,
+  'explainers.json': ExplainersFileSchema,
 };
 
 export function parseContent<T>(schema: ZodType<T>, data: unknown, file: string): T {
