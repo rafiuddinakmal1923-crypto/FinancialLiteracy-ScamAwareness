@@ -17,6 +17,7 @@ import { TypingIndicator } from '../../ui/TypingIndicator';
 import { BankKu } from './BankKu';
 import { FakePage } from './FakePage';
 import { localScenario, localTranscript } from './localScenario';
+import { chatLocked } from './ChatList';
 import { useScenario } from './useScenario';
 
 const SPRING = { type: 'spring', stiffness: 300, damping: 28 } as const;
@@ -310,7 +311,8 @@ export function ChatThread({ params }: { params: Record<string, string> }) {
   const finished = useGame((s) => s.results.some((r) => r.id === id));
   // Checked once on open: the end of this very thread also sets lastEnded, and must not redirect.
   const [pending] = useState(() => useGame.getState().lastEnded?.id ?? null);
-  const redirect = !known ? '/sembang' : pending ? `/semester/akibat/${pending}` : null;
+  const locked = useGame((s) => chatLocked(id, s.week)) && !finished;
+  const redirect = !known || locked ? '/sembang' : pending ? `/semester/akibat/${pending}` : null;
   useEffect(() => {
     if (redirect) replaceRoute(redirect);
   }, [redirect]);

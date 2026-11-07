@@ -149,7 +149,7 @@ export function SwipeGame(_props: { params: Record<string, string> }) {
     setPhase('play');
   };
 
-  // The clock: runs only while playing and not showing a reason (D5). Measured against Date.now so a throttled tab stays honest.
+  // The clock: runs only while playing, not showing a reason (D5) and on screen. Measured against Date.now so a throttled tab stays honest.
   useEffect(() => {
     if (phase !== 'play' || revealing) return;
     let last = Date.now();
@@ -157,9 +157,14 @@ export function SwipeGame(_props: { params: Record<string, string> }) {
       const now = Date.now();
       const dt = now - last;
       last = now;
-      setRemaining((r) => Math.max(0, r - dt));
+      if (document.visibilityState !== 'hidden') setRemaining((r) => Math.max(0, r - dt));
     }, TICK_MS);
-    return () => clearInterval(id);
+    const restart = () => { last = Date.now(); };
+    document.addEventListener('visibilitychange', restart);
+    return () => {
+      clearInterval(id);
+      document.removeEventListener('visibilitychange', restart);
+    };
   }, [phase, revealing]);
 
   useEffect(() => {

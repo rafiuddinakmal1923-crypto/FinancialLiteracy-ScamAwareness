@@ -81,6 +81,15 @@ describe('SemakSim', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Semak' }));
   };
 
+  it('finds the account however the dashes are typed (A6)', () => {
+    for (const typed of ['000000000638', '0000-00000638', '0000\u20130000\u20130638']) {
+      const { unmount } = render(<SemakSim />);
+      search(typed);
+      expect(screen.getByText(/Dilaporkan dalam 3 kes/)).toBeTruthy();
+      unmount();
+    }
+  });
+
   it('shows the banner and the example-only helper text', () => {
     render(<SemakSim />);
     expect(screen.getByRole('note').textContent).toContain('SIMULASI');

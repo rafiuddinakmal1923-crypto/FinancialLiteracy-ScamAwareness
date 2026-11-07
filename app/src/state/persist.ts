@@ -33,7 +33,6 @@ export function startAutoSave(): () => void {
   const u2 = useSettings.subscribe(schedule);
   return () => {
     u1(); u2();
-    if (timer !== undefined) clearTimeout(timer);
-    timer = undefined;
+    if (timer !== undefined) void flushNow();
   };
 }

@@ -147,3 +147,33 @@ describe('Sahih atau Scam', () => {
     expect(screen.getByText('Kad belum tersedia')).toBeTruthy();
   });
 });
+
+describe('hidden tab (A6)', () => {
+  const setVisibility = (state: 'hidden' | 'visible') => {
+    Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => state });
+    document.dispatchEvent(new Event('visibilitychange'));
+  };
+  afterEach(() => { setVisibility('visible'); });
+
+  it('stops the clock while the tab is hidden', () => {
+    render(<SwipeGame params={{}} />);
+    start();
+    adv(2000);
+    const before = secs();
+    act(() => { setVisibility('hidden'); });
+    adv(10_000);
+    expect(secs()).toBe(before);
+  });
+
+  it('runs again without charging the hidden time', () => {
+    render(<SwipeGame params={{}} />);
+    start();
+    adv(2000);
+    const before = secs();
+    act(() => { setVisibility('hidden'); });
+    adv(10_000);
+    act(() => { setVisibility('visible'); });
+    adv(2000);
+    expect(secs()).toBe(before - 2);
+  });
+});

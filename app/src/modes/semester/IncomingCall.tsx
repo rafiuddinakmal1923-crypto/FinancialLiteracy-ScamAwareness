@@ -19,6 +19,7 @@ import { MeterBar } from '../../ui/MeterBar';
 import { ReplyChip } from '../../ui/ReplyChip';
 import { TypingIndicator } from '../../ui/TypingIndicator';
 import { localScenario } from './localScenario';
+import { chatLocked } from './ChatList';
 import { useScenario, type ScenarioOptions } from './useScenario';
 
 const HANG_UP = /letak|hang up/i;
@@ -272,7 +273,8 @@ export function IncomingCall({ params, options }: { params: Record<string, strin
   const [phase, setPhase] = useState<'ring' | 'accepted' | 'declined'>('ring');
   const [canHangUp] = useState(() => (known ? hasHangUp(id) : false));
   const [missed, setMissed] = useState(false);
-  const redirect = !known ? '/home' : pending ? `/semester/akibat/${pending}` : null;
+  const locked = useGame((s) => chatLocked(id, s.week)) && !finished;
+  const redirect = !known || locked ? '/home' : pending ? `/semester/akibat/${pending}` : null;
   useEffect(() => {
     if (redirect) replaceRoute(redirect);
   }, [redirect]);

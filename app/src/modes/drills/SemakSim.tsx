@@ -14,6 +14,7 @@ import { DrillHeader } from './parts';
 /** The only address this game ever opens (CLAUDE.md rule 1). */
 export const SEMAK_MULE_URL = 'https://semakmule.rmp.gov.my';
 const MAX_LEN = 20;
+const digits = (s: string) => s.replace(/\D/g, '');
 
 export function SemakSim() {
   const t = useT();
@@ -25,9 +26,9 @@ export function SemakSim() {
   const search = (raw: string) => {
     const number = raw.trim();
     if (!number) return;
-    const found = accounts.find((a) => a.number === number);
+    const found = accounts.find((a) => digits(a.number) === digits(number));
     const reports = found?.reports ?? 0;
-    setResult({ number, reports });
+    setResult({ number: found?.number ?? number, reports });
     if (reports > 0 && useGame.getState().completeDrill('semak')) toast(t('latihan.semak.xp', { xp: BALANCE.xp.drill }), 'success');
   };
 

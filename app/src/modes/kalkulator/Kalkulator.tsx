@@ -20,17 +20,20 @@ const isTab = (s: string | undefined): s is CalcTab => CALC_TABS.includes(s as C
  * S19 Kalkulator: Mesin Masa | Semak Pulangan | Kos Sebenar. Opened from the home tile it is a plain tool. Opened by a
  * chat ("Kira dulu", `?preset=<id>`) it is in scenario mode: inputs come from the preset, the first use gives +10 XP,
  * an unrealistic Semak Pulangan result counts as a found greed flag, and Kembali ke perbualan returns to the chat.
+ * From any other screen, `/kalkulator?preset=<id>&back=/suapan` opens the preset on its own tab and goes back there.
  */
 export function Kalkulator({ params }: { params: Record<string, string> }) {
   const t = useT();
   const lang = useSettings((s) => s.lang);
   const { query } = useRoute();
   const resume = useGame((s) => s.calcResume);
-  const tab: CalcTab = isTab(params.tab) ? params.tab : 'masa';
+  const named = (calcPresets ?? []).find((p) => p.id === query.preset) as CalcPreset | undefined;
+  const tab: CalcTab = isTab(params.tab) ? params.tab : named?.tab ?? 'masa';
+  const back = query.back?.startsWith('/') ? query.back : null;
   const badTab = params.tab !== undefined && !isTab(params.tab);
   // Scenario mode needs a waiting chat and a hand-off from it (the preset, kept across tab changes as chat=1).
   const scenarioId = resume && (query.preset !== undefined || query.chat === '1') ? resume.id : null;
-  const preset = (calcPresets ?? []).find((p) => p.id === query.preset && p.tab === tab) as CalcPreset | undefined;
+  const preset = named?.tab === tab ? named : undefined;
 
   useEffect(() => {
     if (badTab) replaceRoute(KALKULATOR_PATH + '/masa');
@@ -44,7 +47,7 @@ export function Kalkulator({ params }: { params: Record<string, string> }) {
     if (scenarioId) useGame.getState().calcFlag('greed');
   }, [scenarioId]);
 
-  const goTab = (next: CalcTab) => navigate(`${KALKULATOR_PATH}/${next}${scenarioId ? '?chat=1' : ''}`);
+  const goTab = (next: CalcTab) => navigate(`${KALKULATOR_PATH}/${next}${scenarioId ? '?chat=1' : back ? `?back=${back}` : ''}`);
   const backToChat = () => {
     if (!resume) return;
     useGame.getState().calcReturn();
@@ -59,7 +62,7 @@ export function Kalkulator({ params }: { params: Record<string, string> }) {
             <button
               type="button"
               aria-label={t('common.back')}
-              onClick={() => navigate(scenarioId ? `/sembang/${scenarioId}` : '/home')}
+              onClick={() => navigate(scenarioId ? `/sembang/${scenarioId}` : back ?? '/home')}
               className="-ml-2 flex h-12 w-12 items-center justify-center rounded-full"
             >
               <ArrowLeft aria-hidden size={24} strokeWidth={1.75} />
