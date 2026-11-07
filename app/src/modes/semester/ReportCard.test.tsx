@@ -83,9 +83,10 @@ describe('ReportCard', () => {
     expect(useGame.getState().week).toBe(0);
     expect(useGame.getState().results).toEqual([]);
   });
-  it('Kembali goes home; there is no share button', () => {
+  // Kad Keputusan (W6, FR-85) sits on the report card when the finalist screens are on (D45); tests run with them on.
+  it('Kembali goes home; the share button is Kad Keputusan', () => {
     render(<ReportCard />);
-    expect(screen.queryByRole('button', { name: /kongsi|share/i })).toBeNull();
+    expect(screen.getAllByRole('button', { name: /kongsi|share/i }).map((b) => b.textContent)).toEqual(['Kongsi Kad Keputusan']);
     fireEvent.click(screen.getByRole('button', { name: 'Kembali' }));
     expect(window.location.hash).toBe('#/home');
   });
