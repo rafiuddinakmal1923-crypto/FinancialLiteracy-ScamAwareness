@@ -40,6 +40,7 @@
   th, td { padding: .45em .7em; text-align: left; border-bottom: 1px solid var(--indigo-soft); }
   th { background: var(--indigo-soft); }
   .art { width: 100%; height: 100%; object-fit: contain; }
+  .shot { height: 18.5em; width: auto; max-width: 100%; justify-self: center; border-radius: .6em; box-shadow: 0 .3em 1em rgba(0,0,0,.35); }
   .foot { position: absolute; bottom: 3%; left: 6%; right: 6%; display: flex; justify-content: space-between; font-size: .55em; color: var(--ink-soft); }
   .dark .foot { color: #CFCDEB; }
   .fill { background: var(--kancil-soft); border: 2px dashed var(--kancil); border-radius: .3em; padding: 0 .3em; }
@@ -103,7 +104,7 @@
   <section class="slide dark">
     <p class="kicker">Live demo · 3 minutes · airplane mode</p>
     <h2>Suapan · Kedai Kampus · Matlamat · Tonton · Report card</h2>
-    <div class="grid g2" style="align-items:center">
+    <div class="grid" style="grid-template-columns:1.3fr auto auto auto;align-items:center;font-size:.85em">
       <ul>
         <li>A "2% a day" post → Semak → <b style="color:var(--kancil)">Terlalu Lumayan</b></li>
         <li>A phone on instalment → total cost shown first</li>
@@ -111,9 +112,11 @@
         <li>Animated explainers, no video files</li>
         <li>Report card, class ranking, share card</li>
       </ul>
-      <div class="card" style="background:var(--paper)"><img class="art" src="../../assets/explainers/kompaun-5.svg" alt="Compound growth: the value curve pulls away from the savings line"></div>
+      <img class="shot" src="img/suapan-debrief.png" alt="Suapan: the 2% a day post judged as hype, with a debrief">
+      <img class="shot" src="img/semak-pulangan.png" alt="Semak Pulangan: 2% a day is 137,640.8% a year, flagged Terlalu Lumayan">
+      <img class="shot" src="img/kos-sebenar.png" alt="Kos Sebenar: RM110 x 12 for a RM1,200 phone costs RM120 more, about 18% a year">
     </div>
-    <div class="foot"><span>Demo script: docs/pitch/demo-script.md</span><span>5</span></div>
+    <div class="foot"><span>Screens from the app (backup if the live demo fails) · docs/pitch/demo-script.md</span><span>5</span></div>
   </section>
 
   <section class="slide">
