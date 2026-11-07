@@ -1,1 +1,9 @@
-{}
+{
+  "matlamat.pick.title": "Pick a semester goal",
+  "matlamat.pick.body": "One goal for 12 weeks. You can change it during week 0.",
+  "matlamat.bar.label": "Goal: {name}",
+  "matlamat.bar.change": "Change goal",
+  "matlamat.result.title": "Semester goal",
+  "matlamat.result.reached": "{name}: {target} reached! +{xp} XP.",
+  "matlamat.result.notYet": "{name}: {value} of {target}. Every ringgit saved still counts."
+}
