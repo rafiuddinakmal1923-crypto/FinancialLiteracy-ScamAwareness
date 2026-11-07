@@ -30,8 +30,7 @@ Rule for the pitch: if a line is still **Open**, do not read it aloud or show it
 
 ## Kad Ilmu (`content/concepts.json`)
 
-`source` now points to these rows. Three entries stay `TODO-VERIFY`: kecemasan `duniaSebenar`, kompaun
-`duniaSebenar` and hutang `duniaSebenar` (no source checked yet).
+`source` now points to these rows. No entry is `TODO-VERIFY` any more.
 
 | ID | Entry | Status | Source or check |
 | --- | --- | --- | --- |
@@ -42,6 +41,9 @@ Rule for the pitch: if a line is still **Open**, do not read it aloud or show it
 | V24 | hutang `contoh` | Verified | RM1,000 at a flat 18% for 12 months: RM98.33 a month, RM1,180 total; the equivalent yearly rate (APR) is 31.7% |
 | V25 | hutang `caraSemak` | Verified | BNM Financial Consumer Alert List (companies and websites not authorised under BNM laws; "not exhaustive"): https://www.bnm.gov.my/-/financial-consumer-alert-list-of-unauthorised-companies-and-websites-has-been-updated ; AKPK as V8 |
 | V26 | semak `duniaSebenar`, `caraSemak` | Verified | SC list as V23; BNM list as V25 |
+| V27 | kecemasan `duniaSebenar` | Verified (general description) | The Star, 18 Jan 2026 ("The industry standard is to save three to six months of expenses"; keep it in a separate savings account): https://www.thestar.com.my/lifestyle/living/2026/01/18/saving-for-lifes-surprises-how-to-build-an-emergency-financial-fund . The line says "beberapa bulan" and gives savings account or short fixed deposit as examples, not advice |
+| V28 | kompaun `duniaSebenar` | Verified (general description) | EPF dividends are credited to the account each year based on the balance, so later dividends grow on earlier ones; the rate differs by year (6.30% for 2024, 6.15% for 2025): https://discover.celcomdigi.com/blog/kwsp-how-to-check-your-epf-dividend-and-withdrawal-options . The line gives no rate. Debt compounding is the same maths as V21 |
+| V29 | hutang `duniaSebenar` | Verified (general description) | RinggitPlus BNPL guide (2026): missed payments bring a late fee, bank BNPL reports to CCRIS, and the Consumer Credit Act 2025 requires non-bank providers to report credit data: https://ringgitplus.com/en/guides/managing-your-bnpl-fees-missed-payments-and-credit-record/ ; BNM Financial Stability Review 2H22 noted more BNPL users missing payments: https://ringgitplus.com/en/blog/personal-finance-news/bnm-sees-growing-trend-of-missed-repayments-among-bnpl-borrowers.html |
 
 ## Still to do
 
@@ -51,7 +53,7 @@ Rule for the pitch: if a line is still **Open**, do not read it aloud or show it
    (rows V2-V6) and `app/src/modes/semester/Consequence.finance.test.tsx` (`legal.akpk`, `akibat.untung.2.text`,
    `akibat.hutang.4.text`, rows V8 and V11). Once the tests are relaxed, Danish removes every key except
    `legal.penalCode` (V1) from the list.
-3. Three Kad Ilmu `duniaSebenar` entries above are still `TODO-VERIFY`.
+3. Done: the last three Kad Ilmu `duniaSebenar` entries are now V27-V29.
 
 ## Review list for Wafi (C6)
 

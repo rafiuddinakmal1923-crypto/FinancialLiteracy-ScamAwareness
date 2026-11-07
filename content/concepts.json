@@ -35,7 +35,7 @@
     "duniaSebenar": {
       "ms": "Dana kecemasan biasanya disimpan di tempat yang mudah dikeluarkan dan berisiko rendah, contohnya akaun simpanan atau simpanan tetap jangka pendek. Bagi orang yang sudah bekerja, sasaran yang sering disebut ialah beberapa bulan perbelanjaan.",
       "en": "Usually kept somewhere easy to withdraw and low risk, such as a savings account or a short fixed deposit.",
-      "verify": "TODO-VERIFY"
+      "source": "verification-log V27"
     },
     "caraSemak": {
       "ms": "Tanya diri: kalau esok perlu RM300, dari mana duit itu datang? Pastikan dana kecemasan berada dalam akaun atas nama kamu sendiri di institusi berlesen, dan jangan campur dengan duit belanja harian.",
@@ -58,7 +58,7 @@
     "duniaSebenar": {
       "ms": "Kompaun berlaku dalam simpanan persaraan seperti KWSP, simpanan tetap, dana harga tetap seperti ASB dan unit amanah, tetapi kadar setiap satu berbeza dan berubah setiap tahun. Kompaun juga berlaku pada hutang: faedah atas faedah membuat hutang kad kredit cepat membesar.",
       "en": "Compounding happens in KWSP (EPF), fixed deposits, fixed-price funds such as ASB and unit trusts, and also in debt.",
-      "verify": "TODO-VERIFY"
+      "source": "verification-log V28"
     },
     "caraSemak": {
       "ms": "Bila melihat kadar pulangan, semak sama ada ia kadar tahunan, sama ada ia prestasi lalu atau hanya unjuran, dan tolak caj serta yuran. Prestasi lalu tidak menjamin pulangan akan datang.",
@@ -104,7 +104,7 @@
     "duniaSebenar": {
       "ms": "Bentuk hutang biasa termasuk pinjaman pendidikan seperti PTPTN, kad kredit, pinjaman peribadi dan skim bayar kemudian (BNPL). Ada hutang yang membantu masa depan, ada yang hanya menambah beban. Lewat bayar biasanya menambah caj dan menjejaskan rekod kredit.",
       "en": "Common debts include study loans such as PTPTN, credit cards, personal loans and pay-later (BNPL) plans.",
-      "verify": "TODO-VERIFY"
+      "source": "verification-log V29"
     },
     "caraSemak": {
       "ms": "Sebelum setuju, kira jumlah keseluruhan yang perlu dibayar balik, bukan ansuran bulanan sahaja. Semak pemberi pinjaman itu berlesen dan tiada dalam BNM Financial Consumer Alert List. Kalau hutang sudah membebankan, AKPK (Agensi Kaunseling dan Pengurusan Kredit) menawarkan khidmat nasihat hutang.",
