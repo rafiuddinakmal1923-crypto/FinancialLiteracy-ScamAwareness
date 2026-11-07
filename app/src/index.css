@@ -170,3 +170,7 @@ html[data-reduced-motion] .flag-shake { animation-name: flag-flash; }
 html[data-reduced-motion] .call-halo { animation: none !important; opacity: 0; }
 html[data-reduced-motion] .call-bar { animation: none !important; transform: scaleY(0.6); }
 html[data-reduced-motion] .call-pulse { animation: none !important; box-shadow: 0 0 0 3px var(--color-danger); }
+
+/* Horizontal chip rows (Kad sub-tabs) scroll without a visible bar. */
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }

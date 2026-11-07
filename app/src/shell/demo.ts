@@ -1,7 +1,7 @@
 // Demo presets for the competition video (`#/demo/:scene`): each one puts the game in a known state and names
 // the screen to open. Routes not built yet keep their future path; applyPreset only needs the state.
 import { BALANCE } from '../engine/balance';
-import type { Meters } from '../engine/types';
+import type { Concept, Family, Meters, Outcome, ScenarioResult, Tactic } from '../engine/types';
 import { fillMeters, initialGame, useGame, type GameData, type TxEntry } from '../state/game';
 
 export const DEMO_SCENES = ['job', 'mule', 'report', 'kelas', 'kalkulator'] as const;
@@ -20,6 +20,22 @@ const WEEK_1_TO_3_TX: TxEntry[] = [
   ['Makan', 80, 3], ['Pengangkutan', 20, 3], ['Yuran asrama', 600, 3],
 ].map(([label, amount, week], i) => ({ id: i + 1, week: week as number, label: label as string, amount: -(amount as number) }));
 
+type Res = [id: string, family: Family, outcome: Outcome, right: boolean, found: number, total: number, tactics: Tactic[], concepts: Concept[]];
+const RESULT_ROWS: Res[] = [
+  ['dompet_minggu0', 'budget', 'safe', true, 0, 0, [], ['bajet', 'kecemasan']],
+  ['kerja_sambilan', 'job', 'scammed', false, 3, 5, ['greed', 'urgency', 'payfirst'], []],
+  ['gaji_pertama', 'pay', 'safe', true, 0, 0, [], ['bajet', 'kompaun']],
+  ['sewa_akaun', 'mule', 'safe', true, 4, 6, ['greed', 'secrecy', 'social'], []],
+  ['buku_terpakai', 'marketplace', 'safe', true, 0, 0, [], []],
+  ['bayar_nanti', 'loan', 'hutang', false, 0, 0, [], ['hutang']],
+  ['crypto_naga', 'investment', 'safe', true, 2, 3, ['greed', 'social', 'urgency'], ['risiko', 'semak']],
+  ['kawan_labur', 'investment', 'untung', true, 0, 0, [], ['risiko', 'semak']],
+  ['alert_bankku', 'bank', 'safe', true, 0, 0, [], []],
+  ['panggilan_mahkamah', 'authority', 'safe', true, 2, 3, ['authority', 'fear', 'secrecy'], []],
+];
+const REPORT_RESULTS: ScenarioResult[] = RESULT_ROWS.map(([id, family, outcome, right, flagsFound, flagsTotal, tactics, concepts]) => (
+  { id, family, outcome, right, flagsFound, flagsTotal, tactics, concepts }));
+
 const BUDGET = { needs: 50, wants: 30, savings: 20 };
 
 export const DEMO_PRESETS: Record<DemoScene, DemoPreset> = {
@@ -35,9 +51,20 @@ export const DEMO_PRESETS: Record<DemoScene, DemoPreset> = {
       meters: { duit: 1070, simpanan: 60, tekanan: 70 },
     },
   },
+  // A finished semester: week 12, the ten scenarios played (one scam fallen for), some cards and Kad Ilmu earned.
   report: {
     route: '/semester/rapor',
-    game: { onboarded: true, week: 12, budget: BUDGET, meters: { duit: 1240, simpanan: 320, tekanan: 35, labur: { amanah: 150, ekuiti: 100 } } },
+    game: {
+      onboarded: true, week: 12, budget: BUDGET, incomeTotal: 1200,
+      meters: {
+        duit: 2100, simpanan: 320, tekanan: 35, xp: 900, rekod: 'Bersih', labur: { amanah: 150, ekuiti: 100 },
+        celik: { bajet: 82, kecemasan: 74, kompaun: 58, risiko: 36, hutang: 64, semak: 41 },
+        imuniti: { greed: 76, urgency: 62, authority: 70, fear: 56, secrecy: 52, social: 46, payfirst: 30 },
+      },
+      results: REPORT_RESULTS,
+      cards: ['greed-job', 'urgency-job', 'payfirst-job', 'greed-investment', 'social-investment', 'authority-authority', 'fear-authority'],
+      kadIlmu: ['bajet', 'kecemasan', 'kompaun', 'hutang'],
+    },
   },
   kelas: { route: '/kelas', game: { onboarded: true, week: 1 } },
   kalkulator: {

@@ -35,6 +35,12 @@ async function atWeek(page: Page, week: number, path: string): Promise<void> {
   await patchSavedGame(page, { week, onboarded: true, budget: { needs: 50, wants: 30, savings: 20 }, weekIntroOpen: false, lastEnded: null, active: null }, path);
 }
 
+/** Loads the finished-semester demo preset (week 12, results, cards, Kad Ilmu), then stays on its report. */
+async function seedReport(page: Page): Promise<void> {
+  await page.goto('/#/demo/report');
+  await page.getByRole('heading', { name: 'Laporan semester' }).waitFor();
+}
+
 export interface ScreenRoute {
   path: string;
   name: string;
@@ -100,5 +106,16 @@ export const ROUTES: ScreenRoute[] = [
   },
   { path: '/semester/mesej/gaji_pertama', name: 'mesej', waitFor: 'Mesej baru dari Nurin', setup: (page) => atWeek(page, 4, '/semester/mesej/gaji_pertama') },
   { path: '/semester/cuti', name: 'cuti', waitFor: 'Minggu ini tiada XP dan tiada pilihan. Ambil masa untuk fikir.', setup: (page) => atWeek(page, 7, '/semester/cuti') },
-  { path: '/semester/rapor', name: 'rapor', waitFor: 'Laporan semester', setup: (page) => atWeek(page, 12, '/semester/rapor') },
+  // Task 26: the report card, Kad book (both tabs, a tapped Red Flag card) and a Kad Ilmu, from the finished-semester preset.
+  { path: '/semester/rapor', name: 'rapor', waitFor: 'Laporan semester', setup: seedReport },
+  { path: '/kad', name: 'kad', waitFor: '7 / 12 kad', setup: async (page) => { await seedReport(page); await page.goto('/#/kad'); } },
+  {
+    path: '/kad', name: 'kad-ilmu-tab', screen: 'kad', waitFor: '4 / 6 kad',
+    setup: async (page) => { await seedReport(page); await page.goto('/#/kad'); await page.getByRole('tab', { name: 'Kad Ilmu' }).click(); },
+  },
+  {
+    path: '/kad', name: 'kad-kad', screen: 'kad', waitFor: 'Cara kesan',
+    setup: async (page) => { await seedReport(page); await page.goto('/#/kad'); await page.getByRole('button', { name: /^Kad bendera merah/ }).first().click(); },
+  },
+  { path: '/kad/ilmu/bajet', name: 'kad-ilmu', screen: 'kad-ilmu', waitFor: 'Kad ini menerangkan', setup: async (page) => { await seedReport(page); await page.goto('/#/kad/ilmu/bajet'); } },
 ];

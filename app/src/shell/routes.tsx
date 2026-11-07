@@ -14,7 +14,9 @@ import { WeekIntro } from '../modes/semester/WeekIntro';
 import { IncomingCall } from '../modes/semester/IncomingCall';
 import { NewMessage } from '../modes/semester/NewMessage';
 import { Cuti } from '../modes/semester/Cuti';
-import { ReportPlaceholder } from '../modes/semester/ReportPlaceholder';
+import { ReportCard } from '../modes/semester/ReportCard';
+import { KadBook } from '../modes/kad/KadBook';
+import { KadIlmu } from '../modes/kad/KadIlmu';
 import { Kalkulator } from '../modes/kalkulator/Kalkulator';
 import { CekHarian } from '../modes/harian/CekHarian';
 import { SwipeGame } from '../modes/harian/SwipeGame';
@@ -62,8 +64,9 @@ export const ROUTE_TABLE: RouteDef[] = [
   { pattern: '/semester/mesej/:id', name: 'mesej', component: NewMessage, statusBar: 'dark', needsGame: true, tip: 'side.tip.mesej', mood: 'neutral' },
   { pattern: '/panggilan/:id', name: 'panggilan', component: IncomingCall, statusBar: 'dark', needsGame: true, tip: 'side.tip.panggilan', mood: 'worried' },
   { pattern: '/semester/cuti', name: 'cuti', component: Cuti, statusBar: 'dark', needsGame: true, tip: 'side.tip.cuti', mood: 'smile' },
-  // Task 26 replaces the placeholder with the report card.
-  { pattern: '/semester/rapor', name: 'rapor', component: ReportPlaceholder, statusBar: 'light', needsGame: true, tip: 'side.tip.rapor', mood: 'proud' },
+  { pattern: '/semester/rapor', name: 'rapor', component: ReportCard, statusBar: 'light', needsGame: true, tip: 'side.tip.rapor', mood: 'proud' },
+  { pattern: '/kad', name: 'kad', component: KadBook, statusBar: 'dark', needsGame: true, tip: 'side.tip.kad', mood: 'smile' },
+  { pattern: '/kad/ilmu/:code', name: 'kad-ilmu', component: KadIlmu, statusBar: 'dark', needsGame: true, tip: 'side.tip.kad', mood: 'smile' },
   { pattern: '/laman/:url', name: 'laman', component: FakePageScreen, statusBar: 'light', needsGame: true, tip: 'side.tip.laman', mood: 'worried' },
   { pattern: '/demo/:scene', name: 'demo', component: DemoScene, statusBar: 'light', tip: 'side.tip.demo', mood: 'neutral' },
 ];

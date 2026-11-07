@@ -84,7 +84,7 @@ test('saved game: Mula goes straight home; unknown routes go home', async ({ pag
 
 test('tiles without a screen yet show an "Akan datang" toast', async ({ page }) => {
   await seedGame(page);
-  await page.getByRole('button', { name: 'Kad', exact: true }).click();
+  await page.getByRole('button', { name: 'Latihan', exact: true }).click();
   await expect(page.getByRole('status').filter({ hasText: 'Akan datang' })).toBeVisible();
   await expect(page).toHaveURL(/#\/home$/);
 });
