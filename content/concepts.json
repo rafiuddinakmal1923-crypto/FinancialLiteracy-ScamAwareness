@@ -13,12 +13,12 @@
     "duniaSebenar": {
       "ms": "Ramai orang guna kaedah bahagi ikut nisbah, contohnya 50/30/20 untuk keperluan, kehendak dan simpanan. KWSP menerbitkan panduan Belanjawanku yang menunjukkan anggaran kos sara hidup asas untuk beberapa jenis isi rumah.",
       "en": "Many people use a split such as 50/30/20. KWSP (EPF) publishes the Belanjawanku guide with basic cost-of-living estimates.",
-      "verify": "TODO-VERIFY"
+      "source": "verification-log V20"
     },
     "caraSemak": {
       "ms": "Semak bajet kamu setiap minggu: berapa sudah dibelanja dan berapa lagi tinggal. Untuk anggaran kos sara hidup, rujuk panduan Belanjawanku di laman rasmi KWSP dan pastikan edisinya edisi tahun terkini.",
       "en": "Check your budget weekly. For cost-of-living estimates, read the latest Belanjawanku guide on the official KWSP site.",
-      "verify": "TODO-VERIFY"
+      "source": "verification-log V20"
     }
   },
   {
@@ -52,7 +52,7 @@
     "contoh": {
       "ms": "Contoh: simpan RM50 sebulan selama 10 tahun pada kadar contoh 5% setahun (dikompaun bulanan). Kamu masukkan RM6,000 dan nilainya jadi lebih kurang RM7,764. Lebih RM1,700 itu datang daripada kompaun. Kadar ini contoh sahaja, bukan janji pulangan.",
       "en": "Example: RM50 a month for 10 years at an example 5% a year grows to about RM7,764 (you put in RM6,000).",
-      "verify": "TODO-VERIFY",
+      "source": "verification-log V21",
       "year": 2026
     },
     "duniaSebenar": {
@@ -75,7 +75,7 @@
     "contoh": {
       "ms": "Contoh: janji '30% seminggu' bila dikira setahun dengan kompaun jadi lebih sejuta peratus. Simpanan tetap pula biasanya beberapa peratus sahaja setahun. Beza sebesar itu tanda bahaya, bukan peluang.",
       "en": "Example: '30% a week' compounds to over a million percent a year. That is a red flag, not a chance.",
-      "verify": "TODO-VERIFY",
+      "source": "verification-log V22",
       "year": 2026
     },
     "duniaSebenar": {
@@ -85,7 +85,7 @@
     "caraSemak": {
       "ms": "Semak nama syarikat dan produk dalam SC Investor Alert List di laman rasmi Suruhanjaya Sekuriti (SC). Kalau ada janji pulangan tinggi yang 'dijamin', berhenti dan semak dulu sebelum bayar apa-apa.",
       "en": "Look the company and product up in the SC Investor Alert List on the official Securities Commission site.",
-      "verify": "TODO-VERIFY"
+      "source": "verification-log V23"
     }
   },
   {
@@ -98,7 +98,7 @@
     "contoh": {
       "ms": "Contoh: pinjam RM1,000 pada kadar rata contoh 18% setahun selama 12 bulan. Jumlah bayar balik RM1,180, ansuran RM98.33 sebulan. Kos sebenar setahun lebih kurang 31.7%, hampir dua kali kadar yang diiklankan, sebab faedah dikira atas jumlah asal walaupun baki semakin kecil.",
       "en": "Example: RM1,000 at a flat 18% for 12 months costs RM1,180 in total; the real yearly cost is about 31.7%.",
-      "verify": "TODO-VERIFY",
+      "source": "verification-log V24",
       "year": 2026
     },
     "duniaSebenar": {
@@ -109,7 +109,7 @@
     "caraSemak": {
       "ms": "Sebelum setuju, kira jumlah keseluruhan yang perlu dibayar balik, bukan ansuran bulanan sahaja. Semak pemberi pinjaman itu berlesen dan tiada dalam BNM Financial Consumer Alert List. Kalau hutang sudah membebankan, AKPK (Agensi Kaunseling dan Pengurusan Kredit) menawarkan khidmat nasihat hutang.",
       "en": "Work out the total repaid, check the lender is licensed and not on the BNM Financial Consumer Alert List; AKPK offers debt advice.",
-      "verify": "TODO-VERIFY"
+      "source": "verification-log V25"
     }
   },
   {
@@ -126,12 +126,12 @@
     "duniaSebenar": {
       "ms": "Di Malaysia, pasaran modal (saham, unit amanah) dikawal selia oleh Suruhanjaya Sekuriti (SC), manakala bank, syarikat insurans dan sesetengah pemberi pinjaman dikawal selia oleh Bank Negara Malaysia (BNM). Kedua-duanya menerbitkan senarai amaran untuk syarikat dan skim yang tidak dibenarkan.",
       "en": "The Securities Commission (SC) regulates capital markets; Bank Negara Malaysia (BNM) regulates banks and insurers. Both publish alert lists.",
-      "verify": "TODO-VERIFY"
+      "source": "verification-log V26"
     },
     "caraSemak": {
       "ms": "Semak senarai pemegang lesen dan SC Investor Alert List di laman rasmi SC, dan BNM Financial Consumer Alert List di laman rasmi BNM. Taip sendiri alamat laman rasmi; jangan klik pautan yang dihantar oleh penjual.",
       "en": "Check the SC licence register and Investor Alert List, and the BNM Financial Consumer Alert List. Type the official address yourself.",
-      "verify": "TODO-VERIFY"
+      "source": "verification-log V26"
     }
   }
 ]
