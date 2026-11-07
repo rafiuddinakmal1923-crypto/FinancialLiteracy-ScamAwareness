@@ -98,7 +98,7 @@ export function Kalkulator({ params }: { params: Record<string, string> }) {
           {preset && (
             <p className="mx-4 mt-4 flex items-start gap-2 text-base leading-snug text-ink">
               <MessageCircle aria-hidden size={20} strokeWidth={1.75} className="mt-0.5 shrink-0 text-indigo" />
-              {t('kalkulator.preset', { label: (lang === 'en' ? preset.label.en : undefined) ?? preset.label.ms })}
+              {t(back?.startsWith('/suapan') ? 'kalkulator.preset.suapan' : back?.startsWith('/kedai') ? 'kalkulator.preset.kedai' : 'kalkulator.preset', { label: (lang === 'en' ? preset.label.en : undefined) ?? preset.label.ms })}
             </p>
           )}
           {/* Keyed so a different tab or preset starts from its own numbers. */}
