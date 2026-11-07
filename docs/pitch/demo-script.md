@@ -8,7 +8,8 @@ and fix the timings.
 - Two phones on the **deployed link**, opened once online, then **airplane mode on** (status bar visible on the projector).
 - DEMO watermark on. Notifications off.
 - Main phone state: a game at week 5 with a goal picked (Matlamat), some Duit left, Kedai not used yet.
-  [TO FILL: the `#/demo/...` scene or saved state Akmal prepares for this; record it here.]
+  Asked Akmal for a `#/demo/pitch` scene (REQ 3 in docs/pitch/demo-check.md); record the final URL here.
+- **Dry run status:** docs/pitch/demo-check.md. Re-run it after each evening merge.
 - Backup: the offline screen recording Akmal makes on Tue 17 Nov (A9), ready to play if a phone fails.
 
 ## Script
@@ -36,7 +37,10 @@ and fix the timings.
 ## Maths behind the lines (so nobody gets caught out)
 - 2% a day compounded over 365 days: 1.02^365 − 1 ≈ 1,377 times the money, i.e. about 137,700% a year, so "over a
   thousand percent" is safe (it is far more). Same formula as `yearlyFromPeriodic` in `app/src/engine/finance.ts`.
-- The instalment numbers come from the Kedai preset Danish adds (C3); read them off the screen, don't quote from memory.
+- The phone in Kedai Kampus: RM1,200, or RM110 × 12 = RM1,320 on instalment, so the true cost is RM120 (a flat 10%,
+  about 18% a year in real terms). Read the figures off the screen anyway, in case `balance.ts` changes.
+- The Suapan post is `p004` (Abang Duit Pantas, "Saya buat 2% sehari dengan robot dagangan"); Semak Pulangan shows
+  137,640.8% a year.
 
 ## If something breaks
 - A screen freezes: say "let me show you the recording", switch to the backup video at the same timestamp.
