@@ -3,6 +3,16 @@ import { seedGame } from './helpers';
 
 test.use({ viewport: { width: 412, height: 915 } });
 
+test('the finalist placeholder routes open from their home tiles', async ({ page }) => {
+  await seedGame(page);
+  for (const [tile, screen] of [['Suapan', 'suapan'], ['Kedai', 'kedai'], ['Papan', 'papan']] as const) {
+    await page.goto('/#/home');
+    await page.getByRole('navigation', { name: 'Aplikasi' }).getByRole('button', { name: tile, exact: true }).click();
+    await expect(page.locator(`[data-screen="${screen}"]`)).toBeVisible();
+    await expect(page.locator(`[data-screen="${screen}"]`)).toContainText('Akan datang');
+  }
+});
+
 test('splash -> onboarding -> home', async ({ page }) => {
   await page.goto('/');
   await expect(page.getByRole('heading', { name: 'Celik' })).toBeVisible();
@@ -39,10 +49,10 @@ test('splash -> onboarding -> home', async ({ page }) => {
   await expect(page.getByText('Minggu 1 daripada 12')).toBeVisible();
   await expect(page.getByText('Nilai bersih RM2,000')).toBeVisible();
   const apps = page.getByRole('navigation', { name: 'Aplikasi' });
-  for (const app of ['Sembang', 'BankKu', 'Dompet', 'Kalkulator', 'Kad', 'Latihan', 'Tetapan']) {
+  for (const app of ['Sembang', 'BankKu', 'Dompet', 'Kalkulator', 'Kad', 'Latihan', 'Suapan', 'Kedai', 'Papan', 'Tetapan']) {
     await expect(apps.getByRole('button', { name: app, exact: true })).toBeVisible();
   }
-  await expect(apps.getByRole('button')).toHaveCount(7);
+  await expect(apps.getByRole('button')).toHaveCount(10);
   const dock = page.getByRole('region', { name: 'Mod permainan' });
   await expect(dock.getByRole('button', { name: /^Semester Pertama/ })).toBeVisible();
   await expect(dock.getByRole('button', { name: /^Cek Harian/ })).toContainText('hari ini: belum');

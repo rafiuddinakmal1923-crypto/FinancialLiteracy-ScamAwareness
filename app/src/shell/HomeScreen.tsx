@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from 'react';
 import { useShallow } from 'zustand/react/shallow';
-import { Flame, GraduationCap, Lock, Presentation, Settings as Gear, VenetianMask, type LucideIcon } from 'lucide-react';
+import { Flame, GraduationCap, Lock, Newspaper, Presentation, Settings as Gear, Store, Trophy, VenetianMask, type LucideIcon } from 'lucide-react';
 import sembang from '../../../assets/app-sembang.svg';
 import bankku from '../../../assets/app-bankku.svg';
 import dompet from '../../../assets/app-dompet.svg';
@@ -26,13 +26,16 @@ import { homeTile, loopState, nextStep } from '../modes/semester/loop';
  * Paths the home tiles open. A later task only adds a matching entry to ROUTE_TABLE (shell/routes.tsx);
  * until then the tile shows an "Akan datang" toast. Tetapan stays on the grid (ruling R7).
  */
-export const APP_TILES: { id: string; path: string; icon: string | LucideIcon }[] = [
+export const APP_TILES: { id: string; path: string; icon: string | LucideIcon; label?: string }[] = [
   { id: 'sembang', path: '/sembang', icon: sembang },
   { id: 'bankku', path: '/bankku', icon: bankku },
   { id: 'dompet', path: '/dompet', icon: dompet },
   { id: 'kalkulator', path: '/kalkulator', icon: kalkulator },
   { id: 'kad', path: '/kad', icon: kad },
   { id: 'latihan', path: '/latihan', icon: latihan },
+  { id: 'suapan', path: '/suapan', icon: Newspaper, label: 'suapan.app' },
+  { id: 'kedai', path: '/kedai', icon: Store, label: 'kedai.app' },
+  { id: 'papan', path: '/papan', icon: Trophy, label: 'papan.app' },
   { id: 'tetapan', path: '/settings', icon: Gear },
 ];
 export const MODE_PATHS = { semester: '/semester/minggu', harian: '/harian', kelas: '/kelas', sindiket: '/sindiket' } as const;
@@ -68,7 +71,7 @@ function NetWorth({ amount }: { amount: number }) {
   );
 }
 
-function AppTile({ id, path, icon: Icon }: (typeof APP_TILES)[number]) {
+function AppTile({ id, path, icon: Icon, label }: (typeof APP_TILES)[number]) {
   const t = useT();
   const open = useOpen();
   return (
@@ -80,7 +83,7 @@ function AppTile({ id, path, icon: Icon }: (typeof APP_TILES)[number]) {
           <Icon aria-hidden size={28} strokeWidth={1.75} />
         </span>
       )}
-      <span className="max-w-full text-base font-medium text-ink">{t(`app.${id}`)}</span>
+      <span className="max-w-full text-base font-medium text-ink">{t(label ?? `app.${id}`)}</span>
     </button>
   );
 }

@@ -8,6 +8,7 @@ import { navigate, replaceRoute } from '../../shell/router';
 import { useGame } from '../../state/game';
 import { useSettings } from '../../state/settings';
 import { CONCEPT_ART } from '../../ui/cardArt';
+import { ExplainerSlot } from '../tonton/ExplainerSlot';
 
 function Section({ title, text, alwaysTag = false }: { title: string; text: ConceptInfo['apa']; alwaysTag?: boolean }) {
   const t = useT();
@@ -58,6 +59,7 @@ export function KadIlmu({ params }: { params: Record<string, string> }) {
         <Section title={t('ilmu.semak')} text={info.caraSemak} />
         <p className="mt-5 border-t border-kancil/50 pt-3 text-base italic text-ink-soft">{t('ilmu.footer')}</p>
       </article>
+      <ExplainerSlot concept={info.code} />
     </div>
   );
 }

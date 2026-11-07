@@ -7,7 +7,19 @@ import en from './en.json';
 export type Lang = 'ms' | 'en';
 export type Vars = Record<string, string | number>;
 
-const DICTS: Record<Lang, Record<string, unknown>> = { ms, en };
+type Dict = Record<string, unknown>;
+
+/** Merges per-mode dictionaries (each feature's i18n.ms.json / i18n.en.json) under a main one; main keys win. */
+export function mergeDicts(main: Dict, parts: Dict[]): Dict {
+  return Object.assign({}, ...parts, main) as Dict;
+}
+
+const parts = (modules: Record<string, { default: Dict }>): Dict[] => Object.values(modules).map((m) => m.default);
+
+export const DICTS: Record<Lang, Dict> = {
+  ms: mergeDicts(ms, parts(import.meta.glob<{ default: Dict }>('../../modes/*/i18n.ms.json', { eager: true }))),
+  en: mergeDicts(en, parts(import.meta.glob<{ default: Dict }>('../../modes/*/i18n.en.json', { eager: true }))),
+};
 
 function lookup(lang: Lang, key: string): string {
   const v = DICTS[lang][key] ?? DICTS.ms[key];

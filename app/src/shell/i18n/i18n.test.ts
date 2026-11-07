@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { translate } from './index';
+import { DICTS, mergeDicts, translate } from './index';
 import ms from './ms.json';
 import en from './en.json';
 
@@ -23,6 +23,22 @@ describe('translate', () => {
     expect(Array.isArray((ms as Record<string, unknown>)._todoVerify)).toBe(true);
     for (const [k, v] of Object.entries(ms)) if (!k.startsWith('_')) expect(typeof v).toBe('string');
     for (const k of Object.keys(en)) if (!k.startsWith('_')) expect(k in ms).toBe(true);
+  });
+});
+
+describe('per-mode dictionaries', () => {
+  it('merges them under the main dictionary, and the main keys win', () => {
+    expect(mergeDicts({ a: 'main' }, [{ a: 'mode', b: 'mode' }])).toEqual({ a: 'main', b: 'mode' });
+  });
+
+  it('serves the finalist modes in both languages', () => {
+    expect(translate('ms', 'suapan.app')).toBe('Suapan');
+    expect(translate('en', 'suapan.app')).toBe('Feed');
+  });
+
+  it('has an English string for every per-mode key', () => {
+    const missing = Object.keys(DICTS.ms).filter((k) => !k.startsWith('_') && !(k in DICTS.en));
+    expect(missing).toEqual([]);
   });
 });
 

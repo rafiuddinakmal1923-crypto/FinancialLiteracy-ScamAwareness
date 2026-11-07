@@ -21,6 +21,9 @@ import { Kalkulator } from '../modes/kalkulator/Kalkulator';
 import { CekHarian } from '../modes/harian/CekHarian';
 import { SwipeGame } from '../modes/harian/SwipeGame';
 import { ClassMode } from '../modes/classmode/ClassMode';
+import { Kedai } from '../modes/kedai/Kedai';
+import { Papan } from '../modes/papan/Papan';
+import { Suapan } from '../modes/suapan/Suapan';
 import { Checklist } from '../modes/drills/Checklist';
 import { Drill997 } from '../modes/drills/Drill997';
 import { Latihan } from '../modes/drills/Latihan';
@@ -76,6 +79,9 @@ export const ROUTE_TABLE: RouteDef[] = [
   { pattern: '/latihan/semak', name: 'latihan-semak', component: SemakSim, statusBar: 'light', needsGame: true, tip: 'side.tip.latihanSemak', mood: 'neutral' },
   { pattern: '/latihan/senarai', name: 'latihan-senarai', component: Checklist, statusBar: 'light', needsGame: true, tip: 'side.tip.latihanSenarai', mood: 'proud' },
   { pattern: '/laman/:url', name: 'laman', component: FakePageScreen, statusBar: 'light', needsGame: true, tip: 'side.tip.laman', mood: 'worried' },
+  { pattern: '/suapan', name: 'suapan', component: Suapan, statusBar: 'dark', needsGame: true, tip: 'suapan.tip', mood: 'neutral' },
+  { pattern: '/kedai', name: 'kedai', component: Kedai, statusBar: 'dark', needsGame: true, tip: 'kedai.tip', mood: 'smile' },
+  { pattern: '/papan', name: 'papan', component: Papan, statusBar: 'dark', needsGame: true, tip: 'papan.tip', mood: 'proud' },
   { pattern: '/demo/:scene', name: 'demo', component: DemoScene, statusBar: 'light', tip: 'side.tip.demo', mood: 'neutral' },
 ];
 

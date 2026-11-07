@@ -1,9 +1,49 @@
 import { describe, it, expect } from 'vitest';
+import { mkdirSync, mkdtempSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { loadCelikContent } from '../vite-plugins/ink';
 import { scanText, readBannedNames, namesFor, rateMarkerProblems } from './check-content';
 
 const banned = readBannedNames(fileURLToPath(new URL('../../content/banned-names.txt', import.meta.url)));
 const allowed = readBannedNames(fileURLToPath(new URL('../../content/allowed-real-names.txt', import.meta.url)));
+
+describe('finalist content files', () => {
+  const tempDir = () => {
+    const dir = mkdtempSync(join(tmpdir(), 'celik-'));
+    mkdirSync(join(dir, 'scenarios'));
+    writeFileSync(join(dir, 'banned-names.txt'), 'Maybank');
+    return dir;
+  };
+  const post = { id: 'p1', kind: 'advice', author: { name: 'Kak Ana', handle: '@ana', followers: '1K' }, text: { ms: 'Simpan dahulu.' }, concept: 'bajet', semak: { kad: 'bajet' } };
+
+  it('accepts a valid post', () => {
+    const dir = tempDir();
+    writeFileSync(join(dir, 'feed.json'), JSON.stringify([post]));
+    expect(loadCelikContent(dir).problems).toEqual([]);
+  });
+
+  it('fails on a banned name in a new file', () => {
+    const dir = tempDir();
+    writeFileSync(join(dir, 'feed.json'), JSON.stringify([{ ...post, author: { ...post.author, name: 'Maybank' } }]));
+    expect(loadCelikContent(dir).problems.join()).toContain('Maybank');
+  });
+
+  it('fails when a hype post has no debrief, or a post opens a missing preset', () => {
+    const dir = tempDir();
+    writeFileSync(join(dir, 'feed.json'), JSON.stringify([{ ...post, kind: 'hype' }]));
+    expect(loadCelikContent(dir).problems.join()).toContain('debrief');
+    writeFileSync(join(dir, 'feed.json'), JSON.stringify([{ ...post, semak: { calc: 'tiada' } }]));
+    expect(loadCelikContent(dir).problems.join()).toContain('tiada');
+  });
+
+  it('fails when a shop item has no price', () => {
+    const dir = tempDir();
+    writeFileSync(join(dir, 'shop.json'), JSON.stringify([{ id: 'tiada', name: { ms: 'x' }, pot: 'kehendak', effect: 'none', tip: { ms: 'x' } }]));
+    expect(loadCelikContent(dir).problems.join()).toContain('no price');
+  });
+});
 
 describe('scanText', () => {
   it('flags a real brand from the list', () => {

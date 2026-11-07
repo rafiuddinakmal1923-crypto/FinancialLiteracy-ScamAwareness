@@ -206,7 +206,7 @@ Feed post (`content/feed.json`):
 ```json
 { "id": "p004", "kind": "hype", "author": { "name": "Abang Duit Pantas", "handle": "@duitpantas", "followers": "48.2K" },
   "text": { "ms": "Saya buat 2% sehari dengan robot dagangan. DM untuk join!", "en": "..." },
-  "concept": "risiko", "tactics": ["greed"], "semak": { "calc": "semak:p2harian" },
+  "concept": "risiko", "tactics": ["greed"], "semak": { "calc": "p2harian" },
   "debrief": { "ms": "Tiada lesen, tiada risiko disebut, pulangan mustahil. Semak lesen dahulu.", "en": "..." } }
 ```
 
@@ -221,7 +221,7 @@ Shop item (`content/shop.json`; price in `balance.ts` under `kedai.prices`):
 ```
 
 `pot` is `keperluan` or `kehendak`; `effect` is `none`, `transport` (cuts weekly transport) or `instalment` (opens
-Kos Sebenar with preset `kedai:<id>`).
+Kos Sebenar with preset `kedai-<id>`).
 
 Goal (`content/goals.json`; target in `balance.ts` under `matlamat.targets`):
 `{ "id": "kecemasan", "measure": "simpanan", "name": { "ms": "Dana kecemasan", "en": "Emergency fund" } }`;
@@ -231,7 +231,7 @@ Classmate (`content/classmates.json`; grades in `balance.ts` under `papan.grades
 `{ "id": "k3", "name": "Mei Ling", "avatar": "a3" }`, 9 entries, fictional names only.
 
 Explainer (`content/explainers.json`; art in `assets/explainers/`):
-`{ "id": "kompaun", "concept": "kompaun", "frames": [{ "svg": "kompaun-1.svg", "caption": { "ms": "...", "en": "..." } }] }`,
+`{ "id": "kompaun", "concept": "kompaun", "frames": [{ "svg": "kompaun-1", "caption": { "ms": "...", "en": "..." } }] }`,
 6-8 frames, all explainers together under 150 KB.
 
 ## 5. Game systems

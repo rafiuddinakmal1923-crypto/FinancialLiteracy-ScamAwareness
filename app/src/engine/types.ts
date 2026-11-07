@@ -29,6 +29,43 @@ export function wrongOutcomes(type: ScenarioType): Outcome[] {
 /** Labur products (D22): Amanah Cempaka (fixed-price fund) and Dana Ekuiti Cempaka (unit trust). */
 export const LABUR_PRODUCTS = ['amanah', 'ekuiti'] as const;
 export type LaburProduct = typeof LABUR_PRODUCTS[number];
+/** Finalist features (D36-D41, SDS 4.6). */
+export type LocalizedText = { ms: string; en?: string | undefined };
+export const FEED_KINDS = ['advice', 'hype', 'scam'] as const;
+export type FeedKind = typeof FEED_KINDS[number];
+export const FEED_CALLS = ['percaya', 'semak', 'lapor'] as const;
+export type FeedCall = typeof FEED_CALLS[number];
+/** A Suapan post. Semak opens a Kalkulator preset (`calc`, an id in calc-presets.json) or a Kad Ilmu (`kad`). */
+export interface FeedPost {
+  id: string; kind: FeedKind;
+  author: { name: string; handle: string; followers: string };
+  text: LocalizedText;
+  /** Advice and hype posts name a concept. */
+  concept?: Concept | undefined;
+  /** Scam posts list their tactics. */
+  tactics?: Tactic[] | undefined;
+  semak: { calc: string } | { kad: Concept };
+  /** Required on hype and scam posts (D36). */
+  debrief?: LocalizedText | undefined;
+}
+export const SHOP_POTS = ['keperluan', 'kehendak'] as const;
+export type ShopPot = typeof SHOP_POTS[number];
+export const SHOP_EFFECTS = ['none', 'transport', 'instalment'] as const;
+export type ShopEffect = typeof SHOP_EFFECTS[number];
+/** A Kedai Kampus item; its price is in BALANCE.kedai.prices. `instalment` opens Kalkulator preset `kedai-<id>`. */
+export interface ShopItem { id: string; name: LocalizedText; pot: ShopPot; effect: ShopEffect; tip: LocalizedText }
+/** One bought item and the week it was bought. */
+export interface Purchase { item: string; week: number }
+export const GOAL_IDS = ['kecemasan', 'laptop', 'raya', 'labur'] as const;
+export type GoalId = typeof GOAL_IDS[number];
+export const GOAL_MEASURES = ['simpanan', 'labur', 'duit'] as const;
+export type GoalMeasure = typeof GOAL_MEASURES[number];
+/** A Matlamat Semester goal; its target is in BALANCE.matlamat.targets. */
+export interface Goal { id: GoalId; measure: GoalMeasure; name: LocalizedText }
+/** A fictional classmate on Papan Markah. Entry n (k1, k2, ...) takes BALANCE.papan.grades[n - 1]. */
+export interface Classmate { id: string; name: string; avatar: string }
+/** A Tonton explainer: frames name files in assets/explainers/ without the .svg extension (the content scan reads a dotted name as a domain). */
+export interface Explainer { id: string; concept: Concept; frames: { svg: string; caption: LocalizedText }[] }
 export const CALC_TABS = ['masa', 'pulangan', 'kos'] as const;
 export type CalcTab = typeof CALC_TABS[number];
 export type Akaun = 'Aktif' | 'Disekat' | 'Ditutup';

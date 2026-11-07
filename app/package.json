@@ -6,6 +6,7 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "test": "vitest run",
+    "check": "tsc --noEmit && vitest run && tsx scripts/check-content.ts",
     "check:content": "tsx scripts/check-content.ts",
     "e2e": "playwright test",
     "size": "tsx scripts/size.ts"

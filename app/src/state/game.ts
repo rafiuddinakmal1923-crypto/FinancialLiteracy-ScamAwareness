@@ -6,7 +6,9 @@ import { round2 } from '../engine/money';
 import { applyEffect, applyFlagFound, applyMoneyAnswer, applyOutcome, applySwipeAnswer, applyXp, initialMeters, isRight } from '../engine/meters';
 import { updateHarianStreak } from '../engine/harian';
 import { dayDiff } from '../engine/dates';
-import type { ChatMessage, TrailStep, Concept, Effect, EndedScenario, Family, LaburProduct, Meters, Outcome, ScenarioMeta, ScenarioResult, Tactic } from '../engine/types';
+import { judgePost, type FeedResult } from '../engine/feed';
+import { buyItem as engineBuyItem, type BuyResult } from '../engine/shop';
+import type { ChatMessage, TrailStep, Concept, Effect, EndedScenario, Family, FeedCall, FeedPost, GoalId, LaburProduct, Meters, Outcome, Purchase, ScenarioMeta, ScenarioResult, Tactic } from '../engine/types';
 
 /**
  * Fills meter fields an older save does not have (milestone 2 saves have no `celik` or `labur`) from the
@@ -130,6 +132,12 @@ export interface GameData {
   calcFlagged: string[];
   /** Kad Ilmu earned (one per finance concept), in the order earned. */
   kadIlmu: Concept[];
+  /** Matlamat Semester goal picked after the week-0 split, or null (D38). */
+  goal: GoalId | null;
+  /** Kedai Kampus items bought, oldest first (D37). */
+  purchases: Purchase[];
+  /** Suapan calls by post id; a post is judged once (D36). */
+  feed: Record<string, FeedCall>;
 }
 
 export interface GameActions {
@@ -185,6 +193,12 @@ export interface GameActions {
   tickAction(id: string): boolean;
   /** Unticks an item. The XP already paid stays paid. */
   untickAction(id: string): void;
+  /** Picks the semester goal (or clears it with null). */
+  setGoal(goal: GoalId | null): void;
+  /** Buys a Kedai Kampus item. On an error nothing changes. */
+  buyItem(itemId: string): BuyResult;
+  /** Judges one Suapan call and saves it. Returns null, changing nothing, if the post was already judged. */
+  judgeFeed(post: FeedPost, call: FeedCall): FeedResult | null;
   hydrate(d: GameData | null): void;
   reset(): void;
   set(p: Partial<GameData>): void;
@@ -195,14 +209,14 @@ export function initialGame(): GameData {
     character: 'aina', name: 'Aina', onboarded: false, week: 0, meters: initialMeters(), budget: null,
     results: [], cards: [], badges: [], swipe: { best: 0, streak: 0, lastPlayed: null }, harian: initialHarian(), harianProgress: null, swipeXpDate: null,
     actions: [], actionsPaid: [], drills: [], incomeTotal: 0, active: null, lastEnded: null, transcripts: {}, trails: {}, weekIntroOpen: false,
-    txLog: [], calcUsed: [], calcResume: null, calcFlagged: [], kadIlmu: [],
+    txLog: [], calcUsed: [], calcResume: null, calcFlagged: [], kadIlmu: [], goal: null, purchases: [], feed: {},
   };
 }
 
 const DATA_KEYS: (keyof GameData)[] = [
   'character', 'name', 'onboarded', 'week', 'meters', 'budget', 'results', 'cards', 'badges',
   'swipe', 'harian', 'harianProgress', 'swipeXpDate', 'actions', 'actionsPaid', 'drills', 'incomeTotal', 'active', 'lastEnded', 'transcripts', 'trails', 'weekIntroOpen', 'txLog',
-  'calcUsed', 'calcResume', 'calcFlagged', 'kadIlmu',
+  'calcUsed', 'calcResume', 'calcFlagged', 'kadIlmu', 'goal', 'purchases', 'feed',
 ];
 
 /** Picks only the persisted data fields (no actions) from the store state. */
@@ -424,6 +438,22 @@ export const useGame = create<GameData & GameActions>()((set, get) => ({
   },
 
   untickAction: (id) => set({ actions: get().actions.filter((a) => a !== id) }),
+
+  setGoal: (goal) => set({ goal }),
+
+  buyItem: (itemId) => {
+    const { meters, week, purchases } = get();
+    const r = engineBuyItem({ meters, week, purchases }, itemId);
+    if ('state' in r) set({ meters: r.state.meters, purchases: r.state.purchases });
+    return r;
+  },
+
+  judgeFeed: (post, call) => {
+    const { feed } = get();
+    if (feed[post.id]) return null;
+    set({ feed: { ...feed, [post.id]: call } });
+    return judgePost(post, call);
+  },
 
   hydrate: (saved) => {
     if (!saved) { set(initialGame()); return; }

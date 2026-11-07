@@ -15,6 +15,8 @@ import { MeterBar } from '../../ui/MeterBar';
 import { PORTRAIT } from '../../ui/portraits';
 import { useTactic } from '../../ui/tactics';
 import { useConceptName } from '../harian/shared';
+import { ShareButton } from '../kongsi/ShareButton';
+import { GoalResult } from '../matlamat/GoalResult';
 
 const MOOD: Record<GradeLetter, KancilMood> = { A: 'proud', B: 'proud', C: 'smile', D: 'worried' };
 /** Stamp colours; the letter itself is always printed, so colour is never the only signal. */
@@ -122,6 +124,9 @@ export function ReportCard() {
             ))}
           </div>
         </section>
+
+        <GoalResult />
+        <ShareButton />
 
         <section className="flex flex-col gap-3 rounded-2xl bg-kancil-soft p-4">
           <p className="flex items-start gap-2 text-base font-semibold leading-snug text-ink">

@@ -87,4 +87,15 @@ export const BALANCE = {
   moneyChain: { startMs: 500, hopMs: 1000, traceMs: 1600, pulseMs: 1800, reducedMs: 150 },
   persona: { hookMatch: 40, hookMiss: 10, max: 100 },
   kelas: { pointsCorrect: 100, rounds: 10, minTeams: 2, maxTeams: 6 },
+  /** Finalist first guesses (SDS 5.9); tune after playtests. */
+  suapan: { xpRight: 10 },
+  /** Prices in RM. The cash items total RM383, under one part-time pay (D37). Instalment terms are examples. */
+  kedai: {
+    prices: { snek: 15, konsert: 99, earfon: 59, basikal: 150, buku: 60, telefon: 1200 },
+    transportSaving: 10,
+    instalment: { telefon: { monthly: 110, months: 12 } },
+    tipAbove: 100,
+  },
+  matlamat: { targets: { kecemasan: 300, laptop: 500, raya: 250, labur: 200 }, nudgeWeeks: [4, 8], xpReached: 100 },
+  papan: { grades: [42, 51, 58, 63, 67, 71, 76, 82, 90] },
 } as const;

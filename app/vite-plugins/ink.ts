@@ -8,7 +8,7 @@ import type { Plugin } from 'vite';
 import { compileScenario, scenarioParityProblems } from '../src/engine/compile';
 import { CONTENT_FILES, ContentError, parseContent } from '../src/engine/schemas';
 import type { CalcPreset } from '../src/engine/schemas';
-import type { CompiledScenario } from '../src/engine/types';
+import type { CompiledScenario, FeedPost } from '../src/engine/types';
 
 export const VIRTUAL_ID = 'virtual:celik-content';
 const RESOLVED_ID = '\0' + VIRTUAL_ID;
@@ -19,7 +19,7 @@ export const REAL_NAMES_FILE = 'concepts.json';
 const SCANNED_EXT = /\.(ink|json|txt|md)$/i;
 
 /** Named JSON exports of the virtual module, each backed by `<name>.json` in content/. */
-export const JSON_EXPORTS = ['tactics', 'cards', 'moneyCards', 'concepts', 'sindiket', 'drills', 'semester', 'pages', 'calcPresets'] as const;
+export const JSON_EXPORTS = ['tactics', 'cards', 'moneyCards', 'concepts', 'sindiket', 'drills', 'semester', 'pages', 'calcPresets', 'feed', 'shop', 'goals', 'classmates', 'explainers'] as const;
 export type JsonExport = (typeof JSON_EXPORTS)[number];
 /** File behind an export: `<name>.json`, except calcPresets (calc-presets.json) and moneyCards (money-cards.json). */
 const FILE_OVERRIDES: Partial<Record<JsonExport, string>> = { calcPresets: 'calc-presets.json', moneyCards: 'money-cards.json' };
@@ -259,7 +259,16 @@ export function loadCelikContent(contentDir: string): LoadResult {
 
   problems.push(...calcPresetProblems(files.filter(isInk).map((f) => ({ file: rel(f), text: readText(f) })), data.calcPresets as CalcPreset[] | null));
 
+  problems.push(...feedPresetProblems(data.feed as FeedPost[] | null, data.calcPresets as CalcPreset[] | null));
+
   return { data, files, problems };
+}
+
+/** Every Suapan post whose Semak opens the Kalkulator must name a preset in calc-presets.json. */
+export function feedPresetProblems(feed: FeedPost[] | null, presets: CalcPreset[] | null): string[] {
+  const ids = new Set((presets ?? []).map((p) => p.id));
+  return (feed ?? []).flatMap((p) =>
+    'calc' in p.semak && !ids.has(p.semak.calc) ? [`feed.json: ${p.id} opens preset "${p.semak.calc}", which is not in calc-presets.json`] : []);
 }
 
 const CALC_TAG_RE = /ui:calc:([a-z]+):([a-z0-9_-]+)/g;
