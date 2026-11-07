@@ -2,8 +2,9 @@
 
 Short answers first; the detail is for follow-ups. **Facts must cite docs/verification-log.md** (Danish, C5). Row IDs
 (V1-V26) are from the log Danish wrote on 7 Nov. The log covers what the app shows; the national statistics from
-research/problem-statement.md are not in it yet, so they stay [VERIFY]. **Never quote the Penal Code section numbers:
-V1 is still open.** Danish checks this sheet on Tue 17 Nov.
+research/problem-statement.md are not in it yet, so they stay [VERIFY]. **Penal Code (V1, confirmed 8 Nov from news and
+legal sources):** say "Kanun Keseksaan s.424A-424D (Pindaan 2024)" and give penalties only for 424A-424C; no source
+gives 424D's wording. Danish checks this sheet on Tue 17 Nov.
 
 | # | Likely question | Answer | Source |
 | --- | --- | --- | --- |
@@ -19,7 +20,8 @@ V1 is still open.** Danish checks this sheet on Tue 17 Nov.
 | 10 | Why fictional brands? Wouldn't real bank names be more realistic? | Using real brands could look like endorsement or teach "this logo is safe". Scammers copy real logos anyway, so we teach the behaviour, not the logo. The only real items are the correct actions: NSRC 997 and the official Semak Mule portal | CLAUDE.md rule 1 |
 | 11 | What's the 997 number? Is it real? | Yes: the National Scam Response Centre hotline, open 24 hours. Report within 24 hours of a transfer so the authorities can block the accounts and transactions. The game drills it | verification-log V6, V7 |
 | 12 | Is the debt maths right? | Yes. RM1,000 at an example flat 18% for 12 months is RM98.33 a month and RM1,180 in total: about 31.7% a year in real terms. The same maths runs in Kos Sebenar and is unit-tested | verification-log V12, V24; app/src/engine/finance.ts |
-| 13 | Can it scale beyond your campus? | It's a web app: one link, no app store, works on low-end Android. Mod Kelas needs one screen per hall. Content packs are the same for every university | docs/SRS.md 2.4, 2.5 |
+| 13 | Is renting out your bank account actually a crime? | Yes. The 2024 Penal Code amendment added sections 424A-424D on mule accounts. Letting someone else control your account (424B) carries a fine of RM10,000-100,000, 1-7 years' jail, or both. Having or controlling someone else's account (424A) and using an account for unlawful transactions (424C) are also offences. Police can freeze and seize mule accounts | verification-log V1, V2 |
+| 14 | Can it scale beyond your campus? | It's a web app: one link, no app store, works on low-end Android. Mod Kelas needs one screen per hall. Content packs are the same for every university | docs/SRS.md 2.4, 2.5 |
 
 ## Spare facts (only if asked; check each one before using)
 - Fake investment scams: highest losses for three years; RM848.62m (2024) → RM1.46b (2025). [VERIFY]
