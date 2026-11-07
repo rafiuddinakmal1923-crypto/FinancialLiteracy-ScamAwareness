@@ -1,1 +1,10 @@
-{}
+{
+  "tonton.title": "Tonton",
+  "tonton.tapNext": "Gambar seterusnya",
+  "tonton.prev": "Sebelum",
+  "tonton.next": "Seterusnya",
+  "tonton.play": "Main",
+  "tonton.pause": "Jeda",
+  "tonton.replay": "Main semula",
+  "tonton.counter": "{n} / {total}"
+}

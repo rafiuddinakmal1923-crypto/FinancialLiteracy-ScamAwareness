@@ -1,1 +1,16 @@
-{}
+{
+  "kongsi.button": "Kongsi Kad Keputusan",
+  "kongsi.busy": "Sedang menyediakan gambar...",
+  "kongsi.shareTitle": "Kad Keputusan Celik",
+  "kongsi.done": "Kad Keputusan disimpan.",
+  "kongsi.failed": "Gambar tak dapat dibuat. Cuba lagi.",
+  "kongsi.card.simulasi": "SIMULASI",
+  "kongsi.card.report": "Kad Keputusan semester",
+  "kongsi.card.celik": "Celik Kewangan",
+  "kongsi.card.imuniti": "Imuniti scam",
+  "kongsi.card.goalReached": "Matlamat {name}: {target} tercapai!",
+  "kongsi.card.goalNotYet": "Matlamat {name}: {value} daripada {target}.",
+  "kongsi.card.noGoal": "Tiada matlamat semester dipilih.",
+  "kongsi.card.footer": "Kenali jerat sebelum terjerat",
+  "kongsi.card.fictional": "Permainan. Semua watak rekaan."
+}

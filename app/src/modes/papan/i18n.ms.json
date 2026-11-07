@@ -1,4 +1,13 @@
 {
   "papan.app": "Papan",
-  "papan.tip": "Lihat kedudukan anda dalam kelas."
+  "papan.tip": "Lihat kedudukan kamu dalam kelas.",
+  "papan.title": "Papan Markah",
+  "papan.subtitle.sofar": "Skor semester kamu setakat ini",
+  "papan.subtitle.final": "Skor akhir semester",
+  "papan.place": "Kamu di tempat ke-{place} daripada {total}.",
+  "papan.listLabel": "Kedudukan kelas",
+  "papan.you": "{name} (kamu)",
+  "papan.score": "{score}/100",
+  "papan.streak": "Siri Cek Harian kamu: {n} hari",
+  "papan.note": "Rakan sekelas ini rekaan dan papan ini disimpan dalam telefon kamu sahaja."
 }

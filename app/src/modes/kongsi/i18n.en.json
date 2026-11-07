@@ -1,1 +1,16 @@
-{}
+{
+  "kongsi.button": "Share Result Card",
+  "kongsi.busy": "Making the picture...",
+  "kongsi.shareTitle": "Celik Result Card",
+  "kongsi.done": "Result Card saved.",
+  "kongsi.failed": "Could not make the picture. Try again.",
+  "kongsi.card.simulasi": "SIMULASI",
+  "kongsi.card.report": "Semester Result Card",
+  "kongsi.card.celik": "Financial literacy",
+  "kongsi.card.imuniti": "Scam immunity",
+  "kongsi.card.goalReached": "Goal {name}: {target} reached!",
+  "kongsi.card.goalNotYet": "Goal {name}: {value} of {target}.",
+  "kongsi.card.noGoal": "No semester goal picked.",
+  "kongsi.card.footer": "Spot the trap before it springs",
+  "kongsi.card.fictional": "A game. Every character is fictional."
+}

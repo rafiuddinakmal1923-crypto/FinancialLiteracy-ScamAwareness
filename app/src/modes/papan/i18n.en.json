@@ -1,4 +1,13 @@
 {
   "papan.app": "Ranks",
-  "papan.tip": "See where you stand in class."
+  "papan.tip": "See where you stand in class.",
+  "papan.title": "Class ranks",
+  "papan.subtitle.sofar": "Your semester score so far",
+  "papan.subtitle.final": "Final semester score",
+  "papan.place": "You are number {place} of {total}.",
+  "papan.listLabel": "Class ranking",
+  "papan.you": "{name} (you)",
+  "papan.score": "{score}/100",
+  "papan.streak": "Your Daily Check streak: {n} days",
+  "papan.note": "These classmates are fictional, and this board stays on your phone."
 }

@@ -56,7 +56,7 @@ describe('Kedai Kampus (W3)', () => {
     render(<Kedai />);
     const sheet = screen.getByRole('dialog', { name: 'Beli Telefon baharu?' });
     expect(within(sheet).getByText('Jumlah sebenar: RM1,320')).toBeTruthy();
-    expect(within(sheet).getByText(/Harga tunai RM1,200, jadi ansuran ini kos RM120 lebih/)).toBeTruthy();
+    expect(within(sheet).getByText(/Harga tunai RM1,200, jadi ansuran ini RM120 lebih mahal/)).toBeTruthy();
   });
 
   it('a bought item shows as bought; a purchase over RM100 offers Mesin Masa', () => {

@@ -1,1 +1,10 @@
-{}
+{
+  "tonton.title": "Watch",
+  "tonton.tapNext": "Next picture",
+  "tonton.prev": "Previous",
+  "tonton.next": "Next",
+  "tonton.play": "Play",
+  "tonton.pause": "Pause",
+  "tonton.replay": "Play again",
+  "tonton.counter": "{n} / {total}"
+}
