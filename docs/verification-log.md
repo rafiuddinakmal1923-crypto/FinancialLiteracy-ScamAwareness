@@ -57,4 +57,46 @@ Rule for the pitch: if a line is still **Open**, do not read it aloud or show it
 
 ## Review list for Wafi (C6)
 
-Empty until W1-W7 land.
+Part 1, reviewed 7 Nov 2026 from `lane/wafi` at `de7d335` (W1-W4: suapan, kedai, matlamat, papan). Kongsi and
+tonton had no text yet; review them when W6 and W7 land.
+
+**English uses the BM feature names.** The rest of the app's English says Money, Knowledge Card, Time Machine and
+True Cost (see `meter.duit`, `akibat.untung.2.text`, `akibat.untung.4.time` in `shell/i18n/en.json`). The English
+check in `app/e2e/english.spec.ts` will also flag "Duit" and "Kad".
+
+| # | File and key | Now | Suggested |
+| --- | --- | --- | --- |
+| R1 | `kedai/i18n.en.json` `kedai.duit` | Your Duit: {amount} | Your Money: {amount} |
+| R2 | `kedai/i18n.en.json` `kedai.short` | Not enough Duit | Not enough Money |
+| R3 | `kedai/i18n.en.json` `kedai.error.insufficient` | Not enough Duit for this item. | Not enough Money for this item. |
+| R4 | `kedai/i18n.en.json` `kedai.confirm.cash` | {price} paid from Duit, counted as {pot}. | {price} paid from Money, counted as {pot}. |
+| R5 | `kedai/i18n.en.json` `kedai.confirm.kos` | See Kos Sebenar again | See True Cost again |
+| R6 | `kedai/i18n.en.json` `kedai.kancil.go` | Open Mesin Masa | Open Time Machine |
+| R7 | `suapan/i18n.en.json` `suapan.open.kad` | Read the Kad Ilmu | Read the Knowledge Card |
+
+**BM wording.** The game speaks to the player as "kamu"; two tips say "anda".
+
+| # | File and key | Now | Suggested |
+| --- | --- | --- | --- |
+| R8 | `kedai/i18n.ms.json` `kedai.tip` | Belanja ikut bajet anda. | Belanja ikut bajet kamu. |
+| R9 | `papan/i18n.ms.json` `papan.tip` | Lihat kedudukan anda dalam kelas. | Lihat kedudukan kamu dalam kelas. |
+| R10 | `kedai/i18n.ms.json` `kedai.confirm.terms` | ... jadi ansuran ini kos {extra} lebih (contoh). | ... jadi ansuran ini {extra} lebih mahal (contoh). |
+| R11 | `matlamat/i18n.ms.json` `matlamat.pick.body` | Kamu boleh tukar sepanjang minggu 0. | Kamu boleh tukar bila-bila masa dalam minggu 0. |
+| R12 | `kedai/i18n.ms.json` / `en.json` `kedai.confirm.cash` | `{pot}` | Check that `{pot}` shows "Keperluan"/"Kehendak" (EN "Needs"/"Wants"), not the raw id |
+
+Everything else reads well: "Belum tepat" for a wrong call keeps the no-shaming rule (CLAUDE.md rule 4), and
+"Ini hype: sah, tetapi mengelirukan" matches the D36 definition.
+
+## D3 review notes for Aimar (comments only)
+
+Reviewed `research/validation/test.md` on `lane/aimar` at `a3dc265`. The answer key is correct: A, B, C and D are
+each right 3 times, and Q5 is RM1,000 × 1.10 = RM1,100. Aimar can paste these into the "Review notes" table there.
+
+| Q | Comment |
+| --- | --- |
+| 9 | 011-0000 0123 is already Kak Mira's number in `kerja_sambilan`. Use another fictional number (e.g. 011-0000 0456) so the question does not borrow a game character. Wording C matches the BNM Macau scam page (V9). |
+| 10 | `kurierkilat-bayar.test/alamat` is the exact link from the game, so a better "after" score could be memory of the link, not the skill. Use a new fictional link (e.g. `pos-tertahan.test/bayar`). |
+| 7 | Close to `kerja_sambilan` (like-and-pay-first). That is fine for a short test, but say in D4's limits that some items mirror game scenes. |
+| 12 | Answer A is right. Consider "dalam masa 24 jam" to match the official NSRC 997 advice (V7). |
+| 8 | Answer A is right and matches V2-V3 (the account can be frozen and investigated). |
+| 1-6, 11 | No accuracy problems found. |
