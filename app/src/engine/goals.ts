@@ -1,11 +1,12 @@
 import { BALANCE } from './balance';
-import { LABUR_PRODUCTS, type GoalId, type Meters } from './types';
+import { LABUR_PRODUCTS, type GoalId, type GoalMeasure, type Meters } from './types';
 
 export interface GoalState { goal: GoalId | null; meters: Pick<Meters, 'duit' | 'simpanan' | 'labur'> }
 export interface GoalProgress { goal: GoalId; value: number; target: number; ratio: number }
 
 function measure(goal: GoalId, m: GoalState['meters']): number {
-  switch (BALANCE.matlamat.measures[goal]) {
+  const kind = BALANCE.matlamat.measures[goal] as GoalMeasure;
+  switch (kind) {
     case 'simpanan': return m.simpanan;
     case 'duit': return m.duit;
     case 'labur': return LABUR_PRODUCTS.reduce((sum, p) => sum + m.labur[p], 0);

@@ -203,7 +203,7 @@ export function loadCelikContent(contentDir: string): LoadResult {
 
   for (const f of files) {
     const r = rel(f);
-    if (r === BANNED_FILE || r === ALLOWED_FILE || !SCANNED_EXT.test(f)) continue;
+    if (r === BANNED_FILE || r === ALLOWED_FILE || /(^|[\/])README\.md$/i.test(r) || !SCANNED_EXT.test(f)) continue;
     problems.push(...scanContentFile(readText(f), r, banned, allowed));
   }
 

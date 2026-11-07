@@ -15,7 +15,7 @@ function open(weekIntroOpen: boolean, simpanan = 100) {
     week: 1, weekIntroOpen, budget: { needs: 50, wants: 30, savings: 20 },
     meters: { ...useGame.getState().meters, simpanan },
   });
-  render(<Dompet params={{}} />);
+  render(<Dompet />);
 }
 
 beforeEach(() => {

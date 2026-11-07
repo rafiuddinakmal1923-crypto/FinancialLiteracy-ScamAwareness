@@ -221,6 +221,26 @@ describe('todoVerifyKeys (M5)', () => {
   });
 });
 
+describe('notes in the content folder', () => {
+  it('does not scan a README, which names files like raya_duit.ink', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'celik-'));
+    mkdirSync(join(dir, 'scenarios'));
+    mkdirSync(join(dir, 'drafts'));
+    writeFileSync(join(dir, 'banned-names.txt'), 'Maybank');
+    writeFileSync(join(dir, 'drafts', 'README.md'), 'Move raya_duit.ink later.');
+    expect(loadCelikContent(dir).problems).toEqual([]);
+  });
+
+  it('still scans a draft scenario', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'celik-'));
+    mkdirSync(join(dir, 'scenarios'));
+    mkdirSync(join(dir, 'drafts'));
+    writeFileSync(join(dir, 'banned-names.txt'), 'Maybank');
+    writeFileSync(join(dir, 'drafts', 'x.ink'), 'Maybank');
+    expect(loadCelikContent(dir).problems.join()).toContain('Maybank');
+  });
+});
+
 describe('finalist content against balance.ts', () => {
   const tempDir = () => {
     const dir = mkdtempSync(join(tmpdir(), 'celik-'));
