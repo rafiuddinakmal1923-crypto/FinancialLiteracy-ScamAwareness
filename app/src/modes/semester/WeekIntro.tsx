@@ -12,6 +12,7 @@ import { formatMoney, formatSignedMoney } from '../../ui/format';
 import { Kancil } from '../../ui/Kancil';
 import { MeterBar } from '../../ui/MeterBar';
 import { richT } from './rich';
+import { afterIntroPath, canBeginWeek, loopState, nextStep, withBanner } from './loop';
 import { loc, weekDef, WEEKS } from './weeks';
 
 /**
@@ -43,8 +44,15 @@ function SemesterDone() {
       <p className="text-base leading-snug text-ink">{t('minggu.done.body')}</p>
       <button
         type="button"
-        onClick={() => navigate('/home')}
+        onClick={() => navigate('/semester/rapor')}
         className="mt-3 min-h-12 w-full rounded-2xl bg-ink px-4 text-base font-semibold text-paper active:scale-[.98]"
+      >
+        {t('minggu.report')}
+      </button>
+      <button
+        type="button"
+        onClick={() => navigate('/home')}
+        className="min-h-12 w-full rounded-2xl bg-white px-4 text-base font-semibold text-ink ring-1 ring-inset ring-ink/25 active:scale-[.98]"
       >
         {t('common.toHome')}
       </button>
@@ -73,6 +81,8 @@ export function WeekIntro() {
     const g = useGame.getState();
     if (g.weekIntroOpen || g.week >= BALANCE.semesterWeeks) return;
     if (!g.budget) { replaceRoute('/dompet'); return; }
+    // R8 / D20: a week cannot start before the last scenario is finished (or while an aftermath is pending).
+    if (!canBeginWeek(loopState(g))) { replaceRoute(nextStep(loopState(g))); return; }
     const def = WEEKS[g.week];
     if (!def) return;
     const summary = g.beginWeek(def);
@@ -98,7 +108,7 @@ export function WeekIntro() {
 
   const teruskan = () => {
     closeWeekIntro();
-    navigate('/home');
+    navigate(withBanner(afterIntroPath(week)));
   };
 
   return (

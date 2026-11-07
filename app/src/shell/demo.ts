@@ -36,7 +36,7 @@ export const DEMO_PRESETS: Record<DemoScene, DemoPreset> = {
     },
   },
   report: {
-    route: '/semester/laporan',
+    route: '/semester/rapor',
     game: { onboarded: true, week: 12, budget: BUDGET, meters: { duit: 1240, simpanan: 320, tekanan: 35, labur: { amanah: 150, ekuiti: 100 } } },
   },
   kelas: { route: '/kelas', game: { onboarded: true, week: 1 } },

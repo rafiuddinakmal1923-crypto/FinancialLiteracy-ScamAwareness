@@ -32,6 +32,7 @@ function fillGame(d: GameData): GameData {
     meters: fillMeters(d.meters),
     harian: { ...initialHarian(), ...d.harian },
     active: d.active ? { ...d.active, snapshot: fillMeters(d.active.snapshot) } : null,
+    kadIlmu: d.kadIlmu ?? [],
     results: (d.results ?? []).map((r) => ({ ...r, concepts: r.concepts ?? [] })),
   };
 }
@@ -116,6 +117,8 @@ export interface GameData {
   calcResume: CalcResume | null;
   /** "<scenario>:<tactic>" flags already counted from an unrealistic Semak Pulangan result. */
   calcFlagged: string[];
+  /** Kad Ilmu earned (one per finance concept), in the order earned. */
+  kadIlmu: Concept[];
 }
 
 export interface GameActions {
@@ -163,6 +166,8 @@ export interface GameActions {
   answerRound(right: boolean, tactics: Tactic[], withXp: boolean): void;
   /** A 60-second round ended with `score`: best score and the day streak of the round. */
   recordSwipe(score: number, today: string): void;
+  /** Awards each concept's Kad Ilmu the first time (+BALANCE.xp.kadIlmu XP each). Returns the newly awarded ones. */
+  awardKadIlmu(concepts: Concept[]): Concept[];
   hydrate(d: GameData | null): void;
   reset(): void;
   set(p: Partial<GameData>): void;
@@ -173,14 +178,14 @@ export function initialGame(): GameData {
     character: 'aina', name: 'Aina', onboarded: false, week: 0, meters: initialMeters(), budget: null,
     results: [], cards: [], badges: [], swipe: { best: 0, streak: 0, lastPlayed: null }, harian: initialHarian(), harianProgress: null, swipeXpDate: null,
     actions: [], incomeTotal: 0, active: null, lastEnded: null, transcripts: {}, weekIntroOpen: false,
-    txLog: [], calcUsed: [], calcResume: null, calcFlagged: [],
+    txLog: [], calcUsed: [], calcResume: null, calcFlagged: [], kadIlmu: [],
   };
 }
 
 const DATA_KEYS: (keyof GameData)[] = [
   'character', 'name', 'onboarded', 'week', 'meters', 'budget', 'results', 'cards', 'badges',
   'swipe', 'harian', 'harianProgress', 'swipeXpDate', 'actions', 'incomeTotal', 'active', 'lastEnded', 'transcripts', 'weekIntroOpen', 'txLog',
-  'calcUsed', 'calcResume', 'calcFlagged',
+  'calcUsed', 'calcResume', 'calcFlagged', 'kadIlmu',
 ];
 
 /** Picks only the persisted data fields (no actions) from the store state. */
@@ -374,6 +379,13 @@ export const useGame = create<GameData & GameActions>()((set, get) => ({
     const gap = swipe.lastPlayed === null ? null : dayDiff(swipe.lastPlayed, today);
     const streak = gap === null ? 1 : gap <= 0 ? Math.max(1, swipe.streak) : gap === 1 ? swipe.streak + 1 : 1;
     set({ swipe: { best: Math.max(swipe.best, score), streak, lastPlayed: gap !== null && gap < 0 ? swipe.lastPlayed : today } });
+  },
+
+  awardKadIlmu: (concepts) => {
+    const { kadIlmu } = get();
+    const fresh = concepts.filter((c, i) => !kadIlmu.includes(c) && concepts.indexOf(c) === i);
+    if (fresh.length) set({ ...bumpXp(get(), fresh.length * BALANCE.xp.kadIlmu), kadIlmu: [...kadIlmu, ...fresh] });
+    return fresh;
   },
 
   hydrate: (saved) => {

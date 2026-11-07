@@ -144,3 +144,29 @@ html[data-reduced-motion] .flag-shake { animation-name: flag-flash; }
 
 /* Card back appearing under reduced motion (Cek Harian / Sahih atau Scam). */
 @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+
+/* Incoming call (S07): ringing halo, voice bars and the Tekanan pulse. Static under reduced motion. */
+@keyframes call-halo {
+  0% { transform: scale(1); opacity: 0.55; }
+  100% { transform: scale(1.7); opacity: 0; }
+}
+.call-halo { animation: call-halo 1.8s ease-out infinite; }
+.call-halo-2 { animation-delay: 0.9s; }
+@keyframes call-wave {
+  0%, 100% { transform: scaleY(0.25); }
+  50% { transform: scaleY(1); }
+}
+.call-bar { transform-origin: center; animation: call-wave 0.9s ease-in-out infinite; animation-delay: var(--d, 0s); }
+@keyframes call-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgb(229 72 77 / 0.55); }
+  50% { box-shadow: 0 0 0 8px rgb(229 72 77 / 0); }
+}
+.call-pulse { animation: call-pulse 0.8s ease-out 3; }
+@media (prefers-reduced-motion: reduce) {
+  .call-halo { animation: none !important; opacity: 0; }
+  .call-bar { animation: none !important; transform: scaleY(0.6); }
+  .call-pulse { animation: none !important; box-shadow: 0 0 0 3px var(--color-danger); }
+}
+html[data-reduced-motion] .call-halo { animation: none !important; opacity: 0; }
+html[data-reduced-motion] .call-bar { animation: none !important; transform: scaleY(0.6); }
+html[data-reduced-motion] .call-pulse { animation: none !important; box-shadow: 0 0 0 3px var(--color-danger); }

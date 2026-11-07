@@ -1,4 +1,5 @@
 import { useState, type ReactNode } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 import { Flame, GraduationCap, Lock, Presentation, Settings as Gear, VenetianMask, type LucideIcon } from 'lucide-react';
 import sembang from '../../../assets/app-sembang.svg';
 import bankku from '../../../assets/app-bankku.svg';
@@ -19,6 +20,7 @@ import { meanScore, ScoreRing } from '../ui/ScoreRing';
 import { toast } from '../ui/Toast';
 import { useT } from './i18n';
 import { isKnownPath, navigate } from './router';
+import { homeTile, loopState, nextStep } from '../modes/semester/loop';
 
 /**
  * Paths the home tiles open. A later task only adds a matching entry to ROUTE_TABLE (shell/routes.tsx);
@@ -142,12 +144,17 @@ export function HomeScreen() {
   const name = useGame((s) => s.name);
   const meters = useGame((s) => s.meters);
   const harian = useGame((s) => s.harian);
-  const hasBudget = useGame((s) => s.budget !== null);
+  const loop = useGame(useShallow(loopState));
   const [tipOpen, setTipOpen] = useState(true);
   const lvl = levelForXp(meters.xp);
   const nextName = lvl.next !== null ? levelForXp(lvl.next).name : null;
   // Cek Harian: "today" is the device's local date, never UTC.
   const playedToday = harian.lastPlayed === localDate();
+  const tile = homeTile(loop);
+  const tileSub = tile.kind === 'pending' ? t('mode.semester.pending') : tile.kind === 'report' ? t('mode.semester.report')
+    : loop.week === 0 ? t('mode.semester.start') : t('mode.semester.next', { week: tile.week });
+  // After a finished week the next one is one clear tap away (D20).
+  const cta = tile.kind === 'report' ? t('home.cta.report') : tile.kind === 'next' && loop.week >= 1 && !loop.weekIntroOpen ? t('home.cta.next') : null;
   const tipIndex = (week - 1 + new Date().getDate()) % TIPS;
 
   return (
@@ -192,15 +199,27 @@ export function HomeScreen() {
         </div>
       </section>
 
+      {cta && (
+        <div className="px-4 pt-3">
+          <button
+            type="button"
+            onClick={() => navigate(nextStep(loop))}
+            className="min-h-12 w-full rounded-2xl bg-ink px-4 text-base font-semibold text-paper active:scale-[.98]"
+          >
+            {cta}
+          </button>
+        </div>
+      )}
+
       <nav aria-label={t('home.apps')} className="grid grid-cols-4 gap-y-1 px-2 pt-3">
         {APP_TILES.map((a) => <AppTile key={a.id} {...a} />)}
       </nav>
 
       <section aria-label={t('home.modes')} className="grid grid-cols-2 gap-2.5 px-4 pb-4 pt-3">
         <ModeTile
-          title={t('mode.semester')} sub={t('mode.semester.sub', { week })} icon={GraduationCap}
-          // No budget yet: Dompet's week-0 split comes first, then each tap opens the next week intro.
-          path={hasBudget ? MODE_PATHS.semester : '/dompet'}
+          title={t('mode.semester')} sub={tileSub} icon={GraduationCap}
+          // The loop decides: Dompet first, a pending scenario or aftermath, the report, else the next week intro.
+          path={nextStep(loop)}
           cls="bg-kancil text-ink" iconCls="bg-paper/60"
         />
         <ModeTile

@@ -16,7 +16,14 @@ vi.mock('virtual:celik-content', async () => {
     '* [Tak nak] Kamu: Tak nak. # outcome:safe',
     '-> END',
   ].join('\n') + '\n', `${id}.ink`);
-  return { scenarios: { satu: make('satu', 'Satu'), kerja_sambilan: make('kerja_sambilan', 'Dua') } };
+  const NL = String.fromCharCode(10);
+  const call = compileScenario([
+    '# id:telefon', '# type:scam', '# family:authority', '# tactics:fear', '# contact:Pegawai', '# ui:call', '',
+    'Pegawai: Ada waran. # flag:fear:waran',
+    '* [Letak telefon.] Kamu: Letak. # outcome:safe',
+    '-> END',
+  ].join(NL) + NL, 'telefon.ink');
+  return { scenarios: { satu: make('satu', 'Satu'), kerja_sambilan: make('kerja_sambilan', 'Dua'), telefon: call }, semester: { weeks: [] } };
 });
 
 const transcript = [{ id: 1, from: 'them' as const, speaker: 'Satu', text: 'Kerja senang.', flags: [] }];
@@ -51,5 +58,25 @@ describe('pending aftermath guard (M2)', () => {
     await act(async () => { fireEvent.click(row); });
     expect(window.location.hash).toBe('#/semester/akibat/satu');
     expect(screen.getByRole('button', { name: /Satu/ }).textContent).toMatch(/Lihat apa jadi/);
+  });
+});
+
+describe('chat route only for chat scenarios (Task 25)', () => {
+  it('a call scenario id on /sembang/:id does not play as a chat', async () => {
+    useGame.getState().reset();
+    useGame.getState().set({ week: 1 });
+    window.location.hash = '#/sembang/telefon';
+    await act(async () => { render(<ChatThread params={{ id: 'telefon' }} />); });
+    expect(window.location.hash).toBe('#/sembang');
+    expect(useGame.getState().active).toBeNull();
+    expect(screen.queryByRole('log')).toBeNull();
+  });
+
+  it('an unknown id does not open', async () => {
+    useGame.getState().reset();
+    window.location.hash = '#/sembang/tiada';
+    await act(async () => { render(<ChatThread params={{ id: 'tiada' }} />); });
+    expect(window.location.hash).toBe('#/sembang');
+    expect(useGame.getState().active).toBeNull();
   });
 });

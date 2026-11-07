@@ -35,14 +35,14 @@ Kamu belanja kawan-kawan makan besar dan beli kasut baharu. Seronok, tapi RM150 
 
 === simpan ===
 Nurin: Bagus. Mula dengan dana kecemasan. Sasaran dalam permainan ni RM300, cukup untuk perkara tak dijangka.
-Nurin: Aku ada dengar pasal Amanah Cempaka, dana harga tetap yang risikonya rendah. Contoh, pulangannya dalam sekitar 4% setahun, tapi itu contoh sahaja. Aku tak cakap kau patut masuk, aku cuma terangkan.
+Nurin: Aku ada dengar pasal Amanah Cempaka, dana harga tetap yang risikonya lebih rendah, tapi bukan tiada risiko. Contoh, pulangannya dalam sekitar 4% setahun, tapi itu contoh sahaja. Aku tak cakap kau patut masuk, aku cuma terangkan.
 Nurin: Soalan paling penting: dana kecemasan kau dah cukup RM300 ke belum?
 * [Belum cukup. Aku simpan RM100 dalam Simpanan dulu.]
     Nurin: Bagus. Dana kecemasan dulu, baru benda lain. Yang lain boleh tunggu.
-    Kamu masukkan RM100 ke Simpanan dan belanja baki gaji dengan berhemat. Dana kecemasan kamu makin dekat dengan sasaran RM300. # outcome:untung
+    Kamu putuskan untuk asingkan RM100 untuk Simpanan (atur di Dompet) dan belanja baki gaji dengan berhemat. Dana kecemasan kamu makin dekat dengan sasaran RM300. # outcome:untung
     -> END
 * [Dah cukup RM300. Aku pindah RM50 ke Amanah Cempaka, bakinya aku simpan.]
     Nurin: Kalau dana kecemasan dah ada, itu urutan yang betul. Ingat, ini bukan nasihat. Semak dulu butiran dan risiko produk tu sebelum masuk.
     // REVIEW: RM50 into Amanah Cempaka is shown as an option after the emergency fund, never as advice.
-    Kamu pindahkan RM50 ke Amanah Cempaka dan asingkan baki ke Simpanan. Dana kecemasan kamu sudah ada, jadi duit ini bukan untuk dikeluarkan bila-bila masa. # effect:labur:amanah:+50 # effect:duit:-50 # outcome:untung
+    Kamu pindahkan RM50 ke Amanah Cempaka dan putuskan untuk asingkan baki untuk Simpanan (atur di Dompet). Dana kecemasan kamu sudah ada, jadi duit ini bukan untuk dikeluarkan bila-bila masa. # effect:labur:amanah:+50 # effect:duit:-50 # outcome:untung
     -> END

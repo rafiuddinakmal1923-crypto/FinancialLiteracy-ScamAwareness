@@ -481,3 +481,23 @@ describe('BankKu transaction log (Task 15)', () => {
     expect(useGame.getState().txLog).toHaveLength(1);
   });
 });
+
+describe('awardKadIlmu (Task 25)', () => {
+  it('awards each concept once, +10 XP each first time only', () => {
+    useGame.getState().reset();
+    const xp0 = useGame.getState().meters.xp;
+    expect(useGame.getState().awardKadIlmu(['bajet', 'kompaun'])).toEqual(['bajet', 'kompaun']);
+    expect(useGame.getState().kadIlmu).toEqual(['bajet', 'kompaun']);
+    expect(useGame.getState().meters.xp).toBe(xp0 + 2 * BALANCE.xp.kadIlmu);
+    expect(useGame.getState().awardKadIlmu(['bajet', 'risiko'])).toEqual(['risiko']);
+    expect(useGame.getState().kadIlmu).toEqual(['bajet', 'kompaun', 'risiko']);
+    expect(useGame.getState().meters.xp).toBe(xp0 + 3 * BALANCE.xp.kadIlmu);
+    expect(useGame.getState().awardKadIlmu([])).toEqual([]);
+  });
+  it('hydrates an old save without kadIlmu to []', () => {
+    const d = { ...gameData(useGame.getState()) } as Record<string, unknown>;
+    delete d.kadIlmu;
+    useGame.getState().hydrate(d as never);
+    expect(useGame.getState().kadIlmu).toEqual([]);
+  });
+});

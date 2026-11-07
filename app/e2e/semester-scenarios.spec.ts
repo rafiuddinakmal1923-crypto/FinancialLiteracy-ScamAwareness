@@ -7,8 +7,11 @@ test.setTimeout(120_000);
 
 async function openChat(page: Page, id: string, week: number): Promise<void> {
   await seedGame(page);
-  await patchSavedGame(page, { week, onboarded: true }, `/sembang/${id}`);
-  await expect(page).toHaveURL(new RegExp(`#/sembang/${id}$`));
+  const call = id === 'panggilan_mahkamah';
+  await patchSavedGame(page, { week, onboarded: true }, `${call ? '/panggilan' : '/sembang'}/${id}`);
+  await expect(page).toHaveURL(new RegExp(`#/${call ? 'panggilan' : 'sembang'}/${id}$`));
+  // Calls ring first.
+  if (call) await page.getByRole('button', { name: 'Terima' }).click();
 }
 
 async function pick(page: Page, name: string): Promise<void> {

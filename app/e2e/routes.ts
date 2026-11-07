@@ -30,6 +30,11 @@ async function openEmergencyCheck(page: Page): Promise<void> {
   await page.getByRole('dialog', { name: 'Dana kecemasan dulu' }).waitFor();
 }
 
+/** Puts the saved game at `week` (budget set, intro closed) and opens `path`. */
+async function atWeek(page: Page, week: number, path: string): Promise<void> {
+  await patchSavedGame(page, { week, onboarded: true, budget: { needs: 50, wants: 30, savings: 20 }, weekIntroOpen: false, lastEnded: null, active: null }, path);
+}
+
 export interface ScreenRoute {
   path: string;
   name: string;
@@ -55,7 +60,11 @@ export const ROUTES: ScreenRoute[] = [
   // Dompet week 0 (no budget yet), then the weekly view, then the week intro it unlocks, then Labur at the intro.
   { path: '/dompet', name: 'dompet-bajet' },
   { path: '/dompet', name: 'dompet', setup: confirmBudget },
-  { path: '/semester/minggu', name: 'minggu', waitFor: 'Baki Duit' },
+  // The ended scenario-1 chat above is still waiting for its debrief, which blocks a new week (Task 25): clear it first.
+  {
+    path: '/semester/minggu', name: 'minggu', waitFor: 'Baki Duit',
+    setup: (page) => patchSavedGame(page, { week: 0, weekIntroOpen: false, lastEnded: null, active: null, budget: { needs: 50, wants: 30, savings: 20 } }, '/semester/minggu'),
+  },
   { path: '/dompet', name: 'dompet-labur', screen: 'dompet', setup: openEmergencyCheck },
   // BankKu home with sample transactions, then frozen (last: the frozen account stays for the rest of the run).
   { path: '/bankku', name: 'bankku', setup: (page) => patchSavedGame(page, { txLog: SAMPLE_TX }, '/bankku') },
@@ -83,4 +92,13 @@ export const ROUTES: ScreenRoute[] = [
   { path: '/demo/mule', name: 'chat-mule', screen: 'chat', waitFor: 'Serius RM1,500? Ok, macam mana?' },
   { path: '/demo/mule', name: 'bankku-transfer', setup: async (page) => { await page.goto('/#/demo/mule'); await acceptMuleOffer(page); } },
   { path: '/demo/mule', name: 'bankku-tac', setup: (page) => page.getByRole('button', { name: 'Sahkan' }).click() },
+  // Task 25: the incoming call (ringing, then in the call), the new-message banner, the week-7 card and the report.
+  { path: '/panggilan/panggilan_mahkamah', name: 'panggilan', waitFor: 'Panggilan masuk', setup: (page) => atWeek(page, 11, '/panggilan/panggilan_mahkamah') },
+  {
+    path: '/panggilan/panggilan_mahkamah', name: 'panggilan-aktif', screen: 'panggilan', waitFor: 'Hah? Saya tak pernah hantar apa-apa bungkusan.',
+    setup: async (page) => { await atWeek(page, 11, '/panggilan/panggilan_mahkamah'); await page.getByRole('button', { name: 'Terima' }).click(); },
+  },
+  { path: '/semester/mesej/gaji_pertama', name: 'mesej', waitFor: 'Mesej baru dari Nurin', setup: (page) => atWeek(page, 4, '/semester/mesej/gaji_pertama') },
+  { path: '/semester/cuti', name: 'cuti', waitFor: 'Minggu ini tiada XP dan tiada pilihan. Ambil masa untuk fikir.', setup: (page) => atWeek(page, 7, '/semester/cuti') },
+  { path: '/semester/rapor', name: 'rapor', waitFor: 'Laporan semester', setup: (page) => atWeek(page, 12, '/semester/rapor') },
 ];

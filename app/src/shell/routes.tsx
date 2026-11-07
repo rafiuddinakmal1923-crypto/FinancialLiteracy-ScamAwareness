@@ -11,6 +11,10 @@ import { Dompet } from '../modes/semester/Dompet';
 import { FakePageScreen } from '../modes/semester/FakePageScreen';
 import { FlagHunt } from '../modes/semester/FlagHunt';
 import { WeekIntro } from '../modes/semester/WeekIntro';
+import { IncomingCall } from '../modes/semester/IncomingCall';
+import { NewMessage } from '../modes/semester/NewMessage';
+import { Cuti } from '../modes/semester/Cuti';
+import { ReportPlaceholder } from '../modes/semester/ReportPlaceholder';
 import { Kalkulator } from '../modes/kalkulator/Kalkulator';
 import { CekHarian } from '../modes/harian/CekHarian';
 import { SwipeGame } from '../modes/harian/SwipeGame';
@@ -55,6 +59,11 @@ export const ROUTE_TABLE: RouteDef[] = [
   { pattern: '/swipe', name: 'swipe', component: SwipeGame, statusBar: 'dark', needsGame: true, tip: 'side.tip.swipe', mood: 'neutral' },
   { pattern: '/kelas', name: 'kelas', component: ClassMode, layout: 'full', tip: 'side.tip.home' },
   { pattern: '/semester/minggu', name: 'minggu', component: WeekIntro, statusBar: 'dark', needsGame: true, tip: 'side.tip.minggu', mood: 'neutral' },
+  { pattern: '/semester/mesej/:id', name: 'mesej', component: NewMessage, statusBar: 'dark', needsGame: true, tip: 'side.tip.mesej', mood: 'neutral' },
+  { pattern: '/panggilan/:id', name: 'panggilan', component: IncomingCall, statusBar: 'dark', needsGame: true, tip: 'side.tip.panggilan', mood: 'worried' },
+  { pattern: '/semester/cuti', name: 'cuti', component: Cuti, statusBar: 'dark', needsGame: true, tip: 'side.tip.cuti', mood: 'smile' },
+  // Task 26 replaces the placeholder with the report card.
+  { pattern: '/semester/rapor', name: 'rapor', component: ReportPlaceholder, statusBar: 'light', needsGame: true, tip: 'side.tip.rapor', mood: 'proud' },
   { pattern: '/laman/:url', name: 'laman', component: FakePageScreen, statusBar: 'light', needsGame: true, tip: 'side.tip.laman', mood: 'worried' },
   { pattern: '/demo/:scene', name: 'demo', component: DemoScene, statusBar: 'light', tip: 'side.tip.demo', mood: 'neutral' },
 ];

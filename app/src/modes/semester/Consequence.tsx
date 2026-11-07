@@ -11,6 +11,7 @@ import { ConsequenceTimeline } from '../../ui/ConsequenceTimeline';
 import { formatRM } from '../../ui/format';
 import { huntTactics } from './flagText';
 import { consequenceBase, consequenceSteps, consequenceTone, useEnded } from './aftermath';
+import { scenarioPath } from './loop';
 import { MoneyChain } from './MoneyChain';
 
 const HERO: Record<Outcome, { icon: LucideIcon; bg: string; badge: string; title: string }> = {
@@ -129,7 +130,7 @@ export function Consequence({ params }: { params: Record<string, string> }) {
 
   const retry = () => leave(() => {
     useGame.getState().retryScenario();
-    navigate(`/sembang/${id}`);
+    navigate(scenarioPath(id));
   });
   const next = () => navigate(hasFlags ? `/semester/bendera/${id}` : `/semester/debrief/${id}`);
 

@@ -10,6 +10,7 @@ import { CoachSheet } from '../../ui/CoachSheet';
 import type { KancilMood } from '../../ui/Kancil';
 import { useTactic } from '../../ui/tactics';
 import { toast } from '../../ui/Toast';
+import { useConceptName } from '../harian/shared';
 import { huntTactics } from './flagText';
 import { outcomeTone, useEnded } from './aftermath';
 
@@ -26,6 +27,7 @@ export function Debrief({ params }: { params: Record<string, string> }) {
   const tn = useTactic();
   const { ended, scenario, leave } = useEnded(id);
   const owned = useGame((s) => s.cards);
+  const conceptName = useConceptName();
   if (!ended || !scenario) return null;
 
   const { meta } = scenario;
@@ -45,6 +47,10 @@ export function Debrief({ params }: { params: Record<string, string> }) {
     s.finishScenario(meta, ended.outcome, flagsFound, targets.length);
     const gained = useGame.getState().meters.xp - before;
     toast(t('debrief.xp', { n: `${gained >= 0 ? '+' : ''}${gained}` }), 'success');
+    // Kad Ilmu (Task 25): a finance or legit scenario's concepts are earned once, when its debrief closes.
+    if (meta.type !== 'scam') {
+      for (const c of useGame.getState().awardKadIlmu(meta.concepts)) toast(t('debrief.kadIlmu', { name: conceptName(c) }), 'success');
+    }
     navigate('/home');
   });
 

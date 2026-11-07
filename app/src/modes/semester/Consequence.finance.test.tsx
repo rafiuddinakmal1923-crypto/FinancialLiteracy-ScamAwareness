@@ -21,7 +21,7 @@ vi.mock('virtual:celik-content', async () => {
   );
   return {
     scenarios: { kawan_labur: mk('kawan_labur', 'investment', 'risiko'), bayar_nanti: mk('bayar_nanti', 'loan', 'hutang') },
-    calcPresets: [], pages: {},
+    calcPresets: [], pages: {}, semester: { weeks: [] },
   };
 });
 

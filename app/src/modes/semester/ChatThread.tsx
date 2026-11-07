@@ -301,8 +301,8 @@ function ReadOnlyThread({ id }: { id: string }) {
  */
 export function ChatThread({ params }: { params: Record<string, string> }) {
   const id = params.id ?? '';
-  // A `ui:call` scenario also plays here as chat until Task 25 adds the incoming-call screen and routes it there.
-  const known = !!scenarios[id];
+  // Chats only: a `ui:call` scenario plays on the incoming-call screen (/panggilan/:id), never here.
+  const known = scenarios[id]?.meta.ui === 'chat';
   const finished = useGame((s) => s.results.some((r) => r.id === id));
   // Checked once on open: the end of this very thread also sets lastEnded, and must not redirect.
   const [pending] = useState(() => useGame.getState().lastEnded?.id ?? null);

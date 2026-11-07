@@ -1,5 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
-import { seedGame } from './helpers';
+import { patchSavedGame, seedGame } from './helpers';
 
 test.use({ viewport: { width: 412, height: 915 } });
 
@@ -88,6 +88,8 @@ test('Semester Pertama before a budget opens Dompet for the split', async ({ pag
   await expect(page.getByRole('slider')).toHaveCount(3);
 });
 
+const played = (...ids: string[]) => ids.map((id) => ({ id, outcome: 'safe', right: true, flagsFound: 0, flagsTotal: 0, tactics: [], family: 'job', concepts: [] }));
+
 test('week intro: card, Labur moves with the emergency-fund check, Teruskan', async ({ page }) => {
   await seedGame(page);
   await confirmBudget(page);
@@ -149,34 +151,39 @@ test('week intro: card, Labur moves with the emergency-fund check, Teruskan', as
   await expect(page.getByRole('status').filter({ hasText: 'Baki Amanah Cempaka tak cukup' })).toBeVisible();
   await expect(page.getByText('Nilai bersih RM1,870 (Duit RM1,770 + Labur RM100)')).toBeVisible();
 
-  // Back to the intro, Teruskan closes it and goes home.
+  // Back to the intro, Teruskan closes it and the week's chat arrives behind the "Mesej baru" banner (Task 25).
   await page.getByRole('button', { name: 'Kembali' }).click();
   await expect(page).toHaveURL(/#\/semester\/minggu$/);
   await expect(card.getByRole('heading', { name: 'Minggu 1' })).toBeVisible();
   await page.getByRole('button', { name: 'Teruskan' }).click();
-  await expect(page).toHaveURL(/#\/home$/);
+  await expect(page).toHaveURL(/#\/semester\/mesej\/kerja_sambilan$/);
+  await page.goto('/#/home');
   await expect(page.getByText('Minggu 1 daripada 12')).toBeVisible();
 
   // Outside the intro the Labur buttons lock again.
   await page.goto('/#/dompet');
   await expect(page.getByRole('region', { name: 'Labur' }).getByText('Boleh pindah pada awal minggu')).toBeVisible();
 
-  // Week 2: Labur growth on Amanah (RM100 x contoh 4% / 52 weeks).
-  await page.goto('/#/home');
+  // Week 2 (week 1's chat counts as played; a new week cannot start before): Labur growth on Amanah (RM100 x contoh 4% / 52 weeks).
+  await patchSavedGame(page, { results: played('kerja_sambilan') }, '/home');
   await semester.click();
   await expect(card.getByRole('heading', { name: 'Minggu 2' })).toBeVisible();
   await expect(card.getByText('Labur +RM0.08')).toBeVisible();
   await expect(costs.getByRole('listitem')).toHaveCount(2);
   await page.getByRole('button', { name: 'Teruskan' }).click();
+  await expect(page).toHaveURL(/#\/semester\/mesej\/dompet_minggu0$/);
+  await page.goto('/#/home');
   await expect(page.getByText('Minggu 2 daripada 12')).toBeVisible();
 
   // Week 3: hostel fees.
+  await patchSavedGame(page, { results: played('kerja_sambilan', 'dompet_minggu0') }, '/home');
   await semester.click();
   await expect(card.getByRole('heading', { name: 'Minggu 3' })).toBeVisible();
   await expect(costs.getByRole('listitem').filter({ hasText: 'Yuran asrama' })).toContainText('-RM600');
   await page.getByRole('button', { name: 'Teruskan' }).click();
 
   // Week 4: part-time pay arrives.
+  await patchSavedGame(page, { results: played('kerja_sambilan', 'dompet_minggu0', 'sewa_akaun') }, '/home');
   await semester.click();
   await expect(card.getByRole('heading', { name: 'Minggu 4' })).toBeVisible();
   await expect(card.getByText('Gaji sambilan +RM400')).toBeVisible();

@@ -17,6 +17,8 @@ export const BALANCE = {
     moneyHealth: { kept: 0.5, emergency: 0.25, invested: 0.25 },
     A: 85, B: 70, C: 55, capWhenRecord: 'C',
   },
+  /** Semester loop: how long the "Mesej baru dari ..." banner shows before the chat opens (Task 25). */
+  loop: { bannerMs: 1200 },
   desperation: { simpananBelow: 100, tekananUp: 10, cueAt: 60 },
   adaptive: { base: 100, bonus: 10, scamShareMin: 0.35, scamShareMax: 0.45 },
   /**
