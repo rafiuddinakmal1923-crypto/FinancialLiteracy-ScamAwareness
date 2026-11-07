@@ -361,7 +361,9 @@ weekly transport cost by `kedai.transportSaving`. `instalment` opens Kos Sebenar
 instalment to the week intros of weeks 4, 8 and 12.
 
 **Matlamat (`goalProgress`, `goalReached`).** Progress = current value of the goal's `measure` ÷ its target, capped
-at 100%. Reached at week 12 gives `matlamat.xpReached` XP; the grade formula (D24) does not change.
+at 100%. Reached at week 12 gives `matlamat.xpReached` XP; the grade formula (D24) does not change. At each week intro
+the player can move `finance.simpananStep` in or out of Simpanan from Dompet (D46); kecemasan, laptop and raya measure
+Simpanan, labur measures both Labur pots.
 
 **Papan Markah (`rankClassmates`).** Sorts the player's grade into `papan.grades`; ties place the player above.
 

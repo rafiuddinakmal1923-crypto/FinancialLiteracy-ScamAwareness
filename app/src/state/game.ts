@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { BALANCE } from '../engine/balance';
 import { cardId } from '../engine/cards';
-import { applyBudget, applyWeekIntro, moveLabur as engineMoveLabur, type BudgetSplit, type IntroSummary, type MoveResult, type WeekDef } from '../engine/week';
+import { applyBudget, applyWeekIntro, moveLabur as engineMoveLabur, moveSimpanan as engineMoveSimpanan, type BudgetSplit, type IntroSummary, type MoveResult, type WeekDef } from '../engine/week';
 import { round2 } from '../engine/money';
 import { applyEffect, applyFlagFound, applyMoneyAnswer, applyOutcome, applySwipeAnswer, applyXp, initialMeters, isRight } from '../engine/meters';
 import { updateHarianStreak } from '../engine/harian';
@@ -166,6 +166,8 @@ export interface GameActions {
   beginWeek(def: WeekDef): IntroSummary | null;
   closeWeekIntro(): void;
   moveLabur(product: LaburProduct, delta: number): MoveResult;
+  /** Moves money in or out of Simpanan at a week intro (D46). */
+  moveSimpanan(delta: number): MoveResult;
   /** The chat opens the Kalkulator: remember where it was. */
   calcOpen(r: { id: string; family: Family; trail: TrailStep[] }): void;
   /** Kembali ke perbualan: the chat resumes past its Kalkulator pause. */
@@ -385,6 +387,13 @@ export const useGame = create<GameData & GameActions>()((set, get) => ({
       const amount = round2(r.meters.duit - meters.duit);
       set({ meters: r.meters, txLog: appendTx(txLog, week, [{ label: `bankku.tx.labur.${product}`, amount }]) });
     }
+    return r;
+  },
+
+  moveSimpanan: (delta) => {
+    const { meters, weekIntroOpen } = get();
+    const r = engineMoveSimpanan(meters, delta, weekIntroOpen);
+    if ('meters' in r) set({ meters: r.meters });
     return r;
   },
 

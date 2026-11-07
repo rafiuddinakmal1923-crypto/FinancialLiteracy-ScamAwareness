@@ -2,5 +2,7 @@
   "bankku.tx.instalment": "Ansuran Kedai Kampus",
   "bankku.tx.kedai": "Kedai Kampus",
   "bankku.tx.kedai.kehendak": "Kedai Kampus: kehendak",
-  "bankku.tx.kedai.keperluan": "Kedai Kampus: keperluan"
+  "bankku.tx.kedai.keperluan": "Kedai Kampus: keperluan",
+  "dompet.save.in": "Simpan {amount}",
+  "dompet.save.out": "Keluarkan {amount}"
 }

@@ -197,6 +197,29 @@ function Jar({ fill }: { fill: number }) {
   );
 }
 
+/** Weekly saving (D46): at a week intro, money moves in or out of Simpanan. Duit stays the same. */
+function SaveButtons() {
+  const t = useT();
+  const open = useGame((s) => s.weekIntroOpen);
+  const simpanan = useGame((s) => s.meters.simpanan);
+  const duit = useGame((s) => s.meters.duit);
+  const moveSimpanan = useGame((s) => s.moveSimpanan);
+  if (!open) return null;
+  const step = BALANCE.finance.simpananStep;
+  const amount = formatMoney(step);
+  const cls = 'min-h-12 rounded-2xl px-2 text-base font-semibold active:scale-[.98] disabled:opacity-50';
+  return (
+    <div className="mt-3 grid grid-cols-2 gap-2">
+      <button type="button" disabled={simpanan < step} onClick={() => moveSimpanan(-step)} className={`${cls} bg-white text-ink ring-1 ring-inset ring-ink/25`}>
+        {t('dompet.save.out', { amount })}
+      </button>
+      <button type="button" disabled={simpanan + step > duit} onClick={() => moveSimpanan(step)} className={`${cls} bg-ink text-paper`}>
+        {t('dompet.save.in', { amount })}
+      </button>
+    </div>
+  );
+}
+
 function EmergencyFund() {
   const t = useT();
   const simpanan = useGame((s) => s.meters.simpanan);
@@ -234,6 +257,7 @@ function EmergencyFund() {
       <p className="mt-2 text-base leading-snug text-ink-soft">
         {full ? t('dompet.emergency.done') : t('dompet.emergency.short', { amount: formatMoney(target - simpanan) })}
       </p>
+      {FINALIST && <SaveButtons />}
     </section>
   );
 }

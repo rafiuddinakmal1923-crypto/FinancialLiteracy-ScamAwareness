@@ -30,6 +30,8 @@ export const BALANCE = {
   finance: {
     /** RM in Simpanan before investing counts as an emergency fund. */
     emergencyTarget: 300,
+    /** RM moved in or out of Simpanan with one tap at a week intro (D46). */
+    simpananStep: 50,
     /** A promised yearly return above this is flagged as Terlalu Lumayan in Semak Pulangan. */
     unrealisticAbove: 0.2,
     /** Tekanan added when money goes into Labur while Simpanan is below emergencyTarget. */
@@ -103,7 +105,7 @@ export const BALANCE = {
   matlamat: {
     targets: { kecemasan: 300, laptop: 500, raya: 250, labur: 200 },
     /** What each goal counts; content/goals.json must say the same. */
-    measures: { kecemasan: 'simpanan', laptop: 'simpanan', raya: 'duit', labur: 'labur' },
+    measures: { kecemasan: 'simpanan', laptop: 'simpanan', raya: 'simpanan', labur: 'labur' },
     nudgeWeeks: [4, 8], xpReached: 100,
   },
   papan: { grades: [42, 51, 58, 63, 67, 71, 76, 82, 90] },

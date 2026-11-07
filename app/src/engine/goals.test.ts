@@ -17,8 +17,12 @@ describe('goalProgress', () => {
     expect(goalProgress({ goal: 'laptop', meters })).toEqual({ goal: 'laptop', value: 150, target: 500, ratio: 0.3 });
   });
 
-  it('Raya ticket measures Duit, capped at 100%', () => {
-    expect(goalProgress({ goal: 'raya', meters })).toEqual({ goal: 'raya', value: 900, target: 250, ratio: 1 });
+  it('Raya ticket measures Simpanan (D46)', () => {
+    expect(goalProgress({ goal: 'raya', meters })).toEqual({ goal: 'raya', value: 150, target: 250, ratio: 0.6 });
+  });
+
+  it('is capped at 100%', () => {
+    expect(goalProgress({ goal: 'raya', meters: { ...meters, simpanan: 900 } })?.ratio).toBe(1);
   });
 
   it('invest measures both Labur pots', () => {

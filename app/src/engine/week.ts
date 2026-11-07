@@ -77,6 +77,14 @@ export function applyBudget(m: Meters, split: BudgetSplit): Meters {
   return { ...m, simpanan };
 }
 
+/** Sets money aside in Simpanan (or takes it back out), only at a week intro. Simpanan is part of Duit, so Duit stays (D46). */
+export function moveSimpanan(m: Meters, delta: number, atWeekIntro: boolean): MoveResult {
+  if (!atWeekIntro) return { error: 'not-week-intro' };
+  const simpanan = round2(m.simpanan + delta);
+  if (simpanan < 0 || simpanan > m.duit) return { error: 'insufficient' };
+  return { meters: { ...m, simpanan } };
+}
+
 export type MoveResult = { meters: Meters; tip?: 'kecemasan' } | { error: 'not-week-intro' | 'insufficient' };
 
 /** Moves money between Duit and a Labur product, only at a week intro. Net worth never changes. */

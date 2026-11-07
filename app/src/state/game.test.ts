@@ -589,6 +589,7 @@ describe('finalist actions (A2-A4)', () => {
   it('claimGoalXp pays once, at week 12, when the goal is reached', () => {
     useGame.getState().reset();
     useGame.getState().setGoal('raya');
+    useGame.getState().set({ meters: { ...useGame.getState().meters, simpanan: 250 } });
     expect(useGame.getState().claimGoalXp()).toBe(false);
     useGame.getState().set({ week: 12 });
     expect(useGame.getState().claimGoalXp()).toBe(true);
@@ -602,5 +603,22 @@ describe('finalist actions (A2-A4)', () => {
     useGame.getState().setGoal('kecemasan');
     useGame.getState().set({ week: 12 });
     expect(useGame.getState().claimGoalXp()).toBe(false);
+  });
+});
+
+describe('moveSimpanan action (D46)', () => {
+  it('moves money at a week intro and writes no BankKu entry', () => {
+    useGame.getState().reset();
+    useGame.getState().set({ weekIntroOpen: true });
+    expect('meters' in useGame.getState().moveSimpanan(50)).toBe(true);
+    expect(useGame.getState().meters.simpanan).toBe(50);
+    expect(useGame.getState().meters.duit).toBe(BALANCE.start.duit);
+    expect(useGame.getState().txLog).toEqual([]);
+  });
+
+  it('changes nothing outside a week intro', () => {
+    useGame.getState().reset();
+    expect(useGame.getState().moveSimpanan(50)).toEqual({ error: 'not-week-intro' });
+    expect(useGame.getState().meters.simpanan).toBe(0);
   });
 });

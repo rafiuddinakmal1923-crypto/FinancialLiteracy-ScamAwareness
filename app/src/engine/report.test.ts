@@ -102,7 +102,7 @@ describe('goal on the report (A4)', () => {
   });
 
   it('says whether the goal was reached', () => {
-    expect(reportModel({ ...g, goal: 'raya' }, 2000, {}).goal).toMatchObject({ goal: 'raya', reached: true });
+    expect(reportModel({ ...g, goal: 'labur', meters: { ...g.meters, labur: { amanah: 200, ekuiti: 0 } } }, 2000, {}).goal).toMatchObject({ goal: 'labur', reached: true });
     expect(reportModel({ ...g, goal: 'kecemasan' }, 2000, {}).goal).toMatchObject({ goal: 'kecemasan', reached: false });
   });
 

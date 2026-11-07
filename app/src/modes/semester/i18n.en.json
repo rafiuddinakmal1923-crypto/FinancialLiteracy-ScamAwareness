@@ -2,5 +2,7 @@
   "bankku.tx.instalment": "Campus Shop instalment",
   "bankku.tx.kedai": "Campus Shop",
   "bankku.tx.kedai.kehendak": "Campus Shop: wants",
-  "bankku.tx.kedai.keperluan": "Campus Shop: needs"
+  "bankku.tx.kedai.keperluan": "Campus Shop: needs",
+  "dompet.save.in": "Save {amount}",
+  "dompet.save.out": "Take out {amount}"
 }

@@ -4,7 +4,7 @@ import { BALANCE } from './balance';
 import { initialMeters, netWorth } from './meters';
 import { round2 } from './money';
 import { CONTENT_FILES, parseContent, SemesterFileSchema } from './schemas';
-import { applyBudget, applyWeekIntro, moveLabur, weekCosts, type WeekDef } from './week';
+import { applyBudget, applyWeekIntro, moveLabur, moveSimpanan, weekCosts, type WeekDef } from './week';
 
 const wk = (week: number, costs: { label: string; amount: number }[] = []): WeekDef => ({
   week, scenario: null, context: { ms: 'x' }, costs: costs.map((c) => ({ label: { ms: c.label }, amount: c.amount })),
@@ -216,5 +216,28 @@ describe('weekCosts with purchases (A3)', () => {
   it('applyWeekIntro reports the instalment by its i18n key', () => {
     const r = applyWeekIntro(base(), wk(8), BALANCE, [{ item: 'telefon', week: 1 }]);
     expect(r.costs).toEqual([{ label: 'bankku.tx.instalment', amount: 110 }]);
+  });
+});
+
+describe('moveSimpanan (D46)', () => {
+  it('sets money aside at a week intro without changing Duit', () => {
+    const r = moveSimpanan(base(), 50, true);
+    expect(r).toMatchObject({ meters: { duit: 1000, simpanan: 550 } });
+  });
+
+  it('takes money back out', () => {
+    expect(moveSimpanan(base(), -50, true)).toMatchObject({ meters: { duit: 1000, simpanan: 450 } });
+  });
+
+  it('only works at a week intro', () => {
+    expect(moveSimpanan(base(), 50, false)).toEqual({ error: 'not-week-intro' });
+  });
+
+  it('cannot save more than Duit', () => {
+    expect(moveSimpanan({ ...base(), duit: 520 }, 50, true)).toEqual({ error: 'insufficient' });
+  });
+
+  it('cannot take out more than was saved', () => {
+    expect(moveSimpanan({ ...base(), simpanan: 20 }, -50, true)).toEqual({ error: 'insufficient' });
   });
 });
