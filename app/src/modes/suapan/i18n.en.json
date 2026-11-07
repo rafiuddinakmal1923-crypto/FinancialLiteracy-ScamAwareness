@@ -1,4 +1,8 @@
 {
   "suapan.app": "Feed",
-  "suapan.tip": "Check before you trust."
+  "suapan.tip": "Check before you trust.",
+  "suapan.subtitle": "Judge each post: trust, check or report.",
+  "suapan.feedLabel": "Posts in the feed",
+  "suapan.followers": "{n} followers",
+  "suapan.empty": "No posts yet."
 }
