@@ -1,4 +1,26 @@
 {
   "kedai.app": "Kedai",
-  "kedai.tip": "Belanja ikut bajet anda."
+  "kedai.tip": "Belanja ikut bajet anda.",
+  "kedai.duit": "Duit kamu: {amount}",
+  "kedai.shelf": "Barang di Kedai Kampus",
+  "kedai.empty": "Rak masih kosong.",
+  "kedai.perMonth": "{monthly} × {months} bulan",
+  "kedai.buy": "Beli",
+  "kedai.buyInstalment": "Beli ansuran",
+  "kedai.short": "Duit tak cukup",
+  "kedai.boughtTag": "Sudah dibeli",
+  "kedai.bought": "Dibeli: {name}",
+  "kedai.error.insufficient": "Duit tak cukup untuk barang ini.",
+  "kedai.error.unknown-item": "Barang ini tiada harga lagi.",
+  "kedai.confirm.title": "Beli {name}?",
+  "kedai.confirm.cash": "{price} dibayar dari Duit, dikira sebagai {pot}.",
+  "kedai.confirm.total": "Jumlah sebenar: {total}",
+  "kedai.confirm.terms": "{monthly} sebulan × {months} bulan. Harga tunai {cash}, jadi ansuran ini kos {extra} lebih (contoh).",
+  "kedai.confirm.kos": "Lihat Kos Sebenar semula",
+  "kedai.confirm.cancel": "Tak jadi",
+  "kedai.confirm.ok": "Sahkan",
+  "kedai.kancil.title": "Sang Kancil",
+  "kedai.kancil.text": "Belanja besar! Nak tengok berapa duit ini boleh jadi kalau disimpan lama?",
+  "kedai.kancil.close": "Nanti",
+  "kedai.kancil.go": "Buka Mesin Masa"
 }

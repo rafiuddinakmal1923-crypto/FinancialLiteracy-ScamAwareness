@@ -4,5 +4,22 @@
   "suapan.subtitle": "Judge each post: trust, check or report.",
   "suapan.feedLabel": "Posts in the feed",
   "suapan.followers": "{n} followers",
-  "suapan.empty": "No posts yet."
+  "suapan.empty": "No posts yet.",
+  "suapan.callsLabel": "What do you do?",
+  "suapan.call.percaya": "Trust",
+  "suapan.call.semak": "Check",
+  "suapan.call.lapor": "Report",
+  "suapan.verdict.right": "Right",
+  "suapan.verdict.wrong": "Not quite",
+  "suapan.verdict.neutral": "No score change",
+  "suapan.review": "See again",
+  "suapan.debrief.title": "About this post",
+  "suapan.debrief.youChose": "You chose: {call}",
+  "suapan.xp": "+{n} XP",
+  "suapan.kind.advice": "This is sound advice.",
+  "suapan.kind.hype": "This is hype: legal, but misleading.",
+  "suapan.kind.scam": "This is a scam.",
+  "suapan.open.calc": "Open Calculator",
+  "suapan.open.kad": "Read the Kad Ilmu",
+  "suapan.close": "Close"
 }

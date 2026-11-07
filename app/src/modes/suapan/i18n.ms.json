@@ -4,5 +4,22 @@
   "suapan.subtitle": "Nilai setiap hantaran: percaya, semak atau lapor.",
   "suapan.feedLabel": "Hantaran dalam suapan",
   "suapan.followers": "{n} pengikut",
-  "suapan.empty": "Belum ada hantaran."
+  "suapan.empty": "Belum ada hantaran.",
+  "suapan.callsLabel": "Apa tindakan kamu?",
+  "suapan.call.percaya": "Percaya",
+  "suapan.call.semak": "Semak",
+  "suapan.call.lapor": "Lapor",
+  "suapan.verdict.right": "Tepat",
+  "suapan.verdict.wrong": "Belum tepat",
+  "suapan.verdict.neutral": "Tiada markah berubah",
+  "suapan.review": "Lihat semula",
+  "suapan.debrief.title": "Ulasan hantaran",
+  "suapan.debrief.youChose": "Pilihan kamu: {call}",
+  "suapan.xp": "+{n} XP",
+  "suapan.kind.advice": "Ini nasihat yang munasabah.",
+  "suapan.kind.hype": "Ini hype: sah, tetapi mengelirukan.",
+  "suapan.kind.scam": "Ini scam.",
+  "suapan.open.calc": "Buka Kalkulator",
+  "suapan.open.kad": "Baca Kad Ilmu",
+  "suapan.close": "Tutup"
 }
