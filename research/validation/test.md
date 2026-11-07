@@ -79,15 +79,15 @@ Someone offers RM1,500 to "rent" your bank account for a month. You only need to
 - C. Terima, kalau orang itu senior di universiti / Accept, if the person is a senior at your university
 - D. Terima, tapi tukar PIN selepas sebulan / Accept, but change the PIN after a month
 
-**9.** Panggilan dari 011-0000 0123: "Saya pegawai polis. Nombor IC kamu terlibat dengan pengubahan wang haram. Pindahkan duit kamu ke akaun selamat sekarang dan jangan beritahu sesiapa." Apa yang patut kamu buat?
-A call from 011-0000 0123: "I'm a police officer. Your IC number is linked to money laundering. Transfer your money to a safe account now and don't tell anyone." What should you do?
+**9.** Panggilan dari 011-0000 0456: "Saya pegawai polis. Nombor IC kamu terlibat dengan pengubahan wang haram. Pindahkan duit kamu ke akaun selamat sekarang dan jangan beritahu sesiapa." Apa yang patut kamu buat?
+A call from 011-0000 0456: "I'm a police officer. Your IC number is linked to money laundering. Transfer your money to a safe account now and don't tell anyone." What should you do?
 - A. Pindahkan duit dulu, kemudian semak / Transfer the money first, then check
 - B. Beri nombor akaun kamu supaya mereka boleh semak / Give them your account number so they can check
 - C. Letak telefon: pihak berkuasa tidak akan minta kamu pindahkan duit ke "akaun selamat" / Hang up: the authorities will never ask you to move money to a "safe account"
 - D. Ikut arahan, sebab dia tahu nombor IC kamu / Follow the instructions, because they know your IC number
 
-**10.** SMS: "Bungkusan kamu ditahan. Bayar RM2.50 dalam 24 jam di kurierkilat-bayar.test/alamat atau ia akan dipulangkan." Apa tanda bahayanya?
-SMS: "Your parcel is on hold. Pay RM2.50 within 24 hours at kurierkilat-bayar.test/alamat or it will be returned." What are the warning signs?
+**10.** SMS: "Bungkusan kamu ditahan. Bayar RM2.50 dalam 24 jam di pos-tertahan.test/bayar atau ia akan dipulangkan." Apa tanda bahayanya?
+SMS: "Your parcel is on hold. Pay RM2.50 within 24 hours at pos-tertahan.test/bayar or it will be returned." What are the warning signs?
 - A. Tiada; RM2.50 terlalu kecil untuk jadi scam / None; RM2.50 is too small to be a scam
 - B. Desakan masa dan pautan bayaran yang tidak dikenali; semak dalam aplikasi rasmi kurier sendiri / Time pressure and an unknown payment link; check in the courier's own official app yourself
 - C. Hanya kalau ada salah ejaan / Only if there are spelling mistakes
@@ -102,7 +102,7 @@ Which message is MOST likely to be legitimate?
 
 **12.** Kamu baru sahaja memindahkan duit kepada penipu. Apa langkah pertama yang paling penting?
 You have just transferred money to a scammer. What is the most important first step?
-- A. Telefon NSRC 997 secepat mungkin dan beritahu bank kamu / Call NSRC 997 as soon as possible and tell your bank
+- A. Telefon NSRC 997 secepat mungkin, dalam masa 24 jam, dan beritahu bank kamu / Call NSRC 997 as soon as possible, within 24 hours, and tell your bank
 - B. Tunggu sehari untuk lihat sama ada mereka pulangkan / Wait a day to see whether they return it
 - C. Hantar mesej marah kepada penipu itu / Send the scammer an angry message
 - D. Padam semua mesej supaya tiada siapa tahu / Delete all the messages so nobody knows
@@ -142,9 +142,17 @@ formula in `app/src/engine/finance.ts`, `loanCost`).
 - One 25-minute session; it measures short-term recall, not behaviour months later.
 - The sample is small and not random (people the team knows).
 - Multiple choice lets people guess (25% chance per question).
+- Some items mirror game scenes (Q7 is close to `kerja_sambilan`), so part of a gain may be recall of that scene.
 
 ## Review notes (Danish: comments only)
 
+Reviewed by Danish on `lane/aimar` at `a3dc265` (docs/verification-log.md, "D3 review notes"). Answer key confirmed.
+
 | Q | Comment | Fixed? |
 | --- | --- | --- |
-| | | |
+| 9 | 011-0000 0123 is Kak Mira's number in `kerja_sambilan`; use another fictional number | Yes: 011-0000 0456 |
+| 10 | `kurierkilat-bayar.test/alamat` is the game's exact link, so the "after" score could be memory of the link | Yes: `pos-tertahan.test/bayar` |
+| 7 | Close to `kerja_sambilan`; fine, but say so in the D4 limits | Yes: added to "Known limits" |
+| 12 | Consider "dalam masa 24 jam" to match the NSRC 997 advice (V7) | Yes: added to answer A |
+| 8 | Answer A matches V2-V3 | No change needed |
+| 1-6, 11 | No accuracy problems | No change needed |

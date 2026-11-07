@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Celik pitch</title>
+<!-- D6 slides v1 (Aimar). Offline: no fonts, scripts or images from the internet. Arrow keys / click to move.
+     Press P to print one slide per page (save as PDF). Numbers marked [TO FILL] come from results.md (D4). -->
+<style>
+  :root {
+    --ink: #1C1B3A; --ink-soft: #5E5C7A; --indigo: #2D2A6E; --indigo-soft: #E9E8F7; --kancil: #F4A340;
+    --kancil-soft: #FFF1DC; --paper: #FFF8EE; --danger: #E5484D; --danger-soft: #FDECEC; --safe: #30A46C; --safe-soft: #E6F6EE;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: #111; font-family: system-ui, "Segoe UI", Roboto, sans-serif; color: var(--ink); }
+  .deck { height: 100%; display: grid; place-items: center; }
+  .slide {
+    display: none; width: min(100vw, calc(100vh * 16 / 9)); aspect-ratio: 16 / 9; background: var(--paper);
+    padding: 5% 6%; position: relative; overflow: hidden; font-size: clamp(12px, 1.9vw, 30px);
+  }
+  .slide.on { display: flex; flex-direction: column; gap: .8em; }
+  .slide.dark { background: var(--indigo); color: var(--paper); }
+  h1 { font-size: 2.6em; margin: 0; line-height: 1.05; letter-spacing: -.01em; }
+  h2 { font-size: 1.7em; margin: 0 0 .2em; line-height: 1.1; }
+  p, li { line-height: 1.35; margin: 0; }
+  ul { margin: 0; padding-left: 1.1em; display: grid; gap: .45em; }
+  .kicker { color: var(--kancil); font-weight: 800; text-transform: uppercase; letter-spacing: .08em; font-size: .7em; }
+  .soft { color: var(--ink-soft); }
+  .dark .soft { color: #CFCDEB; }
+  .big { font-size: 3.4em; font-weight: 900; line-height: 1; color: var(--danger); }
+  .grid { display: grid; gap: .8em; min-height: 0; align-items: start; }
+  .g2 { grid-template-columns: 1fr 1fr; } .g3 { grid-template-columns: repeat(3, 1fr); } .g4 { grid-template-columns: repeat(4, 1fr); }
+  .card { background: #fff; border-radius: .7em; padding: .8em .9em; box-shadow: 0 .1em .5em rgba(28,27,58,.08); display: flex; flex-direction: column; gap: .35em; }
+  .card b { font-size: 1.05em; }
+  .card small { font-size: .62em; color: var(--ink-soft); margin-top: auto; }
+  .num { font-size: 1.9em; font-weight: 900; color: var(--indigo); line-height: 1; }
+  .tag { display: inline-block; padding: .15em .6em; border-radius: 99em; font-size: .7em; font-weight: 700; }
+  .t-safe { background: var(--safe-soft); color: #1d6b46; } .t-danger { background: var(--danger-soft); color: #a8262b; } .t-k { background: var(--kancil-soft); color: #8a5310; }
+  table { border-collapse: collapse; width: 100%; font-size: .8em; background: #fff; border-radius: .6em; overflow: hidden; }
+  th, td { padding: .45em .7em; text-align: left; border-bottom: 1px solid var(--indigo-soft); }
+  th { background: var(--indigo-soft); }
+  .art { width: 100%; height: 100%; object-fit: contain; }
+  .foot { position: absolute; bottom: 3%; left: 6%; right: 6%; display: flex; justify-content: space-between; font-size: .55em; color: var(--ink-soft); }
+  .dark .foot { color: #CFCDEB; }
+  .fill { background: var(--kancil-soft); border: 2px dashed var(--kancil); border-radius: .3em; padding: 0 .3em; }
+  @media print {
+    html, body { background: #fff; }
+    .slide { display: flex !important; flex-direction: column; width: 100vw; height: 100vh; page-break-after: always; font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+<div class="deck">
+
+  <section class="slide dark on">
+    <p class="kicker">Festival Idea Putrajaya 2026 · IPT · Edutainment &amp; Innovation</p>
+    <h1 style="font-size:4em">Celik</h1>
+    <p style="font-size:1.5em;font-weight:700;color:var(--kancil)">Bijak duit, kebal scam</p>
+    <p class="soft">A phone-sim game where students live one university semester of money decisions, with scams as the
+      high-stakes events.</p>
+    <p class="soft" style="margin-top:auto">Akmal · Wafi · Danish · Aimar</p>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">The problem</p>
+    <h2>Young Malaysians can't tell a real return from a fake one</h2>
+    <div class="grid g3">
+      <div class="card"><span class="num">RM1.46b</span><b>lost to fake investment scams in 2025</b><p class="soft">The costliest scam type, three years running</p><small>Home Ministry via The Sun [VERIFY]</small></div>
+      <div class="card"><span class="num">19-30</span><b>below the national average</b><p class="soft">in BNM's financial literacy index</p><small>BNM, Sasana Symposium 2025 [VERIFY]</small></div>
+      <div class="card"><span class="num">18.6%</span><b>of EPF members aged 18-30</b><p class="soft">have the basic savings for their age</p><small>MOF reply, Aug 2025 [VERIFY]</small></div>
+    </div>
+    <p><b>First-year students</b> manage PTPTN or scholarship money and a first bank account alone, and syndicates offer them RM1,000-2,000 to "rent" that account.</p>
+    <div class="foot"><span>Sources: research/problem-statement.md</span><span>2</span></div>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Our solution</p>
+    <h2>One semester, inside a pretend phone</h2>
+    <div class="grid g4">
+      <div class="card"><span class="tag t-k">Week 0</span><b>Split the budget</b><p class="soft">Needs, wants, savings; the emergency fund decides how tempting later offers feel</p></div>
+      <div class="card"><span class="tag t-k">Weeks 1-12</span><b>Live the money moments</b><p class="soft">First pay, hostel fees, a friend's unit trust, buy-now-pay-later</p></div>
+      <div class="card"><span class="tag t-danger">High stakes</span><b>Face real scam tactics</b><p class="soft">Job scams, mule accounts, fake crypto, fake police calls, all fictional brands</p></div>
+      <div class="card"><span class="tag t-safe">Every day</span><b>Keep it fresh</b><p class="soft">2-minute Cek Harian with a streak; Mod Kelas battles for orientation week</p></div>
+    </div>
+    <p><b>The Kalkulator</b> turns every promise into maths: 30% a week is millions of percent a year, so it can't be real.</p>
+    <div class="foot"><span>Offline · no data collected · Bahasa Melayu + English</span><span>3</span></div>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Why it's different</p>
+    <h2>Money skills and scam immunity, learned together</h2>
+    <table>
+      <tr><th></th><th>Typical awareness talk</th><th>Money apps / games</th><th>Celik</th></tr>
+      <tr><td>Student life (PTPTN, hostel, first pay)</td><td>Generic</td><td>Generic adult life</td><td><b>Built for it</b></td></tr>
+      <tr><td>Real vs fake investment, side by side</td><td>-</td><td>Rarely</td><td><b>Same decision twice, with the maths</b></td></tr>
+      <tr><td>Safe to fail, then retry</td><td>-</td><td>Sometimes</td><td><b>Every scenario</b></td></tr>
+      <tr><td>Comes back after day 1</td><td>One-off</td><td>Streaks</td><td><b>Daily booster + orientation battles</b></td></tr>
+      <tr><td>Works offline, collects nothing</td><td>-</td><td>Usually online</td><td><b>Yes</b></td></tr>
+    </table>
+    <div class="foot"><span>Benchmark: docs/SRS.md 2.2</span><span>4</span></div>
+  </section>
+
+  <section class="slide dark">
+    <p class="kicker">Live demo · 3 minutes · airplane mode</p>
+    <h2>Suapan · Kedai Kampus · Matlamat · Tonton · Report card</h2>
+    <div class="grid g2" style="align-items:center">
+      <ul>
+        <li>A "2% a day" post → Semak → <b style="color:var(--kancil)">Terlalu Lumayan</b></li>
+        <li>A phone on instalment → total cost shown first</li>
+        <li>One savings goal, tracked all semester</li>
+        <li>Animated explainers, no video files</li>
+        <li>Report card, class ranking, share card</li>
+      </ul>
+      <div class="card" style="background:var(--paper)"><img class="art" src="../../assets/explainers/kompaun-5.svg" alt="Compound growth: the value curve pulls away from the savings line"></div>
+    </div>
+    <div class="foot"><span>Demo script: docs/pitch/demo-script.md</span><span>5</span></div>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Does it work?</p>
+    <h2>Before and after one 25-minute session</h2>
+    <div class="grid g3">
+      <div class="card"><span class="num"><span class="fill">[n]</span></span><b>students tested</b><p class="soft">12 questions: 6 money, 6 scam-spotting</p></div>
+      <div class="card"><span class="num"><span class="fill">[x]</span> → <span class="fill">[y]</span></span><b>average score out of 12</b><p class="soft">Money <span class="fill">[a→b]</span> · Scam <span class="fill">[c→d]</span></p></div>
+      <div class="card"><span class="num" style="color:var(--kancil)">!</span><b>Honest limit</b><p class="soft"><span class="fill">[one limitation from results.md]</span></p></div>
+    </div>
+    <p class="soft">Game-based inoculation fades without boosters (Maertens et al.), which is why Cek Harian exists.</p>
+    <div class="foot"><span>research/validation/results.md</span><span>6</span></div>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Business model</p>
+    <h2>Free for every student, forever</h2>
+    <div class="grid g3">
+      <div class="card"><span class="tag t-safe">Main</span><b>University licence</b><p class="soft">Orientation-week package: Mod Kelas kit, seasonal content packs, facilitator training</p><small>Price per student: <span class="fill">[TO FILL]</span></small></div>
+      <div class="card"><span class="tag t-k">Pilot</span><b>Grant funding</b><p class="soft">2-3 universities, with the before/after test at each</p></div>
+      <div class="card"><span class="tag t-k">Backup</span><b>Sponsors</b><p class="soft">Splash-screen credit only: never a brand, character or recommendation in the game</p></div>
+    </div>
+    <p>Near-zero cost per extra student: a static offline web app, no servers, no data to protect.</p>
+    <div class="foot"><span>docs/business/model.md</span><span>7</span></div>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Roadmap</p>
+    <h2>From pilot to every orientation week</h2>
+    <div class="grid g3">
+      <div class="card"><span class="tag t-k">1 · Pilot</span><b>2-3 universities</b><p class="soft">Before/after test, feedback from HEP officers</p></div>
+      <div class="card"><span class="tag t-k">2 · Licence</span><b>Yearly per university</b><p class="soft">Seasonal packs: new scams, Raya, PTPTN season</p></div>
+      <div class="card"><span class="tag t-k">3 · Grow</span><b>Later semesters as "seasons"</b><p class="soft">Internship allowance, first EPF contribution; anonymous campus dashboard</p></div>
+    </div>
+    <div class="foot"><span>docs/SRS.md 1.2, 2.6</span><span>8</span></div>
+  </section>
+
+  <section class="slide dark">
+    <h1>Bijak duit,<br><span style="color:var(--kancil)">kebal scam.</span></h1>
+    <p class="soft" style="font-size:1.1em">Learn to grow your money, and spot who's trying to take it.</p>
+    <p style="margin-top:auto"><b>Our ask:</b> <span class="fill" style="color:var(--ink)">[TO FILL: e.g. a pilot partner university and grant support]</span></p>
+    <div class="foot"><span>Celik · offline · free for students</span><span>9</span></div>
+  </section>
+
+</div>
+<script>
+  const s = [...document.querySelectorAll('.slide')];
+  let i = 0;
+  const show = (n) => { i = Math.max(0, Math.min(s.length - 1, n)); s.forEach((el, k) => el.classList.toggle('on', k === i)); };
+  addEventListener('keydown', (e) => {
+    if (['ArrowRight', 'PageDown', ' '].includes(e.key)) show(i + 1);
+    if (['ArrowLeft', 'PageUp'].includes(e.key)) show(i - 1);
+    if (e.key === 'Home') show(0);
+    if (e.key === 'End') show(s.length - 1);
+    if (e.key === 'p' || e.key === 'P') print();
+  });
+  document.querySelector('.deck').addEventListener('click', (e) => show(i + (e.clientX > innerWidth / 2 ? 1 : -1)));
+</script>
+</body>
+</html>
