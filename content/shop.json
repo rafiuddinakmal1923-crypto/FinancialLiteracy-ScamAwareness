@@ -8,8 +8,73 @@
     "pot": "kehendak",
     "effect": "transport",
     "tip": {
-      "ms": "Jimat tambang setiap minggu.",
-      "en": "Saves on fares every week."
+      "ms": "Jimat tambang setiap minggu. Kos sekali bayar boleh pulang modal dalam beberapa bulan.",
+      "en": "Saves on fares every week. A one-off cost can pay for itself in a few months."
+    }
+  },
+  {
+    "id": "buku",
+    "name": {
+      "ms": "Buku rujukan subjek teras",
+      "en": "Core subject reference book"
+    },
+    "pot": "keperluan",
+    "effect": "none",
+    "tip": {
+      "ms": "Keperluan untuk belajar. Tanya senior dulu, mungkin ada yang jual terpakai lebih murah.",
+      "en": "A need for your studies. Ask seniors first; someone may sell a used copy for less."
+    }
+  },
+  {
+    "id": "snek",
+    "name": {
+      "ms": "Snek tengah malam untuk seminggu",
+      "en": "A week of midnight snacks"
+    },
+    "pot": "kehendak",
+    "effect": "none",
+    "tip": {
+      "ms": "Nampak kecil, tapi belanja kecil yang kerap cepat bertambah.",
+      "en": "Looks small, but small, frequent spending adds up fast."
+    }
+  },
+  {
+    "id": "earfon",
+    "name": {
+      "ms": "Earfon tanpa wayar",
+      "en": "Wireless earphones"
+    },
+    "pot": "kehendak",
+    "effect": "none",
+    "tip": {
+      "ms": "Kehendak, bukan keperluan. Kalau yang lama masih elok, fikir dua kali.",
+      "en": "A want, not a need. If your old pair still works, think twice."
+    }
+  },
+  {
+    "id": "konsert",
+    "name": {
+      "ms": "Tiket konsert hujung minggu",
+      "en": "Weekend concert ticket"
+    },
+    "pot": "kehendak",
+    "effect": "none",
+    "tip": {
+      "ms": "Seronok sekali sekala. Pastikan beli dari penjual rasmi dan bajet minggu ini masih cukup.",
+      "en": "Fun once in a while. Buy from an official seller and make sure this week's budget still works."
+    }
+  },
+  {
+    "id": "telefon",
+    "name": {
+      "ms": "Telefon baharu secara ansuran",
+      "en": "New phone on instalments"
+    },
+    "pot": "kehendak",
+    "effect": "instalment",
+    "tip": {
+      "ms": "Ansuran bulanan nampak ringan. Lihat jumlah penuh yang perlu dibayar dahulu.",
+      "en": "The monthly instalment looks light. Look at the full amount you will pay first."
     }
   }
 ]

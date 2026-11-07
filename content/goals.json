@@ -6,5 +6,29 @@
       "ms": "Dana kecemasan",
       "en": "Emergency fund"
     }
+  },
+  {
+    "id": "laptop",
+    "measure": "simpanan",
+    "name": {
+      "ms": "Simpan untuk laptop",
+      "en": "Save for a laptop"
+    }
+  },
+  {
+    "id": "raya",
+    "measure": "duit",
+    "name": {
+      "ms": "Tiket balik kampung untuk Raya",
+      "en": "Ticket home for Raya"
+    }
+  },
+  {
+    "id": "labur",
+    "measure": "labur",
+    "name": {
+      "ms": "Mula melabur",
+      "en": "Start investing"
+    }
   }
 ]
