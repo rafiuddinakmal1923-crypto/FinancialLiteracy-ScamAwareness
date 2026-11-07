@@ -3,13 +3,12 @@ import { seedGame } from './helpers';
 
 test.use({ viewport: { width: 412, height: 915 } });
 
-test('the finalist placeholder routes open from their home tiles', async ({ page }) => {
+test('the finalist routes open from their home tiles', async ({ page }) => {
   await seedGame(page);
   for (const [tile, screen] of [['Suapan', 'suapan'], ['Kedai', 'kedai'], ['Papan', 'papan']] as const) {
     await page.goto('/#/home');
     await page.getByRole('navigation', { name: 'Aplikasi' }).getByRole('button', { name: tile, exact: true }).click();
     await expect(page.locator(`[data-screen="${screen}"]`)).toBeVisible();
-    await expect(page.locator(`[data-screen="${screen}"]`)).toContainText('Akan datang');
   }
 });
 
