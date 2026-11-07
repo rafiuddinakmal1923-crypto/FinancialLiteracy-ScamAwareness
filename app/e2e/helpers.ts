@@ -9,6 +9,18 @@ export async function seedGame(page: Page): Promise<void> {
   await page.getByRole('button', { name: 'Seterusnya' }).click();
   await page.getByRole('button', { name: 'Masuk semester' }).click();
   await expect(page.getByText('Minggu 1 daripada 12')).toBeVisible();
+  // The save is debounced: a reload before it lands would lose the game.
+  await page.waitForFunction(() => new Promise<boolean>((resolve) => {
+    const open = indexedDB.open('celik');
+    open.onerror = () => resolve(false);
+    open.onsuccess = () => {
+      const db = open.result;
+      if (!db.objectStoreNames.contains('save')) { db.close(); resolve(false); return; }
+      const get = db.transaction('save', 'readonly').objectStore('save').get('main');
+      get.onerror = () => { db.close(); resolve(false); };
+      get.onsuccess = () => { db.close(); resolve(get.result?.data?.game?.onboarded === true); };
+    };
+  }));
 }
 
 /** From a seeded game: Sembang -> Kak Mira -> top-up path -> pays RM300 more (scammed, RM400 lost) -> consequence. */
