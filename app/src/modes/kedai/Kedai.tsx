@@ -55,7 +55,7 @@ export function Kedai() {
         </button>
         <div className="min-w-0 pr-16">
           <h1 className="font-display text-xl font-extrabold text-ink">{t('kedai.app')}</h1>
-          <p className="text-sm font-medium text-ink-soft">{t('kedai.duit', { amount: formatMoney(duit) })}</p>
+          <p className="text-base font-medium text-ink-soft">{t('kedai.duit', { amount: formatMoney(duit) })}</p>
         </div>
       </header>
       {items.length === 0 ? (

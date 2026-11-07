@@ -36,7 +36,7 @@ export function Suapan() {
         </button>
         <div className="min-w-0 pr-16">
           <h1 className="font-display text-xl font-extrabold text-ink">{t('suapan.app')}</h1>
-          <p className="text-sm font-medium text-ink-soft">{t('suapan.subtitle')}</p>
+          <p className="text-base font-medium text-ink-soft">{t('suapan.subtitle')}</p>
         </div>
       </header>
       {posts.length === 0 ? (

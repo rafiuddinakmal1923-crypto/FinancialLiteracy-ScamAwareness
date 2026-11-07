@@ -22,7 +22,7 @@ export function ItemCard({ item, duit, bought, onBuy }: { item: ShopItem; duit: 
     <article data-item={item.id} aria-labelledby={titleId} className="flex h-full flex-col rounded-2xl bg-white p-4 shadow-[0_2px_8px_rgba(28,27,58,.08)]">
       <div className="flex items-start justify-between gap-2">
         <h2 id={titleId} className="font-display text-base font-bold leading-snug text-ink">{name}</h2>
-        <span className="shrink-0 rounded-full bg-indigo-soft px-2.5 py-0.5 text-sm font-medium text-indigo">{t(POT_KEY[item.pot])}</span>
+        <span className="shrink-0 rounded-full bg-indigo-soft px-2.5 py-0.5 text-base font-medium text-indigo">{t(POT_KEY[item.pot])}</span>
       </div>
       <p className="mt-1 font-mono text-lg font-semibold text-ink">
         {terms ? t('kedai.perMonth', { monthly: formatMoney(terms.monthly), months: terms.months }) : price !== null ? formatMoney(price) : '-'}
@@ -43,7 +43,7 @@ export function ItemCard({ item, duit, bought, onBuy }: { item: ShopItem; duit: 
           >
             {terms ? t('kedai.buyInstalment') : t('kedai.buy')}
           </button>
-          {short && <p className="mt-1 text-center text-sm font-medium text-ink-soft">{t('kedai.short')}</p>}
+          {short && <p className="mt-1 text-center text-base font-medium text-ink-soft">{t('kedai.short')}</p>}
         </>
       )}
     </article>

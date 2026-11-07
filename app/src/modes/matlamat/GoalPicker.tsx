@@ -31,7 +31,7 @@ export function GoalPicker() {
             className="flex min-h-12 flex-col items-start justify-center rounded-xl bg-paper px-3 py-2 text-left ring-1 ring-inset ring-ink/20 active:scale-[.98]"
           >
             <span className="text-base font-semibold text-ink">{(lang === 'en' ? g.name.en : undefined) ?? g.name.ms}</span>
-            <span className="font-mono text-sm font-semibold text-ink-soft">{formatMoney(BALANCE.matlamat.targets[g.id])}</span>
+            <span className="font-mono text-base font-semibold text-ink-soft">{formatMoney(BALANCE.matlamat.targets[g.id])}</span>
           </button>
         ))}
       </div>

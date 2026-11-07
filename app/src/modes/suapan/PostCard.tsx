@@ -27,7 +27,7 @@ export function PostCard({ post, call, onCall, onReview }: {
         <Avatar name={post.author.name} size={44} />
         <div className="min-w-0 flex-1">
           <p id={titleId} className="truncate font-display text-base font-bold text-ink">{post.author.name}</p>
-          <p className="truncate text-sm font-medium text-ink-soft">
+          <p className="truncate text-base font-medium text-ink-soft">
             {post.author.handle}
             <span aria-hidden> · </span>
             {t('suapan.followers', { n: post.author.followers })}
@@ -45,7 +45,7 @@ export function PostCard({ post, call, onCall, onReview }: {
             <span className="font-semibold">{t(`suapan.call.${call}`)}</span>
             <VerdictTag verdict={judgePost(post, call).verdict} />
           </span>
-          <span className="shrink-0 text-sm font-semibold text-indigo">{t('suapan.review')}</span>
+          <span className="shrink-0 text-base font-semibold text-indigo">{t('suapan.review')}</span>
         </button>
       ) : onCall && (
         <div role="group" aria-label={t('suapan.callsLabel')} className="mt-3 grid grid-cols-3 gap-2">
