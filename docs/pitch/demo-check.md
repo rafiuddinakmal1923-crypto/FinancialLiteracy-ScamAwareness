@@ -6,8 +6,10 @@ deleted. Re-run this after every evening merge until the demo passes end to end.
 
 **Latest run (8 Nov, `main` `557e4a5` + `lane/wafi` `abea6f8`, from `#/demo/pitch`):** 8 of 9 checks pass. Home at week 5,
 Semak → 137,640.8% + Terlalu Lumayan, Kedai with RM1,120 Duit, Kos Sebenar RM120 / RM1,320, goal bar, report card.
-Only Tonton fails (still a placeholder). Wafi's W2-W4 are not in `main` yet, so on the live app Suapan has no
-Percaya/Semak/Lapor and Kedai is a placeholder until Akmal merges `lane/wafi`.
+Only Tonton fails (still a placeholder).
+
+**Re-run on the real `main` (`ec48ae6`, 8 Nov, after Akmal merged `lane/wafi`):** same result, 8 of 9 pass with no
+test branch; `npm run check` 767 tests green. Left for the demo: Tonton (W7), Papan Markah (W5), Kad Keputusan (W6).
 
 | Demo step | Result | Blocker |
 | --- | --- | --- |
