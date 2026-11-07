@@ -15,7 +15,7 @@
     "kind": "advice",
     "author": { "name": "Abang Faiz Kewangan", "handle": "@faiz_kewangan", "followers": "8.9K" },
     "text": {
-      "ms": "Tabung kecemasan tak perlu mula besar. RM5 seminggu pun jadi. Bila laptop rosak atau tambang balik kampung naik, korang tak perlu pinjam dengan sesiapa.",
+      "ms": "Tabung kecemasan tak perlu mula besar. RM5 seminggu pun jadi. Bila laptop rosak atau tambang balik kampung naik, korang tak perlu pinjam daripada sesiapa.",
       "en": "An emergency fund doesn't have to start big. Even RM5 a week works. When your laptop breaks or the fare home goes up, you won't need to borrow from anyone."
     },
     "concept": "kecemasan",
@@ -45,9 +45,7 @@
       "en": "I make 2% a day with a trading robot. DM to join!"
     },
     "concept": "risiko",
-    "semak": {
-      "kad": "risiko"
-    },
+    "semak": { "calc": "robot2h" },
     "debrief": {
       "ms": "Tiada lesen, tiada risiko disebut, pulangan mustahil. Semak lesen dahulu.",
       "en": "No licence, no mention of risk, an impossible return. Check the licence first."
@@ -64,7 +62,7 @@
     "tactics": ["greed", "payfirst"],
     "semak": { "kad": "semak" },
     "debrief": {
-      "ms": "Majikan sebenar bayar anda, bukan minta anda bayar dulu. Gaji RM300 sehari untuk tekan like memang terlalu lumayan.",
+      "ms": "Majikan sebenar bayar kamu, bukan minta kamu bayar dulu. Gaji RM300 sehari untuk tekan like memang terlalu lumayan.",
       "en": "Real employers pay you, they don't ask you to pay first. RM300 a day for pressing like is far too good to be true."
     }
   },
@@ -90,7 +88,7 @@
     "concept": "bajet",
     "semak": { "kad": "bajet" },
     "debrief": {
-      "ms": "Tiada cerita dari mana duit itu datang: biasiswa besar, bantuan keluarga, atau kerja? Jangan banding bajet anda dengan angka orang lain yang tak lengkap.",
+      "ms": "Tiada cerita dari mana duit itu datang: biasiswa besar, bantuan keluarga, atau kerja? Jangan banding bajet kamu dengan angka orang lain yang tak lengkap.",
       "en": "No word on where the money came from: a big scholarship, family help, or a job? Don't compare your budget with someone else's incomplete numbers."
     }
   },
@@ -105,7 +103,7 @@
     "tactics": ["greed", "secrecy"],
     "semak": { "kad": "semak" },
     "debrief": {
-      "ms": "Ini tawaran akaun keldai. Duit mangsa scam akan lalu akaun anda, dan anda yang disiasat. Jangan sesekali beri akaun, kad bank atau kata laluan kepada orang lain.",
+      "ms": "Ini tawaran akaun keldai. Duit mangsa scam akan lalu akaun kamu, dan kamu yang disiasat. Jangan sesekali beri akaun, kad bank atau kata laluan kepada orang lain.",
       "en": "This is a mule-account offer. Scam victims' money will pass through your account, and you are the one investigated. Never give your account, bank card or password to anyone."
     }
   },
@@ -146,7 +144,7 @@
     "tactics": ["greed", "urgency", "payfirst"],
     "semak": { "kad": "semak" },
     "debrief": {
-      "ms": "Anda tak masuk apa-apa cabutan, tapi tiba-tiba menang. Had masa 24 jam dan bayaran dulu ialah tanda scam. Hadiah sebenar tak minta anda bayar untuk menuntutnya.",
+      "ms": "Kamu tak masuk apa-apa cabutan, tapi tiba-tiba menang. Had masa 24 jam dan bayaran dulu ialah tanda scam. Hadiah sebenar tak minta kamu bayar untuk menuntutnya.",
       "en": "You never entered a draw, yet you suddenly won. A 24-hour limit and paying first are signs of a scam. Real prizes don't ask you to pay to claim them."
     }
   },
@@ -228,7 +226,7 @@
     "tactics": ["urgency", "payfirst"],
     "semak": { "kad": "semak" },
     "debrief": {
-      "ms": "Harga terlalu murah, desakan 'tinggal last 2', dan minta pindah wang dulu kepada orang yang anda tak kenal. Beli hanya dari penjual rasmi.",
+      "ms": "Harga terlalu murah, desakan 'tinggal last 2', dan minta kamu pindahkan wang dulu kepada orang yang kamu tak kenal. Beli hanya dari penjual rasmi.",
       "en": "A price that's too cheap, pressure with 'only 2 left', and a request to transfer money first to a stranger. Only buy from official sellers."
     }
   },
