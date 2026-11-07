@@ -68,15 +68,15 @@
       {
         "svg": "hutang-2",
         "caption": {
-          "ms": "Tawaran \"bayar nanti\": kadar rata contoh 10% setahun, bayar dalam 12 bulan.",
-          "en": "A \"pay later\" offer: an example flat rate of 10% a year, paid over 12 months."
+          "ms": "Tawaran \"bayar nanti\": kadar rata contoh 18% setahun, bayar dalam 12 bulan.",
+          "en": "A \"pay later\" offer: an example flat rate of 18% a year, paid over 12 months."
         }
       },
       {
         "svg": "hutang-3",
         "caption": {
-          "ms": "Ansuran RM91.67 sebulan. Jumlah dibayar: RM1,100. RM100 itu kos hutang (merah).",
-          "en": "RM91.67 a month. Total paid: RM1,100. The RM100 is the cost of the debt (red)."
+          "ms": "Ansuran RM98.33 sebulan. Jumlah dibayar: RM1,180. RM180 itu kos hutang (merah).",
+          "en": "RM98.33 a month. Total paid: RM1,180. The RM180 is the cost of the debt (red)."
         }
       },
       {
@@ -89,15 +89,15 @@
       {
         "svg": "hutang-5",
         "caption": {
-          "ms": "Sebab itu kadar sebenar setahun lebih kurang 18%, bukan 10%. Kos Sebenar dalam Kalkulator mengira ini.",
-          "en": "That is why the real yearly rate is about 18%, not 10%. Kos Sebenar in the Kalkulator works this out."
+          "ms": "Sebab itu kadar sebenar setahun lebih kurang 31.7%, bukan 18%. Kos Sebenar dalam Kalkulator mengira ini.",
+          "en": "That is why the real yearly rate is about 31.7%, not 18%. Kos Sebenar in the Kalkulator works this out."
         }
       },
       {
         "svg": "hutang-6",
         "caption": {
-          "ms": "Pilih 24 bulan: ansuran turun ke RM50, tetapi jumlah naik ke RM1,200.",
-          "en": "Choose 24 months: the instalment drops to RM50, but the total rises to RM1,200."
+          "ms": "Pilih 24 bulan: ansuran turun ke RM56.67, tetapi jumlah naik ke RM1,360.",
+          "en": "Choose 24 months: the instalment drops to RM56.67, but the total rises to RM1,360."
         }
       },
       {
@@ -110,8 +110,8 @@
       {
         "svg": "hutang-8",
         "caption": {
-          "ms": "Atau simpan dulu: RM91.67 sebulan selama 11 bulan, kemudian beli tunai tanpa kos tambahan.",
-          "en": "Or save first: RM91.67 a month for 11 months, then pay cash with no extra cost."
+          "ms": "Atau simpan dulu: RM98.33 sebulan selama 11 bulan, kemudian beli tunai tanpa kos tambahan.",
+          "en": "Or save first: RM98.33 a month for 11 months, then pay cash with no extra cost."
         }
       }
     ]

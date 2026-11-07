@@ -108,7 +108,7 @@ const kompaun = [
   })(),
 ];
 
-// --- Hutang: RM1,000 phone, flat 10% a year, 12 months ---
+// --- Hutang: RM1,000 phone, example flat 18% a year, 12 months (same as the BayarNanti preset, V12/V24) ---
 const hutang = [
   // 1. A RM1,000 phone.
   phone(110, 40) + tag(176, 60) + axis(),
@@ -116,7 +116,7 @@ const hutang = [
   phone(40, 50) + arrow(108, 98, 140, 98) + calendar(156, 60, 4, 3, 30, () => C.white),
   // 3. Each month an instalment; the total is RM1,000 + RM100 cost.
   calendar(30, 70, 4, 3, 26, () => C.indigo) + arrow(150, 108, 176, 108) +
-    rect(200, 172 - 120, 56, 120, C.indigo, 4) + rect(200, 172 - 132, 56, 16, C.danger, 4) + axis(),
+    rect(200, 172 - 120, 56, 120, C.indigo, 4) + rect(200, 172 - 142, 56, 26, C.danger, 4) + axis(),
   // 4. Flat rate: charged on the full RM1,000 each month while the balance shrinks.
   (() => {
     let s = axis();
@@ -126,22 +126,22 @@ const hutang = [
     }
     return s + line(24, 52, 276, 52, C.danger, 2, ' stroke-dasharray="6 5"');
   })(),
-  // 5. Stated 10% vs about 18% effective a year.
-  axis() + rect(70, 172 - 60, 60, 60, C.kancil, 6) + rect(170, 172 - 108, 60, 108, C.danger, 6) +
+  // 5. Stated 18% flat vs about 31.7% effective a year (bar heights to scale).
+  axis() + rect(70, 172 - 68, 60, 68, C.kancil, 6) + rect(170, 172 - 120, 60, 120, C.danger, 6) +
     circle(200, 40, 18, C.dangerSoft) + path('M200 28v14', 'none', C.danger, 4) + circle(200, 50, 2.6, C.danger),
   // 6. 24 months: smaller instalment, bigger total.
   (() => {
     const strip = (x, n) => { let s = ''; for (let i = 0; i < n; i++) s += rect(x + (i % 12) * 9, 18 + Math.floor(i / 12) * 9, 7, 7, C.indigo, 1.5); return s; };
     return axis() + strip(50, 12) + strip(170, 24) +
-      rect(60, 172 - 110, 70, 110, C.indigo, 4) + rect(60, 172 - 121, 70, 15, C.danger, 4) +
-      rect(180, 172 - 110, 70, 110, C.indigo, 4) + rect(180, 172 - 132, 70, 26, C.danger, 4);
+      rect(60, 172 - 110, 70, 110, C.indigo, 4) + rect(60, 172 - 130, 70, 24, C.danger, 4) +
+      rect(180, 172 - 110, 70, 110, C.indigo, 4) + rect(180, 172 - 150, 70, 44, C.danger, 4);
   })(),
   // 7. Late payment: extra charges can pile up.
   path('M70 40L112 112H28z', C.kancil) + path('M70 64v24', 'none', C.ink, 6) + circle(70, 100, 3.6, C.ink) +
     calendar(150, 60, 3, 2, 30, (i) => (i === 4 ? C.dangerSoft : C.indigo)) +
     path('M188 98l14 14M202 98l-14 14', 'none', C.danger, 4) +
     rect(160, 150, 30, 10, C.danger, 3) + rect(196, 142, 30, 18, C.danger, 3) + rect(232, 130, 30, 30, C.danger, 3) + axis(172),
-  // 8. Or save first: 11 months of RM91.67, then buy in cash with no extra cost.
+  // 8. Or save first: 11 months of RM98.33, then buy in cash with no extra cost.
   (() => {
     let s = jar(30, 70, 90, 92);
     for (let i = 0; i < 11; i++) s += coin(48 + (i % 4) * 18, 150 - Math.floor(i / 4) * 20, 8);
