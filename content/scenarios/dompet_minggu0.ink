@@ -38,7 +38,7 @@ Hafiz: Takpe, kau yang putuskan. Tapi cuba fikir kalau minggu depan ada apa-apa 
     -> END
 
 === dompet ===
-Kamu buka Dompet. Hafiz tunjuk tiga bahagian: Keperluan, Kehendak dan Simpanan.
+Kamu buka Dompet. Hafiz tunjuk tiga bahagian, iaitu Keperluan, Kehendak dan Simpanan.
 Hafiz: Mula dengan keperluan, pastikan makan dan tambang cukup untuk bulan ni. Lepas tu, asing sikit untuk simpanan walaupun kecil.
 Hafiz: Satu contoh yang ramai guna: 50% keperluan, 30% kehendak, 20% simpanan. Itu contoh sahaja, kau boleh ubah ikut keadaan kau.
 * [Aku letak sikit dalam Simpanan dulu sampai cukup RM300, baru fikir benda lain.] -> asing

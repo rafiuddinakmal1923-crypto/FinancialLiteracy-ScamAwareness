@@ -69,7 +69,7 @@ export function FakePage({ url, onDone }: { url: string; onDone(ok: boolean): vo
                   <div key={i}>
                     <dt className="text-base font-medium text-ink-soft">{loc(f.label, lang)}</dt>
                     <dd className="mt-1 rounded-xl border border-dashed border-ink-soft/50 bg-paper px-3 py-2.5 font-mono text-base font-semibold text-ink">
-                      {f.value}
+                      {typeof f.value === 'string' ? f.value : loc(f.value, lang)}
                     </dd>
                   </div>
                 ))}

@@ -7,6 +7,7 @@ import { StoryRunner } from '../../engine/story';
 import type { ChatMessage, Outcome, ScenarioMeta, UiDirective } from '../../engine/types';
 import { useGame, type CalcResume, type TrailStep } from '../../state/game';
 import { useSettings } from '../../state/settings';
+import { localScenario } from './localScenario';
 
 export type { ChatMessage };
 
@@ -44,8 +45,10 @@ export function typingDelay(r: number, reduced: boolean): number {
 }
 
 export function useScenario(id: string, opts?: ScenarioOptions): ScenarioView {
-  const compiled = scenarios[id];
-  if (!compiled) throw new Error(`Unknown scenario "${id}"`);
+  const lang = useSettings((s) => s.lang);
+  const base = scenarios[id];
+  if (!base) throw new Error(`Unknown scenario "${id}"`);
+  const compiled = localScenario(base, lang);
 
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [choices, setChoices] = useState<{ index: number; text: string }[] | null>(null);
@@ -110,7 +113,7 @@ export function useScenario(id: string, opts?: ScenarioOptions): ScenarioView {
         const end: { outcome: Outcome; missed?: number } = { outcome: step.outcome };
         if (step.missed !== undefined) end.missed = step.missed;
         setEnded(end);
-        useGame.getState().endScenario({ id, ...end, transcript: logRef.current });
+        useGame.getState().endScenario({ id, ...end, transcript: logRef.current, trail: trailRef.current });
         return;
       }
       if (step.text !== '') {
@@ -128,8 +131,8 @@ export function useScenario(id: string, opts?: ScenarioOptions): ScenarioView {
           push({ from: 'system', speaker: null, text: step.text, flags: step.flags });
         }
       }
-      // BankKu logs each Duit change under the scenario contact (S08).
-      if (step.effects.length) apply(step.effects, compiled.meta.contact || compiled.meta.number);
+      // BankKu logs each Duit change under the scenario contact (S08); the BM name is stored and shown translated.
+      if (step.effects.length) apply(step.effects, base.meta.contact || base.meta.number);
       if (step.ui && replayRef.current) {
         const rp = replayRef.current;
         const next = rp.trail[0];
@@ -156,11 +159,11 @@ export function useScenario(id: string, opts?: ScenarioOptions): ScenarioView {
         setPendingUi(null);
       }
     }
-  }, [id, push, compiled]);
+  }, [id, push, base]);
 
   useEffect(() => {
     const gen = ++genRef.current;
-    runnerRef.current = new StoryRunner(scenarios[id]);
+    runnerRef.current = new StoryRunner(compiled);
     choosingRef.current = false;
     pendingChoicesRef.current = null;
     uiResolverRef.current = null;
@@ -183,7 +186,7 @@ export function useScenario(id: string, opts?: ScenarioOptions): ScenarioView {
       uiResolverRef.current = null;
       resolve?.();
     };
-  }, [id, pump]);
+  }, [id, pump, compiled]);
 
   const choose = useCallback((i: number) => {
     const runner = runnerRef.current;

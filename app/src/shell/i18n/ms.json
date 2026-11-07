@@ -1,6 +1,25 @@
 {
-  "_todoVerify": ["akibat.mule.1.text", "akibat.mule.2.text", "akibat.mule.3.text", "akibat.mule.4.text", "moneyChain.trace", "legal.penalCode", "akibat.sewa_akaun.frozen.2.text", "akibat.frozen.1.text", "akibat.frozen.4.text", "akibat.untung.2.text", "akibat.kawan_labur.untung.2.text", "akibat.kawan_labur.untung.3.text", "akibat.bayar_nanti.untung.3.text", "akibat.hutang.3.text", "akibat.hutang.4.text", "legal.akpk", "legal.drill997.freeze", "akibat.panggilan_mahkamah.scammed.3.text", "akibat.panggilan_mahkamah.scammed.4.text"],
-
+  "_todoVerify": [
+    "akibat.mule.1.text",
+    "akibat.mule.2.text",
+    "akibat.mule.3.text",
+    "akibat.mule.4.text",
+    "moneyChain.trace",
+    "legal.penalCode",
+    "akibat.sewa_akaun.frozen.2.text",
+    "akibat.frozen.1.text",
+    "akibat.frozen.4.text",
+    "akibat.untung.2.text",
+    "akibat.kawan_labur.untung.2.text",
+    "akibat.kawan_labur.untung.3.text",
+    "akibat.bayar_nanti.untung.3.text",
+    "akibat.hutang.3.text",
+    "akibat.hutang.4.text",
+    "legal.akpk",
+    "legal.drill997.freeze",
+    "akibat.panggilan_mahkamah.scammed.3.text",
+    "akibat.panggilan_mahkamah.scammed.4.text"
+  ],
   "app.name": "Celik",
   "app.tagline": "Bijak duit, kebal scam",
   "common.comingSoon": "Akan datang",
@@ -13,10 +32,8 @@
   "lang.enName": "English",
   "watermark": "DEMO",
   "simulasi.banner": "SIMULASI - bukan laman/aplikasi sebenar",
-
   "splash.disclaimer": "Semua nama bank, syarikat dan individu dalam permainan ini adalah rekaan. Jangan sekali-kali beri maklumat bank sebenar kepada sesiapa.",
   "splash.start": "Mula",
-
   "onboarding.progress": "Langkah {n} daripada {total}",
   "onboarding.next": "Seterusnya",
   "onboarding.back": "Kembali",
@@ -43,7 +60,6 @@
   "onboarding.kancil.title": "Kenali Sang Kancil",
   "onboarding.kancil.body": "Saya Sang Kancil. Saya tahu semua helah. Jom kita belajar sebelum orang lain ambil kesempatan.",
   "onboarding.kancil.note": "Bila ada mesej yang mencurigakan, saya akan muncul dengan tip.",
-
   "status.day": "Isn, Minggu {week}",
   "status.tekanan": "Tekanan {level}, {value} daripada 100",
   "status.tekanan.low": "rendah",
@@ -51,7 +67,6 @@
   "status.tekanan.high": "tinggi",
   "status.balance": "Baki {amount}",
   "status.signal": "Isyarat penuh",
-
   "home.week": "Minggu {week} daripada {total}",
   "home.level": "Tahap",
   "home.xp": "{xp} / {next}",
@@ -92,9 +107,7 @@
   "mode.harian.done": "selesai",
   "mode.harian.streak": "{n} hari berturut",
   "mode.locked": "{mode}, akan datang",
-
   "imuniti.word": "Imuniti",
-
   "coach.title": "Tip Sang Kancil",
   "coach.ok": "Faham",
   "coach.more": "Baca tip",
@@ -103,7 +116,6 @@
   "tips.daily.2": "Jangan pinjamkan akaun bank kepada sesiapa. Akaun kamu boleh disekat dan kamu pula yang disiasat.",
   "tips.daily.3": "Desakan masa ialah helah lama. Berhenti, tarik nafas, semak dulu.",
   "tips.daily.4": "Duit dah hilang kena tipu? Telefon NSRC 997 secepat mungkin.",
-
   "side.tipTitle": "Tip Sang Kancil",
   "side.metersTitle": "Keadaan kamu",
   "side.tip.splash": "Celik ialah telefon olok-olok. Semua mesej, bank dan nombor di dalamnya rekaan belaka.",
@@ -122,7 +134,6 @@
   "rekod.Bersih": "Bersih",
   "rekod.Disiasat": "Disiasat",
   "rekod.Didakwa": "Didakwa",
-
   "settings.title": "Tetapan",
   "settings.language": "Bahasa",
   "settings.sound": "Bunyi",
@@ -140,12 +151,9 @@
   "settings.creditsBody": "Celik dibina oleh pelajar untuk pelajar. Semua jenama, nama, nombor dan pautan dalam permainan ini adalah rekaan.",
   "settings.sources": "Bantuan sebenar: NSRC 997 (Pusat Respons Scam Kebangsaan) dan portal Semak Mule.",
   "settings.version": "Versi {v}",
-
   "error.title": "Kancil tersadung",
   "error.body": "Skrin ini tak dapat dibuka. Kemajuan kamu masih selamat.",
   "error.restart": "Mula semula",
-
-
   "home.greeting": "Hai, {name}!",
   "settings.prefs": "Bunyi dan paparan",
   "kancil.alt.neutral": "Sang Kancil",
@@ -153,7 +161,6 @@
   "kancil.alt.worried": "Sang Kancil risau",
   "kancil.alt.proud": "Sang Kancil bangga",
   "kancil.alt.shocked": "Sang Kancil terkejut",
-
   "sembang.search": "Cari sembang",
   "sembang.listLabel": "Senarai sembang",
   "sembang.empty": "Belum ada sembang. Mesej baru akan muncul di sini.",
@@ -176,13 +183,11 @@
   "sembang.ui.openBank": "Buka BankKu",
   "side.tip.sembang": "Mesej daripada orang yang kamu tak kenal? Baca dulu, jangan terus percaya.",
   "side.tip.chat": "Jangan gopoh. Penipu mahu kamu bertindak sebelum sempat berfikir.",
-
   "sembang.ended": "Perbualan tamat",
   "sembang.seeNext": "Lihat apa jadi seterusnya",
   "sembang.done": "Selesai",
   "sembang.readOnly": "Perbualan ini sudah selesai.",
   "sembang.pending": "Lihat apa jadi",
-
   "family.job": "Penipuan kerja",
   "family.mule": "Akaun keldai",
   "family.investment": "Pelaburan palsu",
@@ -194,7 +199,6 @@
   "family.marketplace": "Jual beli dalam talian",
   "card.locked": "Kad belum dikumpul",
   "card.label": "Kad bendera merah: {tactic}, {family}",
-
   "akibat.lead": "Ini yang biasanya berlaku selepas perbualan seperti ini.",
   "akibat.changes": "Perubahan pada meter",
   "akibat.from": "daripada {from} kepada {to}",
@@ -444,7 +448,6 @@
   "akibat.hutang.5.icon": "check",
   "akibat.hutang.5.time": "Lain kali",
   "akibat.hutang.5.text": "Tanya jumlah keseluruhan yang dibayar, bukan hanya ansuran sebulan, dan bandingkan dengan harga tunai.",
-
   "bendera.title": "Kumpul bendera merah",
   "bendera.instruction": "Tekan {n} bendera merah dalam perbualan ini.",
   "bendera.progress": "Jumpa {found} daripada {n}",
@@ -459,7 +462,6 @@
   "bendera.revealed": "Ayat bergaris putus-putus ialah bendera yang terlepas. Ia tak beri kad.",
   "bendera.none": "Tiada bendera merah dalam perbualan ini.",
   "bendera.done": "Selesai",
-
   "debrief.title": "Kenali jerat sebelum terjerat",
   "debrief.titleLegit": "Tip Sang Kancil",
   "debrief.tactics": "Taktik yang digunakan:",
@@ -481,7 +483,6 @@
   "side.tip.akibat": "Kalau duit dah dipindahkan, telefon NSRC 997 secepat mungkin.",
   "side.tip.bendera": "Bendera merah ialah ayat yang menjanjikan terlalu banyak, mendesak, atau minta bayaran dulu.",
   "side.tip.debrief": "Kenali jerat sebelum terjerat. Setiap helah yang kamu cam, susah untuk menjerat kamu lagi.",
-
   "side.tip.dompet": "Kumpul dana kecemasan RM300 dulu, baru fikir pasal labur.",
   "side.tip.kalkulator": "Rujuk kadar sebagai contoh sahaja. Duit sebenar ikut produk sebenar.",
   "side.tip.minggu": "Setiap minggu ada kos. Semak Dompet sebelum teruskan.",
@@ -550,7 +551,6 @@
   "minggu.next": "Teruskan",
   "minggu.done.title": "Semester tamat",
   "minggu.done.body": "Kamu dah lalui 12 minggu. Kad laporan semester akan datang.",
-
   "side.tip.bankku": "Bank sebenar tak akan minta TAC kamu melalui chat atau telefon.",
   "sembang.ui.calc": "Kira dulu",
   "sembang.ui.openCalc": "Buka Kalkulator",
@@ -594,7 +594,6 @@
   "fakepage.close": "Tutup laman",
   "fakepage.notFound.title": "Laman ini tidak wujud (simulasi)",
   "fakepage.notFound.body": "Alamat ini tiada dalam permainan. Tutup laman untuk kembali ke perbualan.",
-
   "moneyChain.title": "Ke mana duit itu pergi",
   "moneyChain.list": "Rantaian duit: {nodes}",
   "moneyChain.mangsa": "Mangsa",
@@ -930,5 +929,11 @@
   "side.tip.latihan997": "Ini panggilan simulasi. Dalam kecemasan sebenar, telefon 997 sendiri.",
   "side.tip.latihanSemak": "Nombor di sini rekaan. Untuk semakan sebenar, guna butang ke Semak Mule.",
   "side.tip.latihanSenarai": "Satu tindakan kecil hari ini lebih baik daripada rancangan besar esok.",
-  "side.tip.kad": "Kad yang kamu kumpul tersimpan di sini. Ulang kaji bila-bila masa."
+  "side.tip.kad": "Kad yang kamu kumpul tersimpan di sini. Ulang kaji bila-bila masa.",
+  "kelas.team.default.0": "Pasukan Merah",
+  "kelas.team.default.1": "Pasukan Biru",
+  "kelas.team.default.2": "Pasukan Kuning",
+  "kelas.team.default.3": "Pasukan Hijau",
+  "kelas.team.default.4": "Pasukan Ungu",
+  "kelas.team.default.5": "Pasukan Jingga"
 }

@@ -7,11 +7,13 @@ import { CONCEPTS, TACTICS, type Tactic } from '../../engine/types';
 import { useT } from '../../shell/i18n';
 import { navigate } from '../../shell/router';
 import { useGame } from '../../state/game';
+import { useSettings } from '../../state/settings';
 import { CardTile } from '../../ui/CardTile';
 import { TACTIC_ART } from '../../ui/cardArt';
 import { firstSentence, KadTile } from '../../ui/KadTile';
 import { useTactic } from '../../ui/tactics';
 import { useLoc } from '../harian/shared';
+import { localScenario } from '../semester/localScenario';
 
 type Top = 'flags' | 'ilmu';
 
@@ -58,7 +60,8 @@ function Flags() {
   const t = useT();
   const tactic = useTactic();
   const owned = useGame((s) => s.cards);
-  const all = useMemo(() => deriveCards(Object.values(scenarios)), []);
+  const lang = useSettings((s) => s.lang);
+  const all = useMemo(() => deriveCards(Object.values(scenarios).map((s) => localScenario(s, lang))), [lang]);
   const have = (c: RedFlagCard) => owned.includes(c.id);
   const byTactic = (k: Tactic) => all.filter((c) => c.tactic === k);
   const first = TACTICS.find((k) => byTactic(k).some(have)) ?? TACTICS[0];
@@ -114,6 +117,7 @@ function Flags() {
 }
 
 function Ilmu() {
+  const t = useT();
   const loc = useLoc();
   const earned = useGame((s) => s.kadIlmu);
   return (
@@ -127,7 +131,7 @@ function Ilmu() {
             {has && info ? (
               <button
                 type="button" onClick={() => navigate(`/kad/ilmu/${code}`)}
-                aria-label={`Kad Ilmu: ${name}`}
+                aria-label={t('kad.ilmu.label', { name })}
                 className="flex w-full rounded-2xl text-left active:scale-[.97]"
               >
                 <KadTile concept={code} name={name} apa={firstSentence(loc(info.apa))} className="w-full" />

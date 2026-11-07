@@ -6,7 +6,7 @@ import { round2 } from '../engine/money';
 import { applyEffect, applyFlagFound, applyMoneyAnswer, applyOutcome, applySwipeAnswer, applyXp, initialMeters, isRight } from '../engine/meters';
 import { updateHarianStreak } from '../engine/harian';
 import { dayDiff } from '../engine/dates';
-import type { ChatMessage, Concept, Effect, EndedScenario, Family, LaburProduct, Meters, Outcome, ScenarioMeta, ScenarioResult, Tactic } from '../engine/types';
+import type { ChatMessage, TrailStep, Concept, Effect, EndedScenario, Family, LaburProduct, Meters, Outcome, ScenarioMeta, ScenarioResult, Tactic } from '../engine/types';
 
 /**
  * Fills meter fields an older save does not have (milestone 2 saves have no `celik` or `labur`) from the
@@ -68,7 +68,7 @@ function dropTx(log: TxEntry[], scenario: string): TxEntry[] {
 }
 
 /** One step of a chat so far, for replaying it after the Kalkulator: a reply chosen, or a ui pause resolved. */
-export type TrailStep = { c: number } | { u: boolean };
+export type { TrailStep };
 
 /**
  * Where a chat paused to open the Kalkulator ("Kira dulu"): the player's path so far, so the chat can be rebuilt
@@ -116,6 +116,8 @@ export interface GameData {
   lastEnded: EndedScenario | null;
   /** Read-only transcripts of finished scenarios, by id (ruling R8: no replays from Sembang). */
   transcripts: Record<string, ChatMessage[]>;
+  /** The path played in each finished scenario, so its read-only chat shows in the current language. */
+  trails: Record<string, TrailStep[]>;
   /** True while the week intro is showing; Labur moves are allowed only then (D22). */
   weekIntroOpen: boolean;
   /** BankKu transactions, oldest first (last TX_LOG_MAX). */
@@ -140,7 +142,7 @@ export interface GameActions {
   retryScenario(): void;
   foundFlag(tactic: Tactic, family: Family): void;
   /** Called when the active scenario's story ends: keeps the outcome and transcript for the post-chat screens. */
-  endScenario(e: { id: string; outcome: Outcome; missed?: number; transcript: ChatMessage[] }): void;
+  endScenario(e: { id: string; outcome: Outcome; missed?: number; transcript: ChatMessage[]; trail?: TrailStep[] }): void;
   /**
    * Flag hunt progress on lastEnded: marks a newly found tactic. Only a scam scenario awards its card, Imuniti
    * and XP (via foundFlag); legit and finance hunts just count (M6).
@@ -192,14 +194,14 @@ export function initialGame(): GameData {
   return {
     character: 'aina', name: 'Aina', onboarded: false, week: 0, meters: initialMeters(), budget: null,
     results: [], cards: [], badges: [], swipe: { best: 0, streak: 0, lastPlayed: null }, harian: initialHarian(), harianProgress: null, swipeXpDate: null,
-    actions: [], actionsPaid: [], drills: [], incomeTotal: 0, active: null, lastEnded: null, transcripts: {}, weekIntroOpen: false,
+    actions: [], actionsPaid: [], drills: [], incomeTotal: 0, active: null, lastEnded: null, transcripts: {}, trails: {}, weekIntroOpen: false,
     txLog: [], calcUsed: [], calcResume: null, calcFlagged: [], kadIlmu: [],
   };
 }
 
 const DATA_KEYS: (keyof GameData)[] = [
   'character', 'name', 'onboarded', 'week', 'meters', 'budget', 'results', 'cards', 'badges',
-  'swipe', 'harian', 'harianProgress', 'swipeXpDate', 'actions', 'actionsPaid', 'drills', 'incomeTotal', 'active', 'lastEnded', 'transcripts', 'weekIntroOpen', 'txLog',
+  'swipe', 'harian', 'harianProgress', 'swipeXpDate', 'actions', 'actionsPaid', 'drills', 'incomeTotal', 'active', 'lastEnded', 'transcripts', 'trails', 'weekIntroOpen', 'txLog',
   'calcUsed', 'calcResume', 'calcFlagged', 'kadIlmu',
 ];
 
@@ -255,16 +257,18 @@ export const useGame = create<GameData & GameActions>()((set, get) => ({
   },
 
   finishScenario: (meta, outcome, flagsFound, flagsTotal) => {
-    const { meters, results, lastEnded, transcripts } = get();
+    const { meters, results, lastEnded, transcripts, trails } = get();
     const result: ScenarioResult = {
       id: meta.id, outcome, right: isRight(outcome), flagsFound, flagsTotal,
       tactics: meta.tactics, family: meta.family, concepts: meta.concepts,
     };
     const transcript = lastEnded?.id === meta.id ? lastEnded.transcript : null;
+    const trail = lastEnded?.id === meta.id ? lastEnded.trail : undefined;
     set({
       meters: applyOutcome(meters, meta, outcome), results: [...results, result], active: null, lastEnded: null, calcResume: null,
       calcFlagged: get().calcFlagged.filter((k) => !k.startsWith(`${meta.id}:`)),
       transcripts: transcript ? { ...transcripts, [meta.id]: transcript } : transcripts,
+      trails: trail ? { ...trails, [meta.id]: trail } : trails,
     });
   },
 
@@ -274,11 +278,12 @@ export const useGame = create<GameData & GameActions>()((set, get) => ({
     set({ meters: active.snapshot, active: { ...active, hintUsed: false }, lastEnded: null, calcResume: null, txLog: dropTx(txLog, active.id) });
   },
 
-  endScenario: ({ id, outcome, missed, transcript }) => {
+  endScenario: ({ id, outcome, missed, transcript, trail }) => {
     const { active } = get();
     if (active?.id !== id) return;
     const e: EndedScenario = { id, outcome, transcript, found: [], huntDone: false };
     if (missed !== undefined) e.missed = missed;
+    if (trail) e.trail = trail;
     set({ lastEnded: e, calcResume: null });
   },
 

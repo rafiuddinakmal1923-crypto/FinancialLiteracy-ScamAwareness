@@ -129,7 +129,7 @@ export const SemesterFileSchema = z.object({ weeks: z.array(WeekDefSchema).lengt
 export const FakePageSchema = z.object({
   title: LocalizedSchema,
   body: LocalizedSchema,
-  fields: z.array(z.object({ label: LocalizedSchema, value: z.string().min(1) })),
+  fields: z.array(z.object({ label: LocalizedSchema, value: z.union([z.string().min(1), LocalizedSchema]) })),
   button: LocalizedSchema,
   asksTac: z.boolean(),
 });

@@ -25,7 +25,7 @@ Esoknya kamu jumpa Farhan di kaunter perpustakaan yang ramai orang. Dia belek bu
 
 === semak ===
 Farhan (Junior): Boleh, tak ada masalah. Kamu tanya la.
-Kamu tanya dalam group fakulti. Kak Wani, ketua tahun akhir, balas: "Farhan tu junior kita, budak baik."
+Kamu tanya dalam group fakulti. Kak Wani, ketua tahun akhir, balas, "Farhan tu junior kita, budak baik."
 * [Okay, jumpa di kaunter perpustakaan siang esok.]
     Farhan (Junior): Baik. Jumpa esok pukul 1.
     Kamu jumpa Farhan di kaunter perpustakaan yang ramai orang. Dia bayar RM50 tunai dan ambil buku. Kamu dah semak dulu dan pilih tempat yang selamat. # effect:duit:+50 # outcome:safe

@@ -3,12 +3,16 @@
 // BankKu never moves money itself: the scenario's effect tags do, after the ink reads `ui_ok`.
 import { useCallback, useRef, useState, type ReactNode } from 'react';
 import { ArrowDownLeft, ArrowLeft, ArrowUpRight, Lock, ShieldAlert, TriangleAlert } from 'lucide-react';
+import { scenarios } from 'virtual:celik-content';
 import { LABUR_PRODUCTS } from '../../engine/types';
 import { useT } from '../../shell/i18n';
 import { navigate } from '../../shell/router';
 import { useGame, type TxEntry } from '../../state/game';
+import { useSettings } from '../../state/settings';
 import { formatBank, formatSignedBank } from '../../ui/format';
 import { SimulasiBanner } from '../../ui/SimulasiBanner';
+import { localScenario } from './localScenario';
+import { loc, WEEKS } from './weeks';
 
 /** How many transactions the home screen lists. */
 const SHOWN_TX = 5;
@@ -182,10 +186,23 @@ function TransferFlow({ amount, to, onDone }: TransferProps) {
   );
 }
 
-/** A transaction label: an i18n key for income and Labur moves, otherwise the stored name or cost label. */
+/** Week-cost labels as stored in the log (BM), with their translations from content/semester.json. */
+const COST_LABELS = new Map(WEEKS.flatMap((w) => w.costs.map((c) => [c.label.ms, c.label] as const)));
+
+/**
+ * A transaction label in the current language: an i18n key for income and Labur moves, a scenario's contact for
+ * its money, or a week-cost label. Anything else is shown as stored.
+ */
 function useTxLabel() {
   const t = useT();
-  return (e: TxEntry) => (e.label.startsWith('bankku.') ? t(e.label) : e.label);
+  const lang = useSettings((s) => s.lang);
+  return (e: TxEntry) => {
+    if (e.label.startsWith('bankku.')) return t(e.label);
+    const s = e.scenario ? scenarios[e.scenario] : undefined;
+    if (s) return localScenario(s, lang).meta.contact || e.label;
+    const cost = COST_LABELS.get(e.label);
+    return cost ? loc(cost, lang) : e.label;
+  };
 }
 
 function Transactions() {

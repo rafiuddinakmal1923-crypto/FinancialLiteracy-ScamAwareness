@@ -1,12 +1,14 @@
 // Shared by the post-chat screens (Consequence, FlagHunt, Debrief): the ended scenario from the store, the
 // redirect when there is none, and the consequence template lookup.
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { scenarios } from 'virtual:celik-content';
 import { isRight } from '../../engine/meters';
 import type { CompiledScenario, EndedScenario, Outcome } from '../../engine/types';
 import type { Vars } from '../../shell/i18n';
 import { replaceRoute } from '../../shell/router';
 import { useGame } from '../../state/game';
+import { useSettings } from '../../state/settings';
+import { localScenario, localTranscript } from './localScenario';
 import type { TimelineStep, TimelineTone } from '../../ui/ConsequenceTimeline';
 
 export const MAX_STEPS = 5;
@@ -41,7 +43,13 @@ export function consequenceSteps(
  */
 export function useEnded(id: string): { ended: EndedScenario | null; scenario: CompiledScenario | null; leave(fn: () => void): void } {
   const ended = useGame((s) => (s.lastEnded?.id === id ? s.lastEnded : null));
-  const scenario = scenarios[id] ?? null;
+  const lang = useSettings((s) => s.lang);
+  const base = scenarios[id];
+  const scenario = base ? localScenario(base, lang) : null;
+  const transcript = useMemo(
+    () => (ended && scenario ? localTranscript(scenario, ended.trail, ended.transcript) : []),
+    [ended, scenario],
+  );
   const leaving = useRef(false);
   const ok = !!ended && !!scenario;
   useEffect(() => {
@@ -51,7 +59,8 @@ export function useEnded(id: string): { ended: EndedScenario | null; scenario: C
     leaving.current = true;
     fn();
   }, []);
-  return { ended: ok ? ended : null, scenario: ok ? scenario : null, leave };
+  const localEnded = useMemo(() => (ended ? { ...ended, transcript } : null), [ended, transcript]);
+  return { ended: ok ? localEnded : null, scenario: ok ? scenario : null, leave };
 }
 
 /**

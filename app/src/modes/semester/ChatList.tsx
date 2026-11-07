@@ -6,6 +6,8 @@ import { useT } from '../../shell/i18n';
 import { navigate } from '../../shell/router';
 import { useGame } from '../../state/game';
 import { Avatar } from '../../ui/Avatar';
+import { useSettings } from '../../state/settings';
+import { localScenario } from './localScenario';
 
 /** The scenario on offer until the week logic (Task 25) decides availability. */
 export const FIRST_SCENARIO = 'kerja_sambilan';
@@ -27,18 +29,19 @@ export function availableChats(week: number): string[] {
     .map(([id]) => id);
 }
 
-const previews = new Map<string, string>();
+/** Keyed by the scenario object: each language version has its own. */
+const previews = new WeakMap<CompiledScenario, string>();
 
 /** First non-empty line of a scenario, used as the "last message" preview. */
 export function previewOf(s: CompiledScenario): string {
-  const cached = previews.get(s.meta.id);
+  const cached = previews.get(s);
   if (cached !== undefined) return cached;
   const r = new StoryRunner(s);
   let text = '';
   for (let step = r.next(); step.kind === 'line'; step = r.next()) {
     if (step.text) { text = step.text; break; }
   }
-  previews.set(s.meta.id, text);
+  previews.set(s, text);
   return text;
 }
 
@@ -64,7 +67,9 @@ export function chatIds(results: { id: string }[], activeId: string | null, avai
  */
 function ChatRow({ id, unread, finished, pending }: { id: string; unread: boolean; finished: boolean; pending: string | null }) {
   const t = useT();
-  const { meta } = scenarios[id];
+  const lang = useSettings((s) => s.lang);
+  const scenario = localScenario(scenarios[id], lang);
+  const { meta } = scenario;
   // Unknown numbers show the number, never a made-up name.
   const name = meta.contact || meta.number || '';
   const sub = meta.contact && meta.number ? meta.number : null;
@@ -85,7 +90,7 @@ function ChatRow({ id, unread, finished, pending }: { id: string; unread: boolea
           </span>
           {sub && <span className="block truncate text-base text-ink-soft">{sub}</span>}
           <span className="mt-0.5 flex items-center gap-2">
-            <span className={`line-clamp-1 flex-1 text-base ${unread ? 'text-ink' : 'text-ink-soft'}`}>{previewOf(scenarios[id])}</span>
+            <span className={`line-clamp-1 flex-1 text-base ${unread ? 'text-ink' : 'text-ink-soft'}`}>{previewOf(scenario)}</span>
             {pending === id && (
               <span className="flex shrink-0 items-center gap-1 rounded-full bg-kancil-soft px-2.5 py-0.5 text-base font-semibold text-ink ring-1 ring-kancil/50">
                 <Hourglass aria-hidden size={16} strokeWidth={2} />

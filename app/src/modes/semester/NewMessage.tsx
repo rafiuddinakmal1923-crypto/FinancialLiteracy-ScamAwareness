@@ -6,14 +6,17 @@ import sembang from '../../../../assets/app-sembang.svg';
 import { BALANCE } from '../../engine/balance';
 import { useT } from '../../shell/i18n';
 import { replaceRoute } from '../../shell/router';
+import { useSettings } from '../../state/settings';
 import { Avatar } from '../../ui/Avatar';
 import { previewOf } from './ChatList';
+import { localScenario } from './localScenario';
 import { scenarioPath } from './loop';
 
 /** Route /semester/mesej/:id. Tapping the banner opens the chat at once; otherwise it opens after BALANCE.loop.bannerMs. */
 export function NewMessage({ params }: { params: Record<string, string> }) {
   const t = useT();
   const id = params.id ?? '';
+  const lang = useSettings((x) => x.lang);
   const s = scenarios[id];
   useEffect(() => {
     if (!s) { replaceRoute('/home'); return; }
@@ -21,7 +24,9 @@ export function NewMessage({ params }: { params: Record<string, string> }) {
     return () => clearTimeout(timer);
   }, [id, s]);
   if (!s) return null;
-  const name = s.meta.contact || s.meta.number || '';
+  const local = localScenario(s, lang);
+  const { meta } = local;
+  const name = meta.contact || meta.number || '';
   return (
     <div data-screen="mesej" className="songket flex min-h-0 flex-1 flex-col bg-indigo px-4 pt-6">
       <motion.button
@@ -36,7 +41,7 @@ export function NewMessage({ params }: { params: Record<string, string> }) {
         <span className="min-w-0 flex-1">
           <span className="block text-base text-ink-soft">{t('loop.banner.app')}</span>
           <span className="block truncate font-display text-base font-extrabold text-ink">{t('loop.banner.title', { name })}</span>
-          <span className="block truncate text-base text-ink-soft">{previewOf(s)}</span>
+          <span className="block truncate text-base text-ink-soft">{previewOf(local)}</span>
         </span>
         <Avatar name={name} size={40} />
       </motion.button>

@@ -59,7 +59,13 @@ export interface ScenarioResult {
   id: string; outcome: Outcome; right: boolean; flagsFound: number; flagsTotal: number;
   tactics: Tactic[]; family: Family; concepts: Concept[];
 }
-export interface CompiledScenario { meta: ScenarioMeta; json: string; flags: Flag[] }
+export interface CompiledScenario {
+  meta: ScenarioMeta; json: string; flags: Flag[];
+  /** English version (content/scenarios/en/<id>.ink), same structure as this one (scenarioParityProblems). */
+  en?: CompiledScenario;
+}
+/** One step of a chat so far: a reply chosen, or a ui pause resolved. Replaying these rebuilds the chat in any language. */
+export type TrailStep = { c: number } | { u: boolean };
 
 /** One bubble of a played scenario (kept as the transcript for the flag hunt and the read-only replay). */
 export interface ChatMessage {
@@ -76,5 +82,7 @@ export interface ChatMessage {
  */
 export interface EndedScenario {
   id: string; outcome: Outcome; missed?: number; transcript: ChatMessage[];
+  /** The path played; rebuilds the transcript in the current language. Missing in older saves. */
+  trail?: TrailStep[];
   found: Tactic[]; huntDone: boolean;
 }

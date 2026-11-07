@@ -18,7 +18,8 @@ vi.mock('virtual:celik-content', async () => {
     'Abang Zul: Jadi, nak join? # outcome:safe',
     '-> END',
   ].join('\n') + '\n';
-  return { scenarios: { kira2: compileScenario(ink, 'kira2.ink') }, calcPresets: [], pages: {} };
+  return {
+    semester: null, scenarios: { kira2: compileScenario(ink, 'kira2.ink') }, calcPresets: [], pages: {} };
 });
 
 const tick = (ms: number) => act(async () => { await vi.advanceTimersByTimeAsync(ms); });

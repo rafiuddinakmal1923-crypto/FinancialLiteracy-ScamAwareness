@@ -1,6 +1,6 @@
 import { Story } from 'inkjs';
 import { parseLineTags } from './tags';
-import type { CompiledScenario, Effect, Flag, Outcome, ScenarioMeta, UiDirective } from './types';
+import type { ChatMessage, CompiledScenario, Effect, Flag, Outcome, ScenarioMeta, TrailStep, UiDirective } from './types';
 
 export type StoryStep =
   | { kind: 'line'; speaker: string | null; text: string; flags: Flag[]; effects: Effect[]; ui?: UiDirective }
@@ -9,7 +9,7 @@ export type StoryStep =
 
 type LineStep = Extract<StoryStep, { kind: 'line' }>;
 
-function splitSpeaker(raw: string): { speaker: string | null; text: string } {
+export function splitSpeaker(raw: string): { speaker: string | null; text: string } {
   const i = raw.indexOf(': ');
   if (i > 0) {
     const prefix = raw.slice(0, i);
@@ -83,5 +83,37 @@ export class StoryRunner {
     }
     this.story.ChooseChoiceIndex(index);
     this.pending = undefined;
+  }
+}
+
+/**
+ * Rebuilds the chat a player saw from the path they took, without touching the meters. The trail holds choice
+ * indexes, so it replays in any language version of the scenario. Stops early if the trail runs out.
+ */
+export function replayTranscript(s: CompiledScenario, trail: readonly TrailStep[]): ChatMessage[] {
+  const runner = new StoryRunner(s);
+  const steps = [...trail];
+  const out: ChatMessage[] = [];
+  const push = (m: Omit<ChatMessage, 'id'>) => out.push({ ...m, id: out.length + 1 });
+  for (;;) {
+    const step = runner.next();
+    if (step.kind === 'end') return out;
+    if (step.kind === 'choices') {
+      const next = steps.shift();
+      if (!next || !('c' in next)) return out;
+      const choice = step.choices.find((c) => c.index === next.c);
+      if (!choice) return out;
+      runner.choose(choice.index);
+      push({ from: 'me', speaker: null, text: choice.text, flags: [] });
+      continue;
+    }
+    if (step.text !== '') {
+      push({ from: step.speaker !== null ? 'them' : 'system', speaker: step.speaker, text: step.text, flags: step.flags });
+    }
+    if (step.ui) {
+      const next = steps.shift();
+      if (!next || !('u' in next)) return out;
+      runner.setUiResult(next.u);
+    }
   }
 }

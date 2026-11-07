@@ -9,10 +9,10 @@
       "en": "The delivery address is incomplete. Pay the RM2.90 redelivery fee today, or the parcel goes back to the sender."
     },
     "fields": [
-      { "label": { "ms": "Nombor penjejakan", "en": "Tracking number" }, "value": "KK-0000-0042 (contoh)" },
-      { "label": { "ms": "Penerima", "en": "Recipient" }, "value": "Pelajar UCR (contoh)" },
+      { "label": { "ms": "Nombor penjejakan", "en": "Tracking number" }, "value": { "ms": "KK-0000-0042 (contoh)", "en": "KK-0000-0042 (example)" } },
+      { "label": { "ms": "Penerima", "en": "Recipient" }, "value": { "ms": "Pelajar UCR (contoh)", "en": "UCR student (example)" } },
       { "label": { "ms": "Caj penghantaran semula", "en": "Redelivery fee" }, "value": "RM2.90" },
-      { "label": { "ms": "Bayar melalui", "en": "Pay with" }, "value": "BankKu, akaun 0000-0000-0042 (contoh)" }
+      { "label": { "ms": "Bayar melalui", "en": "Pay with" }, "value": { "ms": "BankKu, akaun 0000-0000-0042 (contoh)", "en": "BankKu, account 0000-0000-0042 (example)" } }
     ],
     "button": { "ms": "Bayar RM2.90", "en": "Pay RM2.90" },
     "asksTac": true
@@ -29,7 +29,7 @@
     "fields": [
       { "label": { "ms": "Pelaburan minimum", "en": "Minimum investment" }, "value": "RM500" },
       { "label": { "ms": "Bayaran balik dijanji", "en": "Promised payout" }, "value": "RM1,000 dalam 7 hari" },
-      { "label": { "ms": "Kod rujukan", "en": "Referral code" }, "value": "NAGA-0042 (contoh)" }
+      { "label": { "ms": "Kod rujukan", "en": "Referral code" }, "value": { "ms": "NAGA-0042 (contoh)", "en": "NAGA-0042 (example)" } }
     ],
     "button": { "ms": "Daftar sekarang", "en": "Join now" },
     "asksTac": false

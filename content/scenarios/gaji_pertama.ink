@@ -20,7 +20,7 @@ Nurin: Eh, tapi sebelum tu, aku cuma nak tanya. Kau dah fikir duit tu nak buat a
 * [Kira dulu] -> kira
 
 === kira ===
-Kamu buka Kalkulator dan masukkan contoh: RM50 sebulan, dari umur 19 hingga 30. # ui:calc:masa:labur50
+Kamu buka Kalkulator dan masukkan contoh RM50 sebulan, dari umur 19 hingga 30. # ui:calc:masa:labur50
 // REVIEW: no figures from the preset are quoted here on purpose; the calculator shows them. Total put in is 132 x RM50 = RM6,600.
 Nurin: Nampak tak? Dalam contoh tu kau masukkan RM6,600 sendiri, tapi jumlah akhir lebih daripada tu. Itulah kesan masa, pulangan dikira atas pulangan sebelumnya.
 Nurin: Kadar dalam Kalkulator tu contoh je, kadar sebenar sentiasa berbeza dan tak dijamin.

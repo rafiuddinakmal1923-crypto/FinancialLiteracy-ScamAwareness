@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, ArrowLeftRight, Calculator, CircleCheck, Gauge, Link2 } from 'lucide-react';
 import { scenarios } from 'virtual:celik-content';
@@ -16,6 +16,7 @@ import { ReplyChip } from '../../ui/ReplyChip';
 import { TypingIndicator } from '../../ui/TypingIndicator';
 import { BankKu } from './BankKu';
 import { FakePage } from './FakePage';
+import { localScenario, localTranscript } from './localScenario';
 import { useScenario } from './useScenario';
 
 const SPRING = { type: 'spring', stiffness: 300, damping: 28 } as const;
@@ -266,9 +267,12 @@ function Thread({ id }: { id: string }) {
 /** Ruling R8: a finished scenario opens read-only, from the stored transcript. */
 function ReadOnlyThread({ id }: { id: string }) {
   const t = useT();
-  const { meta } = scenarios[id];
+  const lang = useSettings((s) => s.lang);
+  const scenario = localScenario(scenarios[id], lang);
+  const { meta } = scenario;
   const transcript = useGame((s) => s.transcripts[id]);
-  const messages = transcript ?? [];
+  const trail = useGame((s) => s.trails?.[id]);
+  const messages = useMemo(() => localTranscript(scenario, trail, transcript ?? []), [scenario, trail, transcript]);
   const name = meta.contact || meta.number || '';
   const senderOf = (m: ChatMessage) => (m.from === 'me' ? t('sembang.you') : m.speaker ?? name);
   return (

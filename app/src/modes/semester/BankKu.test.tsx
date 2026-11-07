@@ -30,6 +30,7 @@ vi.mock('virtual:celik-content', async () => {
     asksTac,
   });
   return {
+    semester: null,
     scenarios: {
       pindah: make('pindah', ['VAR ui_ok = false', 'Abang Zul: Tolong pindah RM500, upah RM50. # flag:greed:upah RM50 # ui:transfer:500', ...branch]),
       pautan: make('pautan', ['VAR ui_ok = false', 'Abang Zul: Bayar sini, ada hadiah. # flag:greed:ada hadiah # ui:link:kurierkilat-bayar.test/alamat', ...branch]),

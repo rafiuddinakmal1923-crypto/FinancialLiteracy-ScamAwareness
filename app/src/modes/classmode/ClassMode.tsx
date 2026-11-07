@@ -4,8 +4,7 @@ import { Minus, Plus, Presentation, Trophy, X } from 'lucide-react';
 import { cards, moneyCards } from 'virtual:celik-content';
 import {
   classReducer, currentCard, deckFor, initialClassState, ranked, totalRounds, winners,
-  type CardSet,
-} from '../../engine/classmode';
+  type CardSet, TEAM_DEFAULTS } from '../../engine/classmode';
 import { BALANCE } from '../../engine/balance';
 import { useT } from '../../shell/i18n';
 import { navigate } from '../../shell/router';
@@ -57,7 +56,9 @@ export function ClassMode(_props: { params: Record<string, string> }) {
   const t = useT();
   const loc = useLoc();
   const tactic = useTactic();
-  const [s, dispatch] = useReducer(classReducer, undefined, initialClassState);
+  const [state, dispatch] = useReducer(classReducer, undefined, initialClassState);
+  // A team still on its default name shows it in the current language; a name the class typed stays as typed.
+  const s = { ...state, teams: state.teams.map((x, i) => (x.name === TEAM_DEFAULTS[i]?.name ? { ...x, name: t(`kelas.team.default.${i}`) } : x)) };
   const [leaving, setLeaving] = useState(false);
   const card = currentCard(s);
   const total = totalRounds(s);

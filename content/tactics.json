@@ -1,51 +1,135 @@
 [
   {
     "code": "greed",
-    "name": { "ms": "Terlalu Lumayan" },
-    "does": { "ms": "Menjanjikan duit mudah yang terlalu besar." },
-    "cue": { "ms": "RM300 sehari, kerja dari rumah" },
-    "tip": { "ms": "Kalau tawaran nampak terlalu bagus, berhenti sekejap dan tanya: kenapa mereka beri sebanyak ini? Kerja sebenar jarang bayar setinggi itu untuk kerja semudah itu." }
+    "name": {
+      "ms": "Terlalu Lumayan",
+      "en": "Too Good To Be True"
+    },
+    "does": {
+      "ms": "Menjanjikan duit mudah yang terlalu besar.",
+      "en": "Promises easy money that is far too big."
+    },
+    "cue": {
+      "ms": "RM300 sehari, kerja dari rumah",
+      "en": "RM300 a day, work from home"
+    },
+    "tip": {
+      "ms": "Kalau tawaran nampak terlalu bagus, berhenti sekejap dan tanya: kenapa mereka beri sebanyak ini? Kerja sebenar jarang bayar setinggi itu untuk kerja semudah itu.",
+      "en": "If an offer looks too good, stop for a moment and ask: why would they pay this much? Real jobs rarely pay that high for work that easy."
+    }
   },
   {
     "code": "urgency",
-    "name": { "ms": "Desakan Masa" },
-    "does": { "ms": "Mendesak kamu membuat keputusan cepat." },
-    "cue": { "ms": "Slot tinggal 3 hari ni!" },
-    "tip": { "ms": "Penipu tak mahu kamu berfikir lama. Ambil masa, tanya orang yang kamu percaya, dan tawaran yang betul akan masih ada." }
+    "name": {
+      "ms": "Desakan Masa",
+      "en": "Time Pressure"
+    },
+    "does": {
+      "ms": "Mendesak kamu membuat keputusan cepat.",
+      "en": "Pushes you to decide fast."
+    },
+    "cue": {
+      "ms": "Slot tinggal 3 hari ni!",
+      "en": "Only 3 slots left today!"
+    },
+    "tip": {
+      "ms": "Penipu tak mahu kamu berfikir lama. Ambil masa, tanya orang yang kamu percaya, dan tawaran yang betul akan masih ada.",
+      "en": "Scammers don't want you thinking for long. Take your time, ask someone you trust, and a real offer will still be there."
+    }
   },
   {
     "code": "authority",
-    "name": { "ms": "Menyamar Pihak Berkuasa" },
-    "does": { "ms": "Berpura-pura jadi polis, mahkamah atau bank." },
-    "cue": { "ms": "Saya Inspektor dari ibu pejabat polis" },
-    "tip": { "ms": "Pihak berkuasa sebenar tak urus kes melalui telefon atau minta kamu pindah duit. Letak telefon, dan hubungi sendiri nombor rasmi mereka." }
+    "name": {
+      "ms": "Menyamar Pihak Berkuasa",
+      "en": "Fake Authority"
+    },
+    "does": {
+      "ms": "Berpura-pura jadi polis, mahkamah atau bank.",
+      "en": "Pretends to be the police, a court or a bank."
+    },
+    "cue": {
+      "ms": "Saya Inspektor dari ibu pejabat polis",
+      "en": "I'm an Inspector from police headquarters"
+    },
+    "tip": {
+      "ms": "Pihak berkuasa sebenar tak urus kes melalui telefon atau minta kamu pindah duit. Letak telefon, dan hubungi sendiri nombor rasmi mereka.",
+      "en": "Real authorities don't handle cases over the phone or ask you to move money. Hang up, and call their official number yourself."
+    }
   },
   {
     "code": "fear",
-    "name": { "ms": "Ugutan" },
-    "does": { "ms": "Mengugut tangkapan, denda atau akaun disekat." },
-    "cue": { "ms": "Akaun anda akan dibekukan" },
-    "tip": { "ms": "Rasa takut itu normal, ia memang cara penipu bekerja. Tarik nafas, putuskan panggilan, dan semak sendiri dengan pihak yang sebenar." }
+    "name": {
+      "ms": "Ugutan",
+      "en": "Threats"
+    },
+    "does": {
+      "ms": "Mengugut tangkapan, denda atau akaun disekat.",
+      "en": "Threatens arrest, fines or a blocked account."
+    },
+    "cue": {
+      "ms": "Akaun anda akan dibekukan",
+      "en": "Your account will be frozen"
+    },
+    "tip": {
+      "ms": "Rasa takut itu normal, ia memang cara penipu bekerja. Tarik nafas, putuskan panggilan, dan semak sendiri dengan pihak yang sebenar.",
+      "en": "Feeling scared is normal; that is exactly how scammers work. Breathe, end the call, and check with the real organisation yourself."
+    }
   },
   {
     "code": "secrecy",
-    "name": { "ms": "Rahsiakan" },
-    "does": { "ms": "Mengasingkan mangsa daripada nasihat orang lain." },
-    "cue": { "ms": "Jangan beritahu sesiapa" },
-    "tip": { "ms": "Urusan yang betul tak perlu dirahsiakan. Beritahu keluarga atau kawan; mereka sering nampak apa yang kita terlepas." }
+    "name": {
+      "ms": "Rahsiakan",
+      "en": "Keep It Secret"
+    },
+    "does": {
+      "ms": "Mengasingkan mangsa daripada nasihat orang lain.",
+      "en": "Cuts the victim off from other people's advice."
+    },
+    "cue": {
+      "ms": "Jangan beritahu sesiapa",
+      "en": "Don't tell anyone"
+    },
+    "tip": {
+      "ms": "Urusan yang betul tak perlu dirahsiakan. Beritahu keluarga atau kawan; mereka sering nampak apa yang kita terlepas.",
+      "en": "Proper dealings don't need to be secret. Tell family or friends; they often see what we miss."
+    }
   },
   {
     "code": "social",
-    "name": { "ms": "Bukti Palsu" },
-    "does": { "ms": "Menggunakan testimoni dan kawan palsu untuk meyakinkan." },
-    "cue": { "ms": "500 pelajar dah join!" },
-    "tip": { "ms": "Gambar, komen dan angka boleh dipalsukan dengan mudah. Cari maklumat daripada sumber bebas, bukan dari mesej yang menjual kepada kamu." }
+    "name": {
+      "ms": "Bukti Palsu",
+      "en": "Fake Proof"
+    },
+    "does": {
+      "ms": "Menggunakan testimoni dan kawan palsu untuk meyakinkan.",
+      "en": "Uses fake testimonials and friends to convince you."
+    },
+    "cue": {
+      "ms": "500 pelajar dah join!",
+      "en": "500 students have joined!"
+    },
+    "tip": {
+      "ms": "Gambar, komen dan angka boleh dipalsukan dengan mudah. Cari maklumat daripada sumber bebas, bukan dari mesej yang menjual kepada kamu.",
+      "en": "Pictures, comments and numbers are easy to fake. Look for information from independent sources, not from the message selling to you."
+    }
   },
   {
     "code": "payfirst",
-    "name": { "ms": "Bayar Dulu" },
-    "does": { "ms": "Meminta yuran, top-up atau akses akaun dahulu." },
-    "cue": { "ms": "Top-up RM100 untuk tugasan 2" },
-    "tip": { "ms": "Kerja dan hadiah yang sebenar tak minta kamu bayar dulu. Bila ada permintaan bayaran sebelum apa-apa, itulah tanda untuk berhenti." }
+    "name": {
+      "ms": "Bayar Dulu",
+      "en": "Pay First"
+    },
+    "does": {
+      "ms": "Meminta yuran, top-up atau akses akaun dahulu.",
+      "en": "Asks for a fee, top-up or account access up front."
+    },
+    "cue": {
+      "ms": "Top-up RM100 untuk tugasan 2",
+      "en": "Top up RM100 for task 2"
+    },
+    "tip": {
+      "ms": "Kerja dan hadiah yang sebenar tak minta kamu bayar dulu. Bila ada permintaan bayaran sebelum apa-apa, itulah tanda untuk berhenti.",
+      "en": "Real jobs and prizes don't ask you to pay first. When someone wants payment before anything else, that is your sign to stop."
+    }
   }
 ]

@@ -18,9 +18,10 @@ import { Kancil } from '../../ui/Kancil';
 import { MeterBar } from '../../ui/MeterBar';
 import { ReplyChip } from '../../ui/ReplyChip';
 import { TypingIndicator } from '../../ui/TypingIndicator';
+import { localScenario } from './localScenario';
 import { useScenario, type ScenarioOptions } from './useScenario';
 
-const HANG_UP = /letak/i;
+const HANG_UP = /letak|hang up/i;
 const SPRING = { type: 'spring', stiffness: 300, damping: 28 } as const;
 const INSTANT = () => Promise.resolve();
 
@@ -55,7 +56,8 @@ function RingButton({ tone, label, onClick, children }: { tone: 'safe' | 'danger
 function Ringing({ id, onAccept, onDecline, missed }: { id: string; onAccept(): void; onDecline(): void; missed: boolean }) {
   const t = useT();
   const reduced = useSettings((s) => s.reducedMotion);
-  const { meta } = scenarios[id];
+  const lang = useSettings((s) => s.lang);
+  const { meta } = localScenario(scenarios[id], lang);
   const name = meta.contact || meta.number || t('call.unknown');
   return (
     <div data-screen="panggilan" data-phase="ringing" className="songket flex min-h-0 flex-1 flex-col items-center overflow-y-auto bg-ink px-6 pb-10 pt-8 text-paper">
@@ -143,7 +145,8 @@ function InCall({ id, autoHangUp, options }: { id: string; autoHangUp: boolean; 
   }, [messages.length, typing, choices, showEnd, hintText, reduced]);
 
   // Tekanan pulses when the other side's latest line holds a fear flag phrase of this scenario.
-  const fearPhrases = useMemo(() => scenarios[id].flags.filter((f) => f.tactic === 'fear').map((f) => f.phrase), [id]);
+  const lang = useSettings((s) => s.lang);
+  const fearPhrases = useMemo(() => localScenario(scenarios[id], lang).flags.filter((f) => f.tactic === 'fear').map((f) => f.phrase), [id, lang]);
   const lastThem = [...messages].reverse().find((m) => m.from === 'them');
   const fear = !!lastThem && fearPhrases.some((p) => lastThem.text.includes(p));
   const pulseKey = fear && lastThem ? lastThem.id : 0;

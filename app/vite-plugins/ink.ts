@@ -5,7 +5,7 @@
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, relative, resolve, sep } from 'node:path';
 import type { Plugin } from 'vite';
-import { compileScenario } from '../src/engine/compile';
+import { compileScenario, scenarioParityProblems } from '../src/engine/compile';
 import { CONTENT_FILES, ContentError, parseContent } from '../src/engine/schemas';
 import type { CalcPreset } from '../src/engine/schemas';
 import type { CompiledScenario } from '../src/engine/types';
@@ -218,11 +218,26 @@ export function loadCelikContent(contentDir: string): LoadResult {
 
   const scenarios: Record<string, CompiledScenario> = {};
   const scenarioDir = join(dir, 'scenarios');
-  for (const f of files.filter((p) => p.startsWith(scenarioDir + sep) && p.endsWith('.ink'))) {
+  const enDir = join(scenarioDir, 'en');
+  const isInk = (p: string) => p.startsWith(scenarioDir + sep) && p.endsWith('.ink');
+  const isEn = (p: string) => p.startsWith(enDir + sep);
+  for (const f of files.filter((p) => isInk(p) && !isEn(p))) {
     try {
       const c = compileScenario(readText(f), rel(f));
       if (scenarios[c.meta.id]) problems.push(`${rel(f)}: duplicate scenario id "${c.meta.id}"`);
       scenarios[c.meta.id] = c;
+    } catch (e) {
+      problems.push(e instanceof ContentError ? e.message : `${rel(f)}: ${message(e)}`);
+    }
+  }
+  // English versions: scenarios/en/<id>.ink, the same game as the BM file in other words.
+  for (const f of files.filter((p) => isInk(p) && isEn(p))) {
+    try {
+      const c = compileScenario(readText(f), rel(f));
+      const base = scenarios[c.meta.id];
+      if (!base) { problems.push(`${rel(f)}: no BM scenario "${c.meta.id}" for this English version`); continue; }
+      problems.push(...scenarioParityProblems(base, c, rel(f)));
+      base.en = c;
     } catch (e) {
       problems.push(e instanceof ContentError ? e.message : `${rel(f)}: ${message(e)}`);
     }
@@ -242,7 +257,7 @@ export function loadCelikContent(contentDir: string): LoadResult {
     }
   }
 
-  problems.push(...calcPresetProblems(files.filter((p) => p.startsWith(scenarioDir + sep) && p.endsWith('.ink')).map((f) => ({ file: rel(f), text: readText(f) })), data.calcPresets as CalcPreset[] | null));
+  problems.push(...calcPresetProblems(files.filter(isInk).map((f) => ({ file: rel(f), text: readText(f) })), data.calcPresets as CalcPreset[] | null));
 
   return { data, files, problems };
 }

@@ -2,6 +2,7 @@
 import { Compiler } from 'inkjs/compiler/Compiler';
 import { Story } from 'inkjs';
 import { ContentError } from './schemas';
+import { splitSpeaker } from './story';
 import { parseLineTags, parseMeta, TagError } from './tags';
 import {
   OUTCOMES_BY_TYPE, rightOutcomes, wrongOutcomes, type CompiledScenario, type Flag, type Outcome, type Tactic,
@@ -17,6 +18,8 @@ export interface WalkLine { text: string; tags: string[] }
 export interface WalkPath { choices: number[]; lines: WalkLine[] }
 
 const MAX_DEPTH = 50;
+/** The longest speaker name; a longer prefix before ": " is a narration line split by mistake. */
+const MAX_SPEAKER = 30;
 
 function stripBom(s: string): string {
   return s.charCodeAt(0) === 0xfeff ? s.slice(1) : s;
@@ -132,6 +135,16 @@ export function compileScenario(source: string, file: string): CompiledScenario 
     throw e;
   }
 
+  // A narration line with ": " would be split into a speaker and a bubble (see splitSpeaker).
+  for (const path of paths) {
+    for (const line of path.lines) {
+      const { speaker } = splitSpeaker(line.text);
+      if (speaker !== null && speaker.length > MAX_SPEAKER) {
+        throw new ContentError(`${file}: narration must not contain ": " ("${line.text}"); it would show as a speaker`);
+      }
+    }
+  }
+
   const flags: Flag[] = [];
   const seen = new Set<string>();
   const outcomes = new Set<Outcome>();
@@ -189,4 +202,60 @@ export function compileScenario(source: string, file: string): CompiledScenario 
   }
 
   return { meta, json, flags };
+}
+
+/** False for the global tags on the first line: those are compared as metadata, and hint and apa_patut are translated. */
+const isLineTag = (tag: string) => !/^s*(id|type|family|tactics|concepts|contact|number|hint|apa_patut)s*:|^s*uis*:s*(call|chat)s*$/.test(tag);
+
+/** A tag with the translated part removed: a flag keeps its tactic only, the rest must match exactly. */
+function neutralTag(tag: string): string {
+  const t = tag.trim();
+  const m = /^flag\s*:\s*([^:]+):/.exec(t);
+  return m ? `flag:${m[1].trim()}` : t;
+}
+
+/**
+ * Checks that an English scenario is the same game as its BM original: same metadata, same paths through it, and
+ * on every path the same lines with the same tags (the same effects, outcomes and flag tactics). Only the words
+ * may differ. Saved games store choice indexes, so a mismatch here would break replay and scoring.
+ */
+export function scenarioParityProblems(ms: CompiledScenario, en: CompiledScenario, file: string): string[] {
+  const out: string[] = [];
+  const a = ms.meta;
+  const b = en.meta;
+  for (const k of ['type', 'family', 'ui', 'number'] as const) {
+    if (a[k] !== b[k]) out.push(`${file}: ${k} is "${b[k]}", BM has "${a[k]}"`);
+  }
+  for (const k of ['tactics', 'concepts'] as const) {
+    if (a[k].join() !== b[k].join()) out.push(`${file}: ${k} differ from the BM file`);
+  }
+  if (a.apaPatut.length !== b.apaPatut.length) out.push(`${file}: ${b.apaPatut.length} apa_patut lines, BM has ${a.apaPatut.length}`);
+  if (!!a.hint !== !!b.hint) out.push(`${file}: hint is on one version only`);
+  if (a.contact && !b.contact) out.push(`${file}: contact is missing`);
+
+  const flagKeys = (s: CompiledScenario) => s.flags.map((f) => f.tactic).join();
+  if (flagKeys(ms) !== flagKeys(en)) out.push(`${file}: flags differ, [${flagKeys(en)}] vs BM [${flagKeys(ms)}]`);
+
+  const pa = walkScenario(ms.json);
+  const pb = walkScenario(en.json);
+  if (pa.length !== pb.length) {
+    out.push(`${file}: ${pb.length} paths, BM has ${pa.length}`);
+    return out;
+  }
+  pa.forEach((p, i) => {
+    const q = pb[i];
+    const route = `choices [${p.choices.join(',')}]`;
+    if (p.choices.join() !== q.choices.join()) { out.push(`${file}: path ${i} takes other choices than BM ${route}`); return; }
+    if (p.lines.length !== q.lines.length) { out.push(`${file}: ${route} has ${q.lines.length} lines, BM has ${p.lines.length}`); return; }
+    p.lines.forEach((l, j) => {
+      const m = q.lines[j];
+      const ta = l.tags.filter(isLineTag).map(neutralTag).join(' | ');
+      const tb = m.tags.filter(isLineTag).map(neutralTag).join(' | ');
+      if (ta !== tb) out.push(`${file}: ${route} line ${j + 1} tags "${tb}", BM has "${ta}"`);
+      if ((splitSpeaker(l.text).speaker === null) !== (splitSpeaker(m.text).speaker === null)) {
+        out.push(`${file}: ${route} line ${j + 1} ("${m.text}") must match BM on having a speaker`);
+      }
+    });
+  });
+  return out;
 }
