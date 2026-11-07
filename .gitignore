@@ -7,3 +7,7 @@ video/footage/
 app/e2e/screens/
 app/test-results/
 app/playwright-report/
+
+# Local tools, not part of the project
+Celik/
+graphify-out/
