@@ -6,15 +6,112 @@
       {
         "svg": "kompaun-1",
         "caption": {
-          "ms": "Mula dengan simpanan kecil setiap bulan.",
-          "en": "Start with a small saving each month."
+          "ms": "Aina simpan RM50 setiap bulan, bermula pada umur 19.",
+          "en": "Aina saves RM50 every month, starting at age 19."
         }
       },
       {
         "svg": "kompaun-2",
         "caption": {
-          "ms": "Lama-kelamaan, pulangan turut menjana pulangan. Contoh sahaja.",
-          "en": "Over time, returns earn returns too. Example only."
+          "ms": "Tanpa pulangan, simpanannya naik RM600 setahun. Selepas 10 tahun: RM6,000.",
+          "en": "With no returns, her savings rise by RM600 a year. After 10 years: RM6,000."
+        }
+      },
+      {
+        "svg": "kompaun-3",
+        "caption": {
+          "ms": "Pada kadar contoh 5% setahun, duitnya mula menjana pulangan (oren).",
+          "en": "At an example rate of 5% a year, her money starts to earn returns (orange)."
+        }
+      },
+      {
+        "svg": "kompaun-4",
+        "caption": {
+          "ms": "Pulangan itu pula menjana pulangan. Selepas 10 tahun, RM6,000 jadi lebih kurang RM7,764.",
+          "en": "Those returns earn returns too. After 10 years, RM6,000 becomes about RM7,764."
+        }
+      },
+      {
+        "svg": "kompaun-5",
+        "caption": {
+          "ms": "Lagi lama dibiarkan, lagi laju ia membesar. Inilah kuasa kompaun.",
+          "en": "The longer it stays, the faster it grows. That is compound growth."
+        }
+      },
+      {
+        "svg": "kompaun-6",
+        "caption": {
+          "ms": "Mula umur 19: masuk RM21,600, jadi lebih kurang RM60,325 pada umur 55. Mula umur 29: masuk RM15,600, jadi lebih kurang RM31,913.",
+          "en": "Start at 19: put in RM21,600, worth about RM60,325 at 55. Start at 29: put in RM15,600, worth about RM31,913."
+        }
+      },
+      {
+        "svg": "kompaun-7",
+        "caption": {
+          "ms": "Kadar 5% ini contoh sahaja, bukan janji. Nilai pelaburan sebenar boleh naik dan turun; semak lesen dulu.",
+          "en": "The 5% rate is an example only, not a promise. Real investments go up and down; check the licence first."
+        }
+      }
+    ]
+  },
+  {
+    "id": "hutang",
+    "concept": "hutang",
+    "frames": [
+      {
+        "svg": "hutang-1",
+        "caption": {
+          "ms": "Telefon baharu berharga RM1,000.",
+          "en": "A new phone costs RM1,000."
+        }
+      },
+      {
+        "svg": "hutang-2",
+        "caption": {
+          "ms": "Tawaran \"bayar nanti\": kadar rata contoh 10% setahun, bayar dalam 12 bulan.",
+          "en": "A \"pay later\" offer: an example flat rate of 10% a year, paid over 12 months."
+        }
+      },
+      {
+        "svg": "hutang-3",
+        "caption": {
+          "ms": "Ansuran RM91.67 sebulan. Jumlah dibayar: RM1,100. RM100 itu kos hutang (merah).",
+          "en": "RM91.67 a month. Total paid: RM1,100. The RM100 is the cost of the debt (red)."
+        }
+      },
+      {
+        "svg": "hutang-4",
+        "caption": {
+          "ms": "Kadar rata dikira atas RM1,000 penuh setiap bulan, walaupun baki hutang makin kecil.",
+          "en": "A flat rate is charged on the full RM1,000 every month, even as the balance shrinks."
+        }
+      },
+      {
+        "svg": "hutang-5",
+        "caption": {
+          "ms": "Sebab itu kadar sebenar setahun lebih kurang 18%, bukan 10%. Kos Sebenar dalam Kalkulator mengira ini.",
+          "en": "That is why the real yearly rate is about 18%, not 10%. Kos Sebenar in the Kalkulator works this out."
+        }
+      },
+      {
+        "svg": "hutang-6",
+        "caption": {
+          "ms": "Pilih 24 bulan: ansuran turun ke RM50, tetapi jumlah naik ke RM1,200.",
+          "en": "Choose 24 months: the instalment drops to RM50, but the total rises to RM1,200."
+        }
+      },
+      {
+        "svg": "hutang-7",
+        "caption": {
+          "ms": "Lewat bayar boleh menambah caj lagi. Baca semua caj sebelum setuju.",
+          "en": "Paying late can add more charges. Read every charge before you agree."
+        }
+      },
+      {
+        "svg": "hutang-8",
+        "caption": {
+          "ms": "Atau simpan dulu: RM91.67 sebulan selama 11 bulan, kemudian beli tunai tanpa kos tambahan.",
+          "en": "Or save first: RM91.67 a month for 11 months, then pay cash with no extra cost."
         }
       }
     ]
