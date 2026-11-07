@@ -18,8 +18,9 @@ test branch; `npm run check` 767 tests green. Left for the demo: Tonton (W7), Pa
 | Semak → **Semak Pulangan with Terlalu Lumayan** | ✅ Fixed by Danish (`8064a40`, re-tested 8 Nov): 137,640.8% a year + Terlalu Lumayan. Reaches the live app after Akmal merges `lane/danish` and `lane/wafi` | ~~REQ 1~~ done |
 | Kedai Kampus: phone on instalment → **Kos Sebenar before confirming** | ✅ Fixed by Danish (`8064a40`, re-tested 8 Nov): RM110.00 a month, RM1,320.00 total, RM120.00 true cost, about 18% a year | ~~REQ 2~~ done |
 | Matlamat goal bar in Dompet | ✅ With Akmal's `#/demo/pitch` (`557e4a5`): "Matlamat: Dana kecemasan RM200 / RM300" (screenshot `img/dompet-goal.png`) | ~~REQ 3~~ done |
-| Tonton explainer in Kad Ilmu | ⏳ Placeholder ("Akan datang") | Wafi W7 |
-| Papan Markah, Kad Keputusan | ⏳ Not built yet | Wafi W5, W6 |
+| Tonton explainer in Kad Ilmu | ✅ Wafi's W7 (`189a57c`): both explainers play, all 15 frames in order with the exact BM captions, also **offline** on a production build (service worker in control, network cut). Frames are inlined, so they need no network. ⚠️ In `#/demo/pitch` the Kuasa Kompaun card is not earned, so it is locked and the explainer can't be shown | **REQ 4** (Akmal) |
+| Papan Markah | ✅ Wafi's W5: 10 rows, player highlighted (`img/papan.png`) | - |
+| Kad Keputusan | ✅ Wafi's W6: downloads `celik-kad-keputusan.png`, 1080×1350, SIMULASI label and character name (`img/kad-keputusan.png`) | - |
 
 Both content fixes were tried in the test branch and work:
 - With REQ 1, Semak → "Buka Kalkulator" → Semak Pulangan shows **2% a day = 137,640.8% a year** and the
@@ -51,6 +52,11 @@ opens (`kedaiFlow.ts` builds `kedai-<itemId>`); without it Kos Sebenar never sho
 **REQ 3 (Akmal):** `app/src/shell/demo.ts`. A demo scene for the pitch (e.g. `#/demo/pitch`): week 5, budget set, a
 goal picked (Matlamat), Duit left for Kedai, Kedai and Suapan untouched, so the whole demo runs from one state on both
 phones. Today `#/demo/kelas` has no budget and no goal.
+
+**REQ 4 (Akmal):** `app/src/shell/demo.ts`, the `pitch` preset. Add `kadIlmu: ['bajet', 'kecemasan', 'kompaun']` (the
+cards earned by the four chats it marks as played) so Kad Ilmu → Kuasa Kompaun opens with the Tonton explainer in the
+demo. Today the card is locked in that state. Tested: with the `report` preset, which has `kompaun` earned, the
+explainer plays.
 
 **Note for Akmal (wording, low priority):** the Kalkulator's banner says "Nombor dari perbualan" (numbers from the chat)
 when it is opened from a Suapan post or Kedai item. "Nombor dari hantaran / kedai" would read better.
