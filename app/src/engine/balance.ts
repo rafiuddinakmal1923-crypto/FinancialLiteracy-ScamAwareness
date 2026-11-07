@@ -91,9 +91,9 @@ export const BALANCE = {
   kelas: { pointsCorrect: 100, rounds: 10, minTeams: 2, maxTeams: 6 },
   /** Finalist first guesses (SDS 5.9); tune after playtests. */
   suapan: { xpRight: 10 },
-  /** Prices in RM. The cash items total RM383, under one part-time pay (D37). Instalment terms are examples. */
+  /** Prices in RM. The cash items total RM388, under one part-time pay (D37). Instalment terms are examples. */
   kedai: {
-    prices: { snek: 15, konsert: 99, earfon: 59, basikal: 150, buku: 60, telefon: 1200 },
+    prices: { snek: 15, konsert: 79, earfon: 49, basikal: 150, buku: 60, kipas: 20, lampu: 15, telefon: 1200 },
     /** The item that lowers each later weekly transport cost by transportSaving. */
     transportItem: 'basikal',
     transportSaving: 10,

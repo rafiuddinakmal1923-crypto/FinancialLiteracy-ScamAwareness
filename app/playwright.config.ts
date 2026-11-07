@@ -5,6 +5,8 @@ export default defineConfig({
   outputDir: './test-results',
   // Parallel full runs on a busy machine occasionally lose a seeded game or a render timing in one unrelated spec; one retry keeps the gate honest without hiding hard failures.
   retries: 1,
+  // Eight workers occasionally lost a save right before a reload; four ran clean.
+  workers: 4,
   reporter: [['list'], ['html', { open: 'never', outputFolder: 'playwright-report' }]],
   webServer: {
     command: 'npm run build && npm run preview -- --port 4173 --strictPort',

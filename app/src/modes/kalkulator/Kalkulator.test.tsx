@@ -281,3 +281,15 @@ describe('opened from outside a chat (A6)', () => {
     expect(window.location.hash).toBe('#/home');
   });
 });
+
+describe('preset banner names where the numbers came from', () => {
+  it('says the post when opened from Suapan', () => {
+    open('kos', '?preset=bayar1000&back=/suapan');
+    expect(screen.getByText(/^Nombor dari hantaran:/)).toBeTruthy();
+  });
+
+  it('says the shop when opened from Kedai', () => {
+    open('kos', '?preset=bayar1000&back=/kedai');
+    expect(screen.getByText(/^Nombor dari kedai:/)).toBeTruthy();
+  });
+});

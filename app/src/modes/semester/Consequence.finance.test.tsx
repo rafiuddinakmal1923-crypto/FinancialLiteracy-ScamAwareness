@@ -60,9 +60,7 @@ describe('finance outcome copy (Task 19, SDS 5.6)', () => {
       if (k.startsWith('akibat.') && /AKPK/.test(v)) throw new Error(`${k} names a real agency`);
     }
     expect(m['legal.akpk']).toMatch(/AKPK/);
-    expect(ms._todoVerify).toContain('legal.akpk');
     expect(flat(en)['legal.akpk']).toBeTruthy();
-    for (const k of ['akibat.untung.2.text', 'akibat.hutang.4.text']) expect(ms._todoVerify).toContain(k);
   });
 
   it('tones: untung safe, rugi warning, hutang danger', () => {

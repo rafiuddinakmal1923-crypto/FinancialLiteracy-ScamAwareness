@@ -11,9 +11,9 @@ describe('calc-presets.json schema (Task 18)', () => {
     expect(CONTENT_FILES['calc-presets.json']).toBe(CalcPresetsFileSchema);
   });
 
-  it('the shipped file is valid and has the three presets', () => {
+  it('the shipped file is valid and keeps the three chat presets', () => {
     const list = CalcPresetsFileSchema.parse(presets);
-    expect(list.map((p) => p.id).sort()).toEqual(['bayar1000', 'labur50', 'naga30w']);
+    expect(list.map((p) => p.id)).toEqual(expect.arrayContaining(['bayar1000', 'labur50', 'naga30w']));
     const by = Object.fromEntries(list.map((p) => [p.id, p]));
     expect(by.naga30w).toMatchObject({ tab: 'pulangan', inputs: { promised: 30, period: 'minggu' } });
     expect(by.bayar1000).toMatchObject({ tab: 'kos', inputs: { amount: 1000, flat: 18, months: 12 } });

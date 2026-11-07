@@ -17,19 +17,20 @@ beforeEach(() => {
 afterEach(cleanup);
 
 describe('KadBook', () => {
-  it('derives 12 cards from the real content', () => {
-    expect(deriveCards(Object.values(scenarios)).length).toBe(12);
+  const total = deriveCards(Object.values(scenarios)).length;
+  it('derives at least the 12 semester cards from the real content', () => {
+    expect(total).toBeGreaterThanOrEqual(12);
   });
   it('header shows found / N kad and the two top tabs', () => {
     render(<KadBook />);
-    expect(screen.getByText('7 / 12 kad')).toBeTruthy();
+    expect(screen.getByText(`7 / ${total} kad`)).toBeTruthy();
     expect(screen.getByRole('tab', { name: 'Bendera Merah' }).getAttribute('aria-selected')).toBe('true');
     expect(screen.getByRole('tab', { name: 'Kad Ilmu' })).toBeTruthy();
   });
   it('ignores card ids that are not in the derived set', () => {
     useGame.getState().set({ cards: ['greed-job', 'nonsense-card'] });
     render(<KadBook />);
-    expect(screen.getByText('1 / 12 kad')).toBeTruthy();
+    expect(screen.getByText(`1 / ${total} kad`)).toBeTruthy();
   });
   it('has 7 tactic sub-tabs with counts', () => {
     render(<KadBook />);

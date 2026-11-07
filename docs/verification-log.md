@@ -10,7 +10,7 @@ Rule for the pitch: if a line is still **Open**, do not read it aloud or show it
 
 | ID | Key | Status | What changed | Source |
 | --- | --- | --- | --- | --- |
-| V1 | `legal.penalCode` | **Open**: not changed | Says "424A-424D". Low & Partners mentions "four dedicated sections" but names only 424A, 424B and 424C; Malay Mail (bill as tabled) names 424A, 424B, 424C(1) and 424C(2). Whether 424D exists, and the exact wording, must be checked in the official Penal Code (Act 574) from the Attorney General's Chambers (D9). Left as it is because `app/e2e/scenario2.spec.ts` matches the current text | Low & Partners, "Keldai Accounts": https://www.lowpartners.com/keldai-accounts-when-helping-a-friend-becomes-a-criminal-offence/ ; Malay Mail, 9 Jul 2024: https://www.malaymail.com/news/malaysia/2024/07/09/govt-seeks-harsher-penalties-for-mule-account-holders-renters-in-crackdown-on-scams-jail-term-up-to-10-years-rm150000-fine/143181 |
+| V1 | `legal.penalCode` | Verified (news and legal sources; official text not reachable from here) | None. Four sources name four sections, 424A to 424D. The Edge (27 Jan 2026) reports case counts per section in the Dewan Rakyat, including "no cases have been reported under Section 424D". 424A: having or controlling another person's account or payment instrument (RM5k-50k fine, 6 months-5 years jail, or both). 424B: letting another person control your account (RM10k-100k, 1-7 years, or both). 424C: using an account for unlawful transactions (RM10k-150k, 3-10 years, or both). No source gives the wording of 424D. The game line only says letting your account be used for fraud is an offence, which 424B covers. lom.agc.gov.my and parlimen.gov.my block automated access, so the Act A1727 text itself was not read | The Star, 10 Jul 2024: https://www.thestar.com.my/news/nation/2024/07/10/clamping-down-on-mule-accounts ; The Edge, 27 Jan 2026: https://theedgemalaysia.com/node/790744 ; ALIN legislative news ("four new sections ... 424A, 424B, 424C and 424D"): https://www.e-alin.org/eng/legislative/L/477/view.do ; AskLegal: https://asklegal.my/p/macau-scam-bank-negara-pdrm-phone-call-money ; Low & Partners and Malay Mail as before |
 | V2 | `akibat.mule.1.text`, `akibat.mule.2.text`, `moneyChain.trace` | Verified (general description) | None | The Sun, 18 Nov 2024, police can freeze and seize mule accounts and block suspicious transactions: https://thesun.my/news/malaysia-news/police-can-freeze-and-seize-mule-bank-accounts-ab13306305/ |
 | V3 | `akibat.mule.3.text` | Verified after rewording | Removed "Baki yang tinggal ditarik untuk dipulangkan kepada mangsa" (no source says leftover money is always returned). Now: the balance can't be used during the investigation | Same as V2 |
 | V4 | `akibat.mule.4.text` | Verified (general description) | None | Same as V2 |
@@ -30,8 +30,7 @@ Rule for the pitch: if a line is still **Open**, do not read it aloud or show it
 
 ## Kad Ilmu (`content/concepts.json`)
 
-`source` now points to these rows. Three entries stay `TODO-VERIFY`: kecemasan `duniaSebenar`, kompaun
-`duniaSebenar` and hutang `duniaSebenar` (no source checked yet).
+`source` now points to these rows. No entry is `TODO-VERIFY` any more.
 
 | ID | Entry | Status | Source or check |
 | --- | --- | --- | --- |
@@ -42,18 +41,19 @@ Rule for the pitch: if a line is still **Open**, do not read it aloud or show it
 | V24 | hutang `contoh` | Verified | RM1,000 at a flat 18% for 12 months: RM98.33 a month, RM1,180 total; the equivalent yearly rate (APR) is 31.7% |
 | V25 | hutang `caraSemak` | Verified | BNM Financial Consumer Alert List (companies and websites not authorised under BNM laws; "not exhaustive"): https://www.bnm.gov.my/-/financial-consumer-alert-list-of-unauthorised-companies-and-websites-has-been-updated ; AKPK as V8 |
 | V26 | semak `duniaSebenar`, `caraSemak` | Verified | SC list as V23; BNM list as V25 |
+| V27 | kecemasan `duniaSebenar` | Verified (general description) | The Star, 18 Jan 2026 ("The industry standard is to save three to six months of expenses"; keep it in a separate savings account): https://www.thestar.com.my/lifestyle/living/2026/01/18/saving-for-lifes-surprises-how-to-build-an-emergency-financial-fund . The line says "beberapa bulan" and gives savings account or short fixed deposit as examples, not advice |
+| V28 | kompaun `duniaSebenar` | Verified (general description) | EPF dividends are credited to the account each year based on the balance, so later dividends grow on earlier ones; the rate differs by year (6.30% for 2024, 6.15% for 2025): https://discover.celcomdigi.com/blog/kwsp-how-to-check-your-epf-dividend-and-withdrawal-options . The line gives no rate. Debt compounding is the same maths as V21 |
+| V29 | hutang `duniaSebenar` | Verified (general description) | RinggitPlus BNPL guide (2026): missed payments bring a late fee, bank BNPL reports to CCRIS, and the Consumer Credit Act 2025 requires non-bank providers to report credit data: https://ringgitplus.com/en/guides/managing-your-bnpl-fees-missed-payments-and-credit-record/ ; BNM Financial Stability Review 2H22 noted more BNPL users missing payments: https://ringgitplus.com/en/blog/personal-finance-news/bnm-sees-growing-trend-of-missed-repayments-among-bnpl-borrowers.html |
 
 ## Still to do
 
-1. **V1 Penal Code:** read the mule-account sections in the official Penal Code (Act 574, as amended in 2024), confirm
-   whether they run 424A-424C or 424A-424D, then update the line (and ask Akmal to update `app/e2e/scenario2.spec.ts`).
-   Until then, keep it off the slides.
+1. **V1 Penal Code:** confirmed as 424A-424D from secondary sources, so the line and `app/e2e/scenario2.spec.ts` stay as they are. On a slide, write "Kanun Keseksaan s.424A-424D (Pindaan 2024)" and give the penalty only for 424A-424C. Optional: someone opens Act A1727 on lom.agc.gov.my in a browser to see the official wording of 424D.
 2. **Akmal (REQ):** three test files require keys to stay in `_todoVerify`, so they are still listed there even
    though they are verified: `app/src/shell/i18n/i18n.test.ts` and `app/src/modes/semester/aftermath.test.ts`
    (rows V2-V6) and `app/src/modes/semester/Consequence.finance.test.tsx` (`legal.akpk`, `akibat.untung.2.text`,
    `akibat.hutang.4.text`, rows V8 and V11). Once the tests are relaxed, Danish removes every key except
    `legal.penalCode` (V1) from the list.
-3. Three Kad Ilmu `duniaSebenar` entries above are still `TODO-VERIFY`.
+3. Done: the last three Kad Ilmu `duniaSebenar` entries are now V27-V29.
 
 ## Review list for Wafi (C6)
 

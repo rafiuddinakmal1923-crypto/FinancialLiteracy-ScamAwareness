@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { BALANCE } from './balance';
 import { initialMeters } from './meters';
 import { parseContent, SemesterFileSchema } from './schemas';
-import { buyItem, itemPrice, type ShopState } from './shop';
+import { buyItem, isInstalment, itemPrice, type ShopState } from './shop';
 import { applyWeekIntro, type WeekDef } from './week';
 
 const fresh = (duit = 1000, simpanan = 0): ShopState => ({ meters: { ...initialMeters(), duit, simpanan }, week: 2, purchases: [] });
@@ -19,8 +19,12 @@ describe('itemPrice', () => {
   });
 
   it('keeps the cash items under one part-time pay (D37)', () => {
-    const cash = ['snek', 'konsert', 'earfon', 'basikal', 'buku'].map((id) => itemPrice(id) ?? 0);
-    expect(cash.reduce((a, b) => a + b, 0)).toBe(383);
+    const cash = Object.keys(BALANCE.kedai.prices).filter((id) => !isInstalment(id)).map((id) => itemPrice(id) ?? 0);
+    expect(cash.reduce((a, b) => a + b, 0)).toBeLessThan(BALANCE.income);
+  });
+
+  it('prices at least 8 items (FR-82)', () => {
+    expect(Object.keys(BALANCE.kedai.prices).length).toBeGreaterThanOrEqual(8);
   });
 });
 

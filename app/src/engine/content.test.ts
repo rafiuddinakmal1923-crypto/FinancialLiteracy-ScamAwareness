@@ -26,13 +26,16 @@ const outcomesOf = (s: CompiledScenario): Set<Outcome> =>
   new Set(enumeratePaths(s.json).map((p) => p.outcome as Outcome));
 
 describe('the ten semester scenarios', () => {
+  // Optional events such as raya_duit sit outside the semester plan and these counts.
+  const semesterList = list.filter((s) => (IDS as readonly string[]).includes(s.meta.id));
+
   it('all compile with no content problems', () => {
     expect(problems).toEqual([]);
-    expect(Object.keys(all).sort()).toEqual([...IDS].sort());
+    expect(Object.keys(all)).toEqual(expect.arrayContaining([...IDS]));
   });
 
   it('are 4 scam, 2 legit and 4 finance', () => {
-    const count = (type: string) => list.filter((s) => s.meta.type === type).length;
+    const count = (type: string) => semesterList.filter((s) => s.meta.type === type).length;
     expect([count('scam'), count('legit'), count('finance')]).toEqual([4, 2, 4]);
   });
 
@@ -61,9 +64,9 @@ describe('the ten semester scenarios', () => {
     // + authority: authority, fear, secrecy (3) = 12 pairs.
     const expected = 12;
     const pairs = new Set<string>();
-    for (const s of list) if (s.meta.type === 'scam') for (const f of s.flags) pairs.add(`${f.tactic}-${s.meta.family}`);
+    for (const s of semesterList) if (s.meta.type === 'scam') for (const f of s.flags) pairs.add(`${f.tactic}-${s.meta.family}`);
     expect(pairs.size).toBe(expected);
-    expect(deriveCards(list)).toHaveLength(expected);
+    expect(deriveCards(semesterList)).toHaveLength(expected);
   });
 
   it('give every scenario its teaching lines', () => {
