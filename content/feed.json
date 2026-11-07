@@ -45,9 +45,7 @@
       "en": "I make 2% a day with a trading robot. DM to join!"
     },
     "concept": "risiko",
-    "semak": {
-      "kad": "risiko"
-    },
+    "semak": { "calc": "robot2h" },
     "debrief": {
       "ms": "Tiada lesen, tiada risiko disebut, pulangan mustahil. Semak lesen dahulu.",
       "en": "No licence, no mention of risk, an impossible return. Check the licence first."

@@ -16,5 +16,17 @@
     "tab": "masa",
     "label": { "ms": "RM50 sebulan dari umur 19 hingga 30", "en": "RM50 a month from age 19 to 30" },
     "inputs": { "monthly": 50, "rate": 5, "startAge": 19, "endAge": 30 }
+  },
+  {
+    "id": "robot2h",
+    "tab": "pulangan",
+    "label": { "ms": "Janji robot dagangan: 2% sehari", "en": "Trading-robot promise: 2% a day" },
+    "inputs": { "promised": 2, "period": "hari" }
+  },
+  {
+    "id": "kedai-telefon",
+    "tab": "kos",
+    "label": { "ms": "Kedai Kampus: telefon RM1,200, RM110 × 12 bulan", "en": "Campus shop: RM1,200 phone, RM110 × 12 months" },
+    "inputs": { "amount": 1200, "flat": 10, "months": 12 }
   }
 ]
