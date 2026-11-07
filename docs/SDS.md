@@ -1,5 +1,6 @@
 > Originally a snapshot of https://claude.ai/artifact/Dt1cRrzkLVjn5vriotwdtX . Since 6 Nov 2026 this file is the source of truth; docs/DECISIONS.md wins over it.
 > Version 2, 6 Nov 2026 evening: hybrid direction (decisions D18-D28). Related: docs/SRS.md (requirements), docs/UI-SPEC.md (screens and components).
+> Version 3, 7 Nov 2026: finalist modules, data and systems (D35-D44); tasks and owners in docs/IMPLEMENTATION-PLAN.md.
 
 # Celik — Software Design Specification (SDS)
 
@@ -52,7 +53,7 @@ All modes share the same engines and two score records, Celik Kewangan (6 financ
 
 ## 3. Module design
 
-Fourteen modules sit in three layers: the phone shell shows things, the engines decide things, and storage remembers things.
+Twenty modules sit in three layers: the phone shell shows things, the engines decide things, and storage remembers things.
 
 | Module | Responsibility | Key parts | Covers |
 | --- | --- | --- | --- |
@@ -70,6 +71,12 @@ Fourteen modules sit in three layers: the phone shell shows things, the engines 
 | Drills | 997 call drill, Semak Mule simulation, real-action checklist | `Drill997`, `SemakSim`, `ActionChecklist` | FR-50 to FR-52 |
 | Class mode | Projector layout, teams, one-tap answers, scoreboard; scam and money cards | `ClassLobby`, `TeamBoard` | FR-60, FR-61 |
 | Storage and share | Dexie progress, card book, best scores; PNG share card | `db`, `ShareCard` | FR-73, FR-74 |
+| Suapan (finalist) | Feed of fictional posts; Percaya / Semak / Lapor; debrief; Semak opens the Kalkulator or a Kad Ilmu | `modes/suapan`, `engine/feed.ts` (`judgePost`) | FR-80, FR-81 |
+| Kedai Kampus (finalist) | Shop shelf, confirm sheet, instalment preview; purchases change Duit, pots and weekly costs | `modes/kedai`, `engine/shop.ts` (`buyItem`, `itemPrice`) | FR-82 |
+| Matlamat (finalist) | Goal picker after the week-0 split, goal bar in Dompet, result on the report card | `modes/matlamat`, `engine/goals.ts` (`goalProgress`, `goalReached`) | FR-83 |
+| Papan Markah (finalist) | Ranking against fictional classmates | `modes/papan`, `engine/papan.ts` (`rankClassmates`) | FR-84 |
+| Kongsi (finalist) | Kad Keputusan share image with `html-to-image` | `modes/kongsi` (`ShareButton`) | FR-85 |
+| Tonton (finalist) | SVG frame player inside Kad Ilmu | `modes/tonton` (`ExplainerSlot`) | FR-86 |
 
 ## 4. Content and data design
 
@@ -185,6 +192,47 @@ A `"kind": "pick"` card has two `options` and the index of the better one.
 | semesters | list of reports | grade, money left, scams avoided |
 | swipe | best score, streak, last played date | 9/10, 4 days |
 | actions | real actions ticked | ["save-997", "bookmark-semak"] |
+| goal (finalist) | chosen goal ID, reached flag | "kecemasan", false |
+| purchases (finalist) | list of shop item IDs bought this semester, with week | [{ id: "basikal", week: 3 }] |
+| feed (finalist) | map of post ID → call made and whether it was right | { p004: { call: "semak", right: true } } |
+
+### 4.6 Finalist content (D35-D41)
+
+Five new JSON files, validated with zod at load and by `npm run check:content` (fictional names, `.test` links and
+`01X-0000 0NNN` numbers only). Text has `ms` and `en`; tunable numbers stay in `balance.ts` (CLAUDE.md rule 8).
+
+Feed post (`content/feed.json`):
+
+```json
+{ "id": "p004", "kind": "hype", "author": { "name": "Abang Duit Pantas", "handle": "@duitpantas", "followers": "48.2K" },
+  "text": { "ms": "Saya buat 2% sehari dengan robot dagangan. DM untuk join!", "en": "..." },
+  "concept": "risiko", "tactics": ["greed"], "semak": { "calc": "semak:p2harian" },
+  "debrief": { "ms": "Tiada lesen, tiada risiko disebut, pulangan mustahil. Semak lesen dahulu.", "en": "..." } }
+```
+
+`kind` is `advice`, `hype` or `scam`; scam posts list `tactics`, advice and hype posts name a `concept`; `semak` opens
+a Kalkulator preset (`calc`) or a Kad Ilmu (`kad`).
+
+Shop item (`content/shop.json`; price in `balance.ts` under `kedai.prices`):
+
+```json
+{ "id": "basikal", "name": { "ms": "Basikal terpakai", "en": "Used bicycle" }, "pot": "kehendak",
+  "effect": "transport", "tip": { "ms": "Jimat tambang setiap minggu.", "en": "..." } }
+```
+
+`pot` is `keperluan` or `kehendak`; `effect` is `none`, `transport` (cuts weekly transport) or `instalment` (opens
+Kos Sebenar with preset `kedai:<id>`).
+
+Goal (`content/goals.json`; target in `balance.ts` under `matlamat.targets`):
+`{ "id": "kecemasan", "measure": "simpanan", "name": { "ms": "Dana kecemasan", "en": "Emergency fund" } }`;
+`measure` is `simpanan`, `labur` or `duit`.
+
+Classmate (`content/classmates.json`; grades in `balance.ts` under `papan.grades`):
+`{ "id": "k3", "name": "Mei Ling", "avatar": "a3" }`, 9 entries, fictional names only.
+
+Explainer (`content/explainers.json`; art in `assets/explainers/`):
+`{ "id": "kompaun", "concept": "kompaun", "frames": [{ "svg": "kompaun-1.svg", "caption": { "ms": "...", "en": "..." } }] }`,
+6-8 frames, all explainers together under 150 KB.
 
 ## 5. Game systems
 
@@ -293,6 +341,47 @@ All results round to the nearest sen. Rates are yearly decimals.
 | Amanah Cempaka | Fixed-price fund | Illustrative 4% a year, credited weekly (4% / 52) | Low risk, slow, steady |
 | Dana Ekuiti Cempaka | Equity unit trust | Scripted path in `balance.ts` (small gains, −6% in week 8, recovery by week 11) | Prices go up and down; don't panic-sell |
 
+### 5.9 Finalist systems and `balance.ts` additions (D36-D41)
+
+**Suapan scoring (`judgePost`).** One call per post; the result is saved and cannot be replayed for points.
+
+| Post kind | Percaya | Semak | Lapor |
+| --- | --- | --- | --- |
+| advice | right | right | wrong ("too suspicious", like `curiga`) |
+| hype | wrong | right | neutral (no score change) |
+| scam | wrong | right | right |
+
+A right call on a scam post adds `imuniti.swipeRight` to each of its tactics; a wrong one adds `imuniti.swipeWrong`.
+A right or wrong call on advice or hype changes Celik Kewangan for its concept by `celik.cardRight` or
+`celik.cardWrong`. Each right call gives `suapan.xpRight` XP.
+
+**Kedai Kampus (`buyItem`).** Pays the price from Duit (never below RM0; the buy button is disabled when Duit is
+short), records the item and week, and moves the amount into the item's pot as spent. `transport` lowers each later
+weekly transport cost by `kedai.transportSaving`. `instalment` opens Kos Sebenar first; confirming adds the monthly
+instalment to the week intros of weeks 4, 8 and 12.
+
+**Matlamat (`goalProgress`, `goalReached`).** Progress = current value of the goal's `measure` ÷ its target, capped
+at 100%. Reached at week 12 gives `matlamat.xpReached` XP; the grade formula (D24) does not change.
+
+**Papan Markah (`rankClassmates`).** Sorts the player's grade into `papan.grades`; ties place the player above.
+
+**First-guess numbers** (tune after playtests; all in `balance.ts`):
+
+```ts
+suapan:   { xpRight: 10 },
+kedai:    { prices: { snek: 15, konsert: 99, earfon: 59, basikal: 150, buku: 60, telefon: 1200 },
+            transportSaving: 10, instalment: { telefon: { monthly: 110, months: 12 } }, tipAbove: 100 },
+matlamat: { targets: { kecemasan: 300, laptop: 500, raya: 250, labur: 200 }, nudgeWeeks: [4, 8], xpReached: 100 },
+papan:    { grades: [42, 51, 58, 63, 67, 71, 76, 82, 90] },
+```
+
+The cash items together cost RM383, under one part-time pay (RM400). A unit test plays a "buy nothing" and a "buy
+everything" semester; both must reach week 12.
+
+**i18n for new modes.** Each new mode keeps its UI strings in `modes/<mode>/i18n.ms.json` and `i18n.en.json`;
+`shell/i18n/index.ts` merges them into the main dictionaries with `import.meta.glob` (eager), so new keys never touch
+the shared `ms.json`. Key prefixes are the mode name (`suapan.*`, `kedai.*`) to avoid clashes.
+
 ## 6. Folders, build plan and testing
 
 ### 6.1 Project folder (D:\FinancialLiteracy-ScamAwareness)
@@ -306,12 +395,14 @@ FinancialLiteracy-ScamAwareness/
     src/
       shell/       fake phone OS, i18n
       engine/      story (inkjs), scheduler, meters, finance, adaptive, balance.ts
-      modes/       semester, kalkulator, harian (Cek Harian + swipe), drills, classmode, sindiket (stretch)
+      modes/       semester, kalkulator, harian (Cek Harian + swipe), drills, classmode;
+                   finalist: suapan, kedai, matlamat, papan, kongsi, tonton (each with i18n.ms.json, i18n.en.json)
       ui/          shared components (ChatBubble, MeterBar, CardTile...)
       storage/     Dexie, share card
   content/       scenarios/*.ink, cards.json, money-cards.json, concepts.json, calc-presets.json, tactics.json,
                  drills.json, semester.json, banned-names.txt, allowed-real-names.txt,
-                 sindiket.json (stretch)
+                 sindiket.json (roadmap); finalist: feed.json, shop.json, goals.json, classmates.json,
+                 explainers.json
   assets/        illustrations, sounds, fonts
   video/, submission/
 ```
@@ -334,3 +425,19 @@ Milestones after the pivot (D26): M3 money + mule → M4 Kalkulator → M5 Cek H
 - **Content check (`npm run check:content`):** no real brand names (content/banned-names.txt) except names in content/allowed-real-names.txt inside content/concepts.json only, no URL except `*.test` and semakmule.rmp.gov.my, no phone number except 997 and `01X-0000 0NNN`, every rate in concepts.json and balance.ts bands marked `TODO-VERIFY` or sourced
 - **Content review:** every scenario checked for fictional brands, correct real-world actions and no victim-blaming copy
 - **Playtest:** 5 students per day; record where they get confused
+
+### 6.4 Finalist build plan and tests (10-18 Nov)
+
+Tasks, owners, dependencies and the day-by-day schedule are in docs/IMPLEMENTATION-PLAN.md (D43). In short: Akmal
+writes the contracts (types, schemas, engine stubs, routes, slots, i18n loading) on 10 Nov by 13:00; Wafi builds the
+six new modes against the stubs; Danish writes the content files; Aimar owns the explainer art, validation test and
+pitch. Code freeze Sun 15 Nov, 20:00.
+
+- **Vitest (new):** `judgePost` for all 9 kind x call pairs; `buyItem` (Duit floor, pots, transport effect,
+  instalment weeks); "buy nothing" and "buy everything" semesters reach week 12; `goalProgress` for the 4 goals;
+  `rankClassmates` at grades 0, 65.5 and 100; zod schemas for the 5 new files; i18n merge of per-mode files
+- **Playwright (new):** `suapan.spec.ts` ("2% a day" → Semak Pulangan red flag), `kedai.spec.ts` (instalment shows
+  Kos Sebenar first), `matlamat.spec.ts`, `papan.spec.ts`, `kongsi.spec.ts` (PNG with SIMULASI label), `tonton.spec.ts`,
+  `finalist-screens.spec.ts` (screenshots at 360x800, 412x915, 1920x1080), all offline
+- **Content check:** the 5 new files go through the banned-name, URL and phone-number rules
+- **Size:** new content and explainers add under 0.3 MB; `npm run size` stays under 8 MB

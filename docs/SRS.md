@@ -1,5 +1,6 @@
 > Source of truth since 6 Nov 2026 (live doc: https://claude.ai/artifact/3woKSQeWmxHZVgipLPpBmj). docs/DECISIONS.md wins over it.
 > Version 2, 6 Nov 2026 evening: hybrid direction (decisions D18-D28). Related: docs/SDS.md, docs/UI-SPEC.md.
+> Version 3, 7 Nov 2026: finalist features, business model and team plan (D35-D44); build plan in docs/IMPLEMENTATION-PLAN.md.
 
 # Celik — Software Requirements Specification (SRS)
 
@@ -14,8 +15,8 @@ This SRS defines what the Celik MVP must do for the Festival Idea Putrajaya 2026
 ### 1.2 Scope
 
 - **In scope (MVP):** Semester Pertama story mode (finance decisions and scam events), Dompet with a Labur (investing) pot, Kalkulator (Mesin Masa, Semak Pulangan, Kos Sebenar), Cek Harian daily booster, Sahih atau Scam quick round, Latihan Tindakan action drills, Mod Kelas for orientation and classes, Red Flag and Kad Ilmu cards, Celik Kewangan and Imuniti scores, semester report card, Bahasa Melayu with English.
-- **Finalist stretch (by 18 Nov):** Mod Sindiket (play the scammer), adaptive scenario order, share card.
-- **Out of scope (roadmap):** later semesters as seasons (internship allowance, first EPF contribution, investing before graduation), monthly new-alert packs, online live mode, campus leaderboards, partner rewards, university dashboard.
+- **Finalist (by 18 Nov, D35):** Suapan (judge a feed of money posts), Kedai Kampus (campus shop paid from Duit), Matlamat Semester (one savings goal), Papan Markah (offline ranking against fictional classmates), Kad Keputusan (share card), Tonton (2 animated explainers); a Raya event pack and adaptive scenario order only if time allows.
+- **Out of scope (roadmap):** later semesters as seasons (internship allowance, first EPF contribution, investing before graduation), monthly new-alert packs, online live mode, campus leaderboards, partner rewards, university dashboard, Mod Sindiket, cosmetic shop, a feed with real user posts, financial-literacy videos (social media only, D42).
 
 ### 1.3 Definitions
 
@@ -94,6 +95,17 @@ Problem statement (515 characters):
 - The game never asks for real personal or bank data.
 - 3.5-day build by a team of 4.
 
+### 2.6 Business model (D42)
+
+Celik is free for every student, with no ads and no data collected; institutions pay for the programme around it.
+
+| Model | Role |
+| --- | --- |
+| University licence | **Main.** Each university licenses an orientation-week package: Mod Kelas facilitator kit, seasonal content packs (new scams, Raya, PTPTN season) and a short facilitator training. Price per student [TO FILL], tested in the pilot |
+| Grant or government funding | **Pilot.** Funds the first 2-3 universities and the before/after evidence (5.3) |
+| Sponsorship (banks, agencies, CSR) | **Backup.** Funds content packs or real-world rewards; a sponsor is credited on the splash screen only and never appears as a brand, character or recommendation (NFR-01, NFR-15) |
+| Freemium, paid packs for students, real-money purchases | **Not used:** charging B40 students contradicts the problem Celik solves |
+
 ## 3. Functional requirements
 
 Priority: **M** = must have for the video, **S** = should have, **C** = could have.
@@ -171,8 +183,23 @@ Priority: **M** = must have for the video, **S** = should have, **C** = could ha
 | FR-70 | XP levels: Pemula → Berjimat → Bijak → Pelabur → Celik | M |
 | FR-71 | Kad book: Red Flag cards (one per tactic and scam family flagged in the content, total computed from content) and 6 Kad Ilmu | M |
 | FR-72 | Adaptive engine: the next scenario favours the weakest tactic or concept | C |
-| FR-73 | Shareable result card (image) for social media | C |
+| FR-73 | Shareable result card (image) for social media. Superseded by FR-85 (D40) | C |
 | FR-74 | Progress saved on the device; no login | M |
+
+### 3.8 Finalist features (by 18 Nov, D35-D41)
+
+All run offline from content shipped with the app; none collects real data. Build plan and owners: docs/IMPLEMENTATION-PLAN.md.
+
+| ID | Requirement | Priority |
+| --- | --- | --- |
+| FR-80 | **Suapan:** a phone app with a feed of 20 posts from fictional accounts: 8 sound advice, 6 legal but misleading hype, 6 scams. Each post offers Percaya (trust), Semak (check) and Lapor (report) | M |
+| FR-81 | Suapan scoring follows D36; Semak opens the Kalkulator with the post's numbers or the matching Kad Ilmu; every hype and scam post ends with a short debrief of what was missing (licence, risk, fees, red flags) | M |
+| FR-82 | **Kedai Kampus:** a campus shop of 8-10 items paid from Duit and logged as Kehendak (wants) or Keperluan (needs); a used bicycle lowers weekly transport cost; an instalment item shows Kos Sebenar before the player confirms; after any purchase over RM100 a Kancil tip offers Mesin Masa | M |
+| FR-83 | **Matlamat Semester:** after the week-0 split the player picks one of 4 goals; progress shows on Dompet with nudges at weeks 4 and 8; the report card says whether it was reached | M |
+| FR-84 | **Papan Markah:** the player's semester grade and Cek Harian streak ranked against 9 fictional classmates; no network and no player names | S |
+| FR-85 | **Kad Keputusan:** a 1080x1350 share image of the report (grade, Celik Kewangan, Imuniti, goal result, tagline, SIMULASI label) using the character's name; no text input. Supersedes FR-73 | S |
+| FR-86 | **Tonton:** 2 animated explainers (compound growth, cost of debt) inside Kad Ilmu, 6-8 SVG frames each with BM and EN captions; no video or audio files | S |
+| FR-87 | Raya event pack: one festive scenario (duit raya budget, fake e-greeting app) added as content only | C |
 
 ## 4. Non-functional requirements
 
@@ -204,7 +231,7 @@ The MVP is done when a player can finish a semester that includes the budget spl
 ### 5.1 Release phases
 
 1. **MVP (by 9 Nov):** Semester Pertama with 4 scam + 6 finance/legit scenarios, Dompet with Labur, Kalkulator (3 tabs), Red Flag and Kad Ilmu cards, report card; Cek Harian with 30 swipe + 20 money cards; 997 and Semak Mule drills; Mod Kelas.
-2. **Finalist polish (by 18 Nov):** Mod Sindiket, adaptive order, share card, English, a pre/post test with 20–30 UTP students.
+2. **Finalist (by 18 Nov):** FR-80 to FR-86 (Suapan, Kedai Kampus, Matlamat Semester, Papan Markah, Kad Keputusan, Tonton); FR-87 Raya pack and FR-72 adaptive order if time allows; HANDOFF fix wave; a pre/post test with 10-20 students. Mod Sindiket moves to the roadmap (D42).
 3. **Roadmap:** later semesters as seasons, monthly new-alert packs (drafted with AI, reviewed by people), online live mode, campus leaderboards, partner rewards (banks, AKPK), anonymous university dashboard.
 
 ### 5.2 Acceptance checklist for the video
@@ -220,6 +247,16 @@ The MVP is done when a player can finish a semester that includes the budget spl
 - Semester report card with Celik Kewangan and Imuniti
 - Everything works in airplane mode
 
+### 5.2b Acceptance checklist for the 18 Nov pitch demo
+
+- Suapan: a "2% a day" post; Semak opens Semak Pulangan and shows the Terlalu Lumayan red flag
+- Kedai Kampus: buying the phone on instalment shows Kos Sebenar before confirming
+- Matlamat Semester: goal picked at week 0, bar on Dompet, result on the report card
+- Papan Markah and Kad Keputusan from the report card
+- One Tonton explainer inside Kad Ilmu
+- Before/after test result from 5.3 on a slide
+- Everything works in airplane mode on the deployed link, on 2 phones
+
 ### 5.3 Validation plan
 
 Run a 12-question test (6 money questions, 6 scam-spotting questions) with UTP students before and after one play session. Report the change in the video and the finalist pitch.
@@ -229,3 +266,5 @@ Run a 12-question test (6 money questions, 6 scam-spotting questions) with UTP s
 - Can a UTP HEP or security officer review the scenarios for realism?
 - Which example rate ranges will the team verify for Semak Pulangan (savings, fixed deposit, unit trust), and from which official sources?
 - ~~Should the fictional university be generic or a lightly disguised UTP?~~ Resolved: generic, Universiti Cempaka Raya (UCR).
+- Price per student for the university licence (2.6): what does a HEP office spend per student on awareness programmes?
+- After the competition, should Celik add a server for campus leaderboards and a moderated feed? That needs a change to hard rule 5 and a privacy design.
