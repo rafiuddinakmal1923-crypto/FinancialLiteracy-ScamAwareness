@@ -1,6 +1,6 @@
 # Handoff (7 Nov 2026)
 
-State: branch `build/celik-mvp`, milestones 1-6 done (the MVP for the 9 Nov video). Last verified run: 645 unit tests, tsc clean, check:content OK, build 1.44 MB (limit 8 MB), Playwright 58/58. Not pushed, not merged to main, not deployed.
+State: branch `build/celik-mvp`, milestones 1-6 done (the MVP for the 9 Nov video). Last verified run: 652 unit tests, tsc clean, check:content OK, build 1.50 MB (limit 8 MB), Playwright 65/65 with retries off. Pushed to `origin/build/celik-mvp` (the GitHub default branch; GitHub has no `main`). Netlify build settings are in `netlify.toml`.
 
 Plans: docs/superpowers/plans/2026-11-06-celik-mvp.md (tasks 1-10, done) and ...-v2.md (tasks 11-30; 11-27 done). Decisions: docs/DECISIONS.md (D1-D33 win over everything). Pivot review: docs/superpowers/pivot-review.md.
 
