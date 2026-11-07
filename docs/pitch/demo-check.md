@@ -8,8 +8,8 @@ deleted. Re-run this after every evening merge until the demo passes end to end.
 | --- | --- | --- |
 | Suapan feed shows the "2% a day" post (`p004`, Abang Duit Pantas) | ✅ Works (W1 on `main`; Percaya/Semak/Lapor from W2) | - |
 | Semak → debrief sheet ("Ini hype: sah, tetapi mengelirukan", +10 XP) | ✅ Works | - |
-| Semak → **Semak Pulangan with Terlalu Lumayan** | ❌ Opens Kad Ilmu (risiko) instead | **REQ 1** (Danish) |
-| Kedai Kampus: phone on instalment → **Kos Sebenar before confirming** | ❌ Opens Mesin Masa: preset `kedai-telefon` does not exist | **REQ 2** (Danish, task C3) |
+| Semak → **Semak Pulangan with Terlalu Lumayan** | ✅ Fixed by Danish (`8064a40`, re-tested 8 Nov): 137,640.8% a year + Terlalu Lumayan. Reaches the live app after Akmal merges `lane/danish` and `lane/wafi` | ~~REQ 1~~ done |
+| Kedai Kampus: phone on instalment → **Kos Sebenar before confirming** | ✅ Fixed by Danish (`8064a40`, re-tested 8 Nov): RM110.00 a month, RM1,320.00 total, RM120.00 true cost, about 18% a year | ~~REQ 2~~ done |
 | Matlamat goal bar in Dompet | ⚠️ Not seen: the demo preset starts at week 1 with no goal picked, so GoalBar renders nothing (expected) | **REQ 3** (Akmal) |
 | Tonton explainer in Kad Ilmu | ⏳ Placeholder ("Akan datang") | Wafi W7 |
 | Papan Markah, Kad Keputusan | ⏳ Not built yet | Wafi W5, W6 |
