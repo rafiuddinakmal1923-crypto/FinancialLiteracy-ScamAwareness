@@ -8,7 +8,7 @@
 # hint:Real Raya money comes from family, not through an app that asks you to log in to your bank. Ask your family first.
 # apa_patut:Don't install apps from links in messages. A real greeting card needs no special app, let alone a bank login.
 # apa_patut:If you're not sure, ask in the family group who sent it.
-# apa_patut:If you already installed it and logged in, remove the app, call your bank on the number on the back of your card, and call NSRC 997 right away.
+# apa_patut:If you already installed it and logged in, remove the app, call your bank on the number on the back of your bank card, and call NSRC 997 right away.
 
 // English version of the BM file with the same name. Keep the structure, tags and order identical to the BM file.
 You've set aside RM180 for going home, for the bus ticket and Raya money for your younger cousins.
@@ -26,7 +26,7 @@ The KadRaya3D app asks for permission to read your SMS and shows a BankKu login 
     That night a TAC SMS arrives, but the app reads it first. The RM180 you set aside for going home is gone from your account. # effect:duit:-180 # outcome:scammed
     -> END
 * [Wait, why would a greeting card need to read my SMS and log in to my bank? Stop.]
-    You remove the app without logging in, then call the number on the back of your card to tell the bank. Your Raya budget is safe. # outcome:safe
+    You remove the app without logging in, then call the number on the back of your bank card to tell the bank. Your Raya budget is safe. # outcome:safe
     -> END
 
 === tanya ===
