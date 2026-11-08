@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { mkdirSync, mkdtempSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -214,10 +214,12 @@ describe('rateMarkerProblems: words for per cent (Task 11 review)', () => {
 });
 
 describe('todoVerifyKeys (M5)', () => {
-  it('lists every _todoVerify key of ms.json, including the enforcement steps', async () => {
+  it('lists every _todoVerify key of ms.json; the Penal Code line stays until the Act text is read (V1)', async () => {
     const { todoVerifyKeys } = await import('./check-content');
-    const keys = todoVerifyKeys(fileURLToPath(new URL('../src/shell/i18n/ms.json', import.meta.url)));
-    expect(keys).toEqual(expect.arrayContaining(['akibat.mule.3.text', 'akibat.mule.4.text', 'akibat.frozen.4.text']));
+    const path = fileURLToPath(new URL('../src/shell/i18n/ms.json', import.meta.url));
+    const listed = (JSON.parse(readFileSync(path, 'utf8')) as { _todoVerify: string[] })._todoVerify;
+    expect(todoVerifyKeys(path)).toEqual(listed);
+    expect(listed).toContain('legal.penalCode');
   });
 });
 

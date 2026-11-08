@@ -54,7 +54,7 @@ describe('finance outcome copy (Task 19, SDS 5.6)', () => {
     for (const o of KEYS) expect(text(o)).not.toMatch(/bodoh|beli /i);
   });
 
-  it('the real agency name lives only in a legal.* key that _todoVerify lists', () => {
+  it('the real agency name lives only in a legal.* key (verified in docs/verification-log.md V8)', () => {
     const m = flat(ms);
     for (const [k, v] of Object.entries(m)) {
       if (k.startsWith('akibat.') && /AKPK/.test(v)) throw new Error(`${k} names a real agency`);

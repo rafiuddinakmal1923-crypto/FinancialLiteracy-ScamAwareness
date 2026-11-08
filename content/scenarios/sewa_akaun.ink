@@ -44,7 +44,7 @@ Abang Zul: Cepat sikit ya dik, customer tunggu. # ui:transfer:1400:Teratai Emas 
 === dah_pindah ===
 Abang Zul: Mantap dik! Kawan abang dah terima. Minggu depan ada lagi, standby 👍 # effect:duit:-1400
 // REVIEW: a freeze two days later and the bank taking back the RM1,500 for the victim; check bank practice.
-Notis BankKu. Akaun anda telah dibekukan kerana menerima wang yang dilaporkan dalam kes penipuan. RM1,500 ditarik balik untuk dipulangkan kepada mangsa. # effect:akaun:Disekat # effect:rekod:Disiasat # effect:duit:-1500
+Notis BankKu. Akaun anda telah dibekukan kerana menerima wang yang dilaporkan dalam kes penipuan. RM1,500 itu disekat semasa siasatan. # effect:akaun:Disekat # effect:rekod:Disiasat # effect:duit:-1500
 Mesej kepada Abang Zul tidak dihantar. Nombor ini telah menyekat kamu. # outcome:mule
 -> END
 

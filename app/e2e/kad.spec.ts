@@ -14,7 +14,8 @@ test('report card, Kad book and a Kad Ilmu from a finished semester', async ({ p
   await expect(page.getByText('Semester belum tamat')).toHaveCount(0);
 
   await page.goto('/#/kad');
-  await expect(page.getByText('7 / 12 kad')).toBeVisible();
+  // The total comes from the content (FR-71), so optional scenarios such as raya_duit can add cards.
+  await expect(page.getByText(/^7 \/ \d+ kad$/)).toBeVisible();
   await expect(page.getByText('???').first()).toBeVisible();
   await page.getByRole('button', { name: /^Kad bendera merah/ }).first().click();
   await expect(page.getByRole('dialog')).toBeVisible();

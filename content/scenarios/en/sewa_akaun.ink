@@ -40,7 +40,7 @@ Abang Zul: Fast a bit ya dik, customer is waiting. # ui:transfer:1400:Teratai Em
 
 === dah_pindah ===
 Abang Zul: Solid dik! My friend got it. Next week there's more, standby 👍 # effect:duit:-1400
-BankKu notice. Your account has been frozen for receiving money reported in a fraud case. RM1,500 has been taken back to return to the victim. # effect:akaun:Disekat # effect:rekod:Disiasat # effect:duit:-1500
+BankKu notice. Your account has been frozen for receiving money reported in a fraud case. The RM1,500 is blocked during the investigation. # effect:akaun:Disekat # effect:rekod:Disiasat # effect:duit:-1500
 Your message to Abang Zul was not delivered. This number has blocked you. # outcome:mule
 -> END
 

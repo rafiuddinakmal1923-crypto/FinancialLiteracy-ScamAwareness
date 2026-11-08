@@ -45,15 +45,29 @@ Rule for the pitch: if a line is still **Open**, do not read it aloud or show it
 | V28 | kompaun `duniaSebenar` | Verified (general description) | EPF dividends are credited to the account each year based on the balance, so later dividends grow on earlier ones; the rate differs by year (6.30% for 2024, 6.15% for 2025): https://discover.celcomdigi.com/blog/kwsp-how-to-check-your-epf-dividend-and-withdrawal-options . The line gives no rate. Debt compounding is the same maths as V21 |
 | V29 | hutang `duniaSebenar` | Verified (general description) | RinggitPlus BNPL guide (2026): missed payments bring a late fee, bank BNPL reports to CCRIS, and the Consumer Credit Act 2025 requires non-bank providers to report credit data: https://ringgitplus.com/en/guides/managing-your-bnpl-fees-missed-payments-and-credit-record/ ; BNM Financial Stability Review 2H22 noted more BNPL users missing payments: https://ringgitplus.com/en/blog/personal-finance-news/bnm-sees-growing-trend-of-missed-repayments-among-bnpl-borrowers.html |
 
+## Kalkulator and Labur example rates (`app/src/engine/balance.ts`)
+
+Checked 8 Nov 2026 by Akmal for Danish (REQ-D4). The app shows every rate as "contoh" (example). A band is
+"Verified" when typical published rates fall inside it; it is an example range, not a limit or a forecast.
+
+| ID | Where | Status | Check |
+| --- | --- | --- | --- |
+| V30 | `finance.bands.simpanan` 0.25%-1% a year (savings account) | Verified (example range) | RinggitPlus basic savings list, read 8 Nov 2026: almost every basic account pays 0.25% p.a.; the highest basic rate shown is 0.8% (CIMB). Some non-basic or digital accounts pay more with conditions, so the band describes a basic account: https://ringgitplus.com/en/savings-account/basic/ |
+| V31 | `finance.bands.simpananTetap` 2%-3.5% a year (fixed deposit) | Verified (example range) | RinggitPlus 12-month FD page, read 8 Nov 2026: listed standard rates 1.7%-2.95% p.a. (summary line says 2.05%-2.80%): https://ringgitplus.com/en/fixed-deposit/12-month . Promotions in late 2026 reach about 3.6%-3.9% (search results citing bank promotions; not opened). ABM publishes board-rate tables (e.g. 15 Aug 2026), not read here because the PDF did not extract: https://www.abm.org.my/wp-content/uploads/2026/08/website-FD-Rates-as-at-15-Aug-2026.pdf |
+| V32 | `finance.bands.hargaTetap` 3%-6% a year (fixed-price fund) | Partly verified | Upper end: ASB, the largest fixed-price fund, distributed 5.75 sen per RM1 unit for 2025 (5.75%), announced 19 Dec 2025 (The Star: https://www.thestar.com.my/business/business-news/2025/12/19/amanah-saham-nasional-declares-575-senunit-dividend-for-asb-fund ). Distributions are set each year and not guaranteed. The 3% lower end is an example, not checked against a source |
+| V33 | `finance.bands.unitAmanah` -10% to +12% a year (unit trust) | Verified as an example only | 2025 examples: FBM100 index -1.3% for the year (Great Eastern annual report 2025); Malaysian funds listed at about -2.5% to +12.5% for 2025 (Wahed comparison, a marketing page: https://www.wahed.com/mme/best-shariah-compliant-unit-trust-funds-in-malaysia-2026-edition ). Equity funds can lose more than 10% in a bad year, so the line must keep saying the value can go up and down |
+| V34 | `finance.amanahYearly` 4%, `ekuitiPath`, `unrealisticAbove` 20% | Verified as illustrative | 4% sits inside V32's band and below ASB's 2025 rate, so it does not overstate a fixed-price fund. `ekuitiPath` is a scripted teaching path (small gains, a -6% week) and `unrealisticAbove` is the game's threshold for the Terlalu Lumayan flag; both are design choices labelled "contoh", not market data |
+
 ## Still to do
 
 1. **V1 Penal Code:** confirmed as 424A-424D from secondary sources, so the line and `app/e2e/scenario2.spec.ts` stay as they are. On a slide, write "Kanun Keseksaan s.424A-424D (Pindaan 2024)" and give the penalty only for 424A-424C. Optional: someone opens Act A1727 on lom.agc.gov.my in a browser to see the official wording of 424D.
-2. **Akmal (REQ):** three test files require keys to stay in `_todoVerify`, so they are still listed there even
+2. Done 8 Nov (Akmal for Danish): the tests are relaxed and `_todoVerify` now lists only `legal.penalCode`. Was: three test files require keys to stay in `_todoVerify`, so they are still listed there even
    though they are verified: `app/src/shell/i18n/i18n.test.ts` and `app/src/modes/semester/aftermath.test.ts`
    (rows V2-V6) and `app/src/modes/semester/Consequence.finance.test.tsx` (`legal.akpk`, `akibat.untung.2.text`,
    `akibat.hutang.4.text`, rows V8 and V11). Once the tests are relaxed, Danish removes every key except
    `legal.penalCode` (V1) from the list.
 3. Done: the last three Kad Ilmu `duniaSebenar` entries are now V27-V29.
+4. Done 8 Nov (Akmal for Danish, REQ-D5): V3's rewording also applied to the mule scene's bank notice in `content/scenarios/sewa_akaun.ink` (BM) and `en/sewa_akaun.ink`: the RM1,500 is now "disekat semasa siasatan" / "blocked during the investigation", not returned to the victim.
 
 ## Review list for Wafi (C6)
 
