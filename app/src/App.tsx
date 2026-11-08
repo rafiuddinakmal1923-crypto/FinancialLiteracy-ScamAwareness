@@ -3,6 +3,7 @@ import { MotionConfig } from 'framer-motion';
 import { DemoWatermark } from './shell/DemoWatermark';
 import { PhoneFrame } from './shell/PhoneFrame';
 import { RouteErrorBoundary } from './shell/ErrorScreen';
+import { SoundDirector } from './shell/SoundDirector';
 import { FALLBACK_PATH, ROUTE_TABLE } from './shell/routes';
 import { replaceRoute, resolveRoute, useRoute } from './shell/router';
 import { flushNow, loadAll, startAutoSave } from './state/persist';
@@ -61,6 +62,7 @@ export default function App() {
     return (
       <MotionConfig reducedMotion={reducedMotion ? 'always' : 'user'}>
         <div className="relative min-h-dvh w-full">
+          <SoundDirector route={route.name} />
           <RouteErrorBoundary key={path}>
             <Suspense fallback={null}>
               <Screen params={params} />
@@ -78,6 +80,7 @@ export default function App() {
         tipKey={route.tip}
         mood={route.mood}
       >
+        <SoundDirector route={route.name} />
         <RouteErrorBoundary key={path}>
           <Suspense fallback={null}>
             <Screen params={params} />

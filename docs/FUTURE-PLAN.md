@@ -13,9 +13,11 @@ classmates that follow the week with fixed ups and downs.
 | --- | --- | --- | --- | --- | --- |
 | F1 | Feed, Shop and Ranks tiles are plain grey squares; the first six are coloured | The first six use drawn SVG icons (`assets/app-*.svg`); W1-W5 used stock line icons on a slate square (`APP_TILES` in `app/src/shell/HomeScreen.tsx`) | Draw 3 SVG icons in the same style: Suapan coral (news), Kedai teal (shop front), Papan gold (trophy). Settings stays grey on purpose | Akmal (shell), art by Wafi | 1-2 h |
 | F2 | "No video advice anywhere" | By D41, Tonton is not video: 2 picture-frame explainers inside Kad Ilmu (Cards → Kad Ilmu → Kuasa Kompaun or Kos Hutang). Nothing on the home screen points to it | Add a "Tonton" chip on the Kad Ilmu cards that have an explainer, plus one line in onboarding tips | Wafi | 1 h |
-| F3 | Settings has a Sound switch, but nothing plays | The setting was saved for later; no sound code exists yet | See section 1. Until then, hide the switch or label it "Akan datang" | Akmal | 15 min |
+| F3 | Settings has a Sound switch, but nothing plays | The setting was saved for later; no sound code exists yet | Labelled "Akan datang" on 8 Nov, then replaced the same day by the first sound version (section 1) | Akmal | 15 min |
 
 ## 1. Sound: interaction sounds, background, music
+
+**First version done 8 Nov:** `app/src/engine/sound.ts` makes every sound in code with Web Audio (no audio files, nothing to download, works offline). Short sounds: tap, coin in, coin out, message ping, ringtone, right, soft wrong, new week. Music: a calm loop on most screens, a tense loop in chats, calls, fake pages and consequences; none on the splash, onboarding or Mod Kelas. Starts on the first tap, follows the Sound switch, pauses when the app is hidden. Volumes in `balance.ts` (`sound`). Still to do from the list below: separate Muzik and Kesan bunyi switches, recorded sounds if wanted, and ink `# sfx:` tags.
 
 Goal: the game feels alive without breaking offline play, the 8 MB budget or classroom use (a hall of 40 phones).
 

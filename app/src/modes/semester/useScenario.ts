@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { scenarios } from 'virtual:celik-content';
 import { BALANCE } from '../../engine/balance';
+import { sound } from '../../engine/sound';
 import { StoryRunner } from '../../engine/story';
 import type { ChatMessage, Outcome, ScenarioMeta, UiDirective } from '../../engine/types';
 import { useGame, type CalcResume, type TrailStep } from '../../state/game';
@@ -127,6 +128,7 @@ export function useScenario(id: string, opts?: ScenarioOptions): ScenarioView {
           if (!live()) return;
           setTyping(false);
           push({ from: 'them', speaker: step.speaker, text: step.text, flags: step.flags });
+          sound.play('ping');
         } else {
           push({ from: 'system', speaker: null, text: step.text, flags: step.flags });
         }
