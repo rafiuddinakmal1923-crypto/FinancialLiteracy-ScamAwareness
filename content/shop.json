@@ -65,6 +65,32 @@
     }
   },
   {
+    "id": "kipas",
+    "name": {
+      "ms": "Kipas meja kecil",
+      "en": "Small desk fan"
+    },
+    "pot": "keperluan",
+    "effect": "none",
+    "tip": {
+      "ms": "Bilik asrama panas boleh ganggu tidur dan belajar. Banding harga dulu sebelum beli.",
+      "en": "A hot hostel room can spoil sleep and study. Compare prices before you buy."
+    }
+  },
+  {
+    "id": "lampu",
+    "name": {
+      "ms": "Lampu meja belajar",
+      "en": "Study desk lamp"
+    },
+    "pot": "keperluan",
+    "effect": "none",
+    "tip": {
+      "ms": "Membantu belajar waktu malam. Yang ringkas pun sudah cukup.",
+      "en": "Helps you study at night. A simple one is enough."
+    }
+  },
+  {
     "id": "telefon",
     "name": {
       "ms": "Telefon baharu secara ansuran",

@@ -24,8 +24,8 @@ export const BALANCE = {
   desperation: { simpananBelow: 100, tekananUp: 10, cueAt: 60 },
   adaptive: { base: 100, bonus: 10, scamShareMin: 0.35, scamShareMax: 0.45 },
   /**
-   * Money and Kalkulator numbers (D21, D22, SDS 5.7-5.8). Every rate here is an illustrative "contoh" and
-   * TODO-VERIFY (CLAUDE.md rule 11). Rates are yearly decimals unless noted.
+   * Money and Kalkulator numbers (D21, D22, SDS 5.7-5.8). Every rate here is an illustrative "contoh"; each `source`
+   * names its docs/verification-log.md row, or says TODO-VERIFY (CLAUDE.md rule 11). Rates are yearly decimals unless noted.
    */
   finance: {
     /** RM in Simpanan before investing counts as an emergency fund. */
@@ -45,9 +45,9 @@ export const BALANCE = {
      */
     ekuitiPath: [0.8, 0.5, 0.7, 0.4, 0.6, 0.5, 0.6, -6, 3, 2, 2, 0.5],
     /** Source and year for amanahYearly, ekuitiPath and unrealisticAbove (illustrative, not market data). */
-    illustrative: { source: 'TODO-VERIFY', year: 2026 },
+    illustrative: { source: 'verification-log V34', year: 2026 },
     /**
-     * Kalkulator defaults and limits (Task 18). Every rate is an illustrative "contoh", TODO-VERIFY (same source and
+     * Kalkulator defaults and limits (Task 18). Every rate is an illustrative "contoh" (same source and
      * year as `illustrative`). Percents here are as typed in the app (5 = 5%).
      */
     calc: {
@@ -71,10 +71,10 @@ export const BALANCE = {
     },
     /** Illustrative yearly return ranges for Semak Pulangan. */
     bands: {
-      simpanan: { min: 0.0025, max: 0.01, source: 'TODO-VERIFY', year: 2026 },
-      simpananTetap: { min: 0.02, max: 0.035, source: 'TODO-VERIFY', year: 2026 },
-      hargaTetap: { min: 0.03, max: 0.06, source: 'TODO-VERIFY', year: 2026 },
-      unitAmanah: { min: -0.1, max: 0.12, source: 'TODO-VERIFY', year: 2026 },
+      simpanan: { min: 0.0025, max: 0.01, source: 'verification-log V30', year: 2026 },
+      simpananTetap: { min: 0.02, max: 0.035, source: 'verification-log V31', year: 2026 },
+      hargaTetap: { min: 0.03, max: 0.06, source: 'verification-log V32', year: 2026 },
+      unitAmanah: { min: -0.1, max: 0.12, source: 'verification-log V33', year: 2026 },
     },
   },
   swipe: { cards: 10, seconds: 60, revealMs: 1500 },

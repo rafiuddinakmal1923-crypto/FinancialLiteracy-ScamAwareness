@@ -1,16 +1,6 @@
 {
   "_todoVerify": [
-    "akibat.mule.1.text",
-    "akibat.mule.2.text",
-    "akibat.mule.3.text",
-    "akibat.mule.4.text",
-    "legal.penalCode",
-    "akibat.sewa_akaun.frozen.2.text",
-    "akibat.frozen.1.text",
-    "akibat.frozen.4.text",
-    "legal.akpk",
-    "akibat.untung.2.text",
-    "akibat.hutang.4.text"
+    "legal.penalCode"
   ],
   "app.name": "Celik",
   "app.tagline": "Bijak duit, kebal scam",

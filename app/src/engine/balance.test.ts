@@ -46,15 +46,15 @@ describe('BALANCE (SDS 5.2-5.8, D20-D24)', () => {
     expect(value(11)).toBeGreaterThan(value(7));
   });
 
-  it('every illustrative rate band is TODO-VERIFY with a year (CLAUDE.md rule 11)', () => {
+  it('every illustrative rate band names its verification-log row (or TODO-VERIFY) and a year (CLAUDE.md rule 11)', () => {
     const { bands } = BALANCE.finance;
     expect(Object.keys(bands).sort()).toEqual(['hargaTetap', 'simpanan', 'simpananTetap', 'unitAmanah']);
     for (const [name, b] of Object.entries(bands)) {
-      expect(b.source, name).toBe('TODO-VERIFY');
+      expect(b.source, name).toMatch(/^(TODO-VERIFY|verification-log V\d+)$/);
       expect(Number.isInteger(b.year), name).toBe(true);
       expect(b.min, name).toBeLessThanOrEqual(b.max);
     }
-    expect(BALANCE.finance.illustrative.source).toBe('TODO-VERIFY');
+    expect(BALANCE.finance.illustrative.source).toMatch(/^(TODO-VERIFY|verification-log V\d+)$/);
     expect(Number.isInteger(BALANCE.finance.illustrative.year)).toBe(true);
   });
 

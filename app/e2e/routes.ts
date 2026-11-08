@@ -57,7 +57,7 @@ export interface ScreenRoute {
   path: string;
   name: string;
   /** Text to wait for before the screenshot (screens that build up over time, like a chat thread). */
-  waitFor?: string;
+  waitFor?: string | RegExp;
   /** The screen's data-screen value when it differs from `name` (one route captured in several states). */
   screen?: string;
   /** Drives the app to this route instead of a plain goto (screens that need game state first). */
@@ -120,7 +120,7 @@ export const ROUTES: ScreenRoute[] = [
   { path: '/semester/cuti', name: 'cuti', waitFor: 'Minggu ini tiada XP dan tiada pilihan. Ambil masa untuk fikir.', setup: (page) => atWeek(page, 7, '/semester/cuti') },
   // Task 26: the report card, Kad book (both tabs, a tapped Red Flag card) and a Kad Ilmu, from the finished-semester preset.
   { path: '/semester/rapor', name: 'rapor', waitFor: 'Laporan semester', setup: seedReport },
-  { path: '/kad', name: 'kad', waitFor: '7 / 12 kad', setup: async (page) => { await seedReport(page); await page.goto('/#/kad'); } },
+  { path: '/kad', name: 'kad', waitFor: /^7 \/ \d+ kad$/, setup: async (page) => { await seedReport(page); await page.goto('/#/kad'); } },
   {
     path: '/kad', name: 'kad-ilmu-tab', screen: 'kad', waitFor: '4 / 6 kad',
     setup: async (page) => { await seedReport(page); await page.goto('/#/kad'); await page.getByRole('tab', { name: 'Kad Ilmu' }).click(); },
