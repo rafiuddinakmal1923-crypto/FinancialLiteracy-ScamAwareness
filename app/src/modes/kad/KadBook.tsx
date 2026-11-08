@@ -1,9 +1,10 @@
 // S11: the Kad book. Bendera Merah (Red Flag cards, by tactic) and Kad Ilmu (one knowledge card per finance concept).
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { ArrowLeft, X } from 'lucide-react';
-import { concepts, scenarios } from 'virtual:celik-content';
+import { ArrowLeft, Play, X } from 'lucide-react';
+import { concepts, explainers, scenarios } from 'virtual:celik-content';
 import { deriveCards, type RedFlagCard } from '../../engine/cards';
 import { CONCEPTS, TACTICS, type Tactic } from '../../engine/types';
+import { FINALIST } from '../../shell/features';
 import { useT } from '../../shell/i18n';
 import { navigate } from '../../shell/router';
 import { useGame } from '../../state/game';
@@ -126,15 +127,21 @@ function Ilmu() {
         const info = concepts?.find((c) => c.code === code);
         const name = info ? loc(info.name) : code;
         const has = earned.includes(code) && !!info;
+        const tonton = FINALIST && !!explainers?.some((e) => e.concept === code);
         return (
           <li key={code} className="flex">
             {has && info ? (
               <button
                 type="button" onClick={() => navigate(`/kad/ilmu/${code}`)}
-                aria-label={t('kad.ilmu.label', { name })}
-                className="flex w-full rounded-2xl text-left active:scale-[.97]"
+                aria-label={t(tonton ? 'kad.ilmu.labelTonton' : 'kad.ilmu.label', { name })}
+                className="relative flex w-full rounded-2xl text-left active:scale-[.97]"
               >
                 <KadTile concept={code} name={name} apa={firstSentence(loc(info.apa))} className="w-full" />
+                {tonton && (
+                  <span aria-hidden className="absolute right-2 top-2 flex items-center gap-1 rounded-full bg-indigo px-2 py-0.5 text-base font-semibold text-paper">
+                    <Play size={12} strokeWidth={2.5} fill="currentColor" />{t('kad.ilmu.tonton')}
+                  </span>
+                )}
               </button>
             ) : (
               <KadTile concept={code} name={name} locked className="w-full" />

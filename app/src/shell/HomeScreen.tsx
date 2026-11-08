@@ -1,12 +1,15 @@
 import { useState, type ReactNode } from 'react';
 import { useShallow } from 'zustand/react/shallow';
-import { Flame, GraduationCap, Lock, Newspaper, Presentation, Settings as Gear, Store, Trophy, VenetianMask, type LucideIcon } from 'lucide-react';
+import { Flame, GraduationCap, Lock, Presentation, Settings as Gear, VenetianMask, type LucideIcon } from 'lucide-react';
 import sembang from '../../../assets/app-sembang.svg';
 import bankku from '../../../assets/app-bankku.svg';
 import dompet from '../../../assets/app-dompet.svg';
 import kalkulator from '../../../assets/app-kalkulator.svg';
 import kad from '../../../assets/app-kad.svg';
 import latihan from '../../../assets/app-latihan.svg';
+import suapan from '../../../assets/app-suapan.svg';
+import kedai from '../../../assets/app-kedai.svg';
+import papan from '../../../assets/app-papan.svg';
 import { BALANCE } from '../engine/balance';
 import { localDate } from '../engine/dates';
 import { netWorth } from '../engine/meters';
@@ -35,9 +38,9 @@ export const APP_TILES: { id: string; path: string; icon: string | LucideIcon; l
   { id: 'kad', path: '/kad', icon: kad },
   { id: 'latihan', path: '/latihan', icon: latihan },
   ...(FINALIST ? [
-    { id: 'suapan', path: '/suapan', icon: Newspaper, label: 'suapan.app' },
-    { id: 'kedai', path: '/kedai', icon: Store, label: 'kedai.app' },
-    { id: 'papan', path: '/papan', icon: Trophy, label: 'papan.app' },
+    { id: 'suapan', path: '/suapan', icon: suapan, label: 'suapan.app' },
+    { id: 'kedai', path: '/kedai', icon: kedai, label: 'kedai.app' },
+    { id: 'papan', path: '/papan', icon: papan, label: 'papan.app' },
   ] : []),
   { id: 'tetapan', path: '/settings', icon: Gear },
 ];

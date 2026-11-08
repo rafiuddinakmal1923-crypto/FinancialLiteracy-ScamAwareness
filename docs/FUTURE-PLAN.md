@@ -6,6 +6,9 @@ plan says so and gives the version that fits. Estimates are for one builder with
 
 ## 0. Found on the phone (8 Nov), fix before 18 Nov
 
+Done 8 Nov (commit after `6ed494e`): F1, F2, F3, plus the save kept with `navigator.storage.persist` and Papan
+classmates that follow the week with fixed ups and downs.
+
 | # | What you see | Why | Fix | Owner | Time |
 | --- | --- | --- | --- | --- | --- |
 | F1 | Feed, Shop and Ranks tiles are plain grey squares; the first six are coloured | The first six use drawn SVG icons (`assets/app-*.svg`); W1-W5 used stock line icons on a slate square (`APP_TILES` in `app/src/shell/HomeScreen.tsx`) | Draw 3 SVG icons in the same style: Suapan coral (news), Kedai teal (shop front), Papan gold (trophy). Settings stays grey on purpose | Akmal (shell), art by Wafi | 1-2 h |

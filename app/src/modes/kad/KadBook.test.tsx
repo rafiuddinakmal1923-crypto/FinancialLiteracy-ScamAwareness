@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { cleanup, fireEvent, render, screen, within } from '@testing-library/react';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { scenarios } from 'virtual:celik-content';
 import { deriveCards } from '../../engine/cards';
 import { applyPreset } from '../../shell/demo';
@@ -59,6 +59,14 @@ describe('KadBook', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Kad Ilmu: Bajet' }));
     expect(window.location.hash).toBe('#/kad/ilmu/bajet');
   });
+  it('Kad Ilmu cards that have a Tonton explainer show a Tonton chip (F2)', () => {
+    render(<KadBook />);
+    fireEvent.click(screen.getByRole('tab', { name: 'Kad Ilmu' }));
+    for (const name of ['Kuasa Kompaun', 'Kos Hutang']) {
+      expect(within(screen.getByRole('button', { name: `Kad Ilmu: ${name}, ada Tonton` })).getByText('Tonton')).toBeTruthy();
+    }
+    expect(within(screen.getByRole('button', { name: 'Kad Ilmu: Bajet' })).queryByText('Tonton')).toBeNull();
+  });
   it('no NaN or undefined text on either tab', () => {
     const { container } = render(<KadBook />);
     expect(container.textContent).not.toMatch(/NaN|undefined/);
@@ -74,6 +82,16 @@ describe('KadIlmu detail', () => {
     expect(screen.getAllByText(/contoh, 2026, perlu disahkan|contoh, perlu disahkan/).length).toBeGreaterThan(0);
     expect(screen.getByText('Kad ini menerangkan, bukan mengesyorkan.')).toBeTruthy();
     expect(container.textContent).not.toMatch(/NaN|undefined/);
+  });
+  it('a card with an explainer has a Tonton button that scrolls to it; one without has none (F2)', () => {
+    const scroll = vi.fn();
+    Element.prototype.scrollIntoView = scroll;
+    const v = render(<KadIlmu params={{ code: 'kompaun' }} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Tonton penerangan' }));
+    expect(scroll).toHaveBeenCalledTimes(1);
+    v.unmount();
+    render(<KadIlmu params={{ code: 'bajet' }} />);
+    expect(screen.queryByRole('button', { name: 'Tonton penerangan' })).toBeNull();
   });
   it('redirects an unearned code to /kad', () => {
     window.location.hash = '#/kad/ilmu/semak';
