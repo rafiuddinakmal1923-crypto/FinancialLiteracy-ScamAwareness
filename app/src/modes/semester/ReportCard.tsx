@@ -1,6 +1,6 @@
 // S13: the semester report card. All counting lives in engine/report.ts; this file only lays it out.
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { CircleCheck, CircleX, Dumbbell } from 'lucide-react';
+import { CircleCheck, CircleX, Dumbbell, Trophy } from 'lucide-react';
 import { scenarios } from 'virtual:celik-content';
 import { BALANCE } from '../../engine/balance';
 import type { GradeLetter } from '../../engine/grade';
@@ -130,6 +130,15 @@ export function ReportCard() {
 
         {FINALIST && <GoalResult />}
         {FINALIST && <ShareButton />}
+        {FINALIST && (
+          <button
+            type="button" onClick={() => navigate('/papan')}
+            className="flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl bg-white px-4 text-base font-semibold text-ink ring-1 ring-inset ring-ink/25 active:scale-[.98]"
+          >
+            <Trophy aria-hidden size={20} strokeWidth={1.75} />
+            {t('rapor.papan')}
+          </button>
+        )}
 
         <section className="flex flex-col gap-3 rounded-2xl bg-kancil-soft p-4">
           <p className="flex items-start gap-2 text-base font-semibold leading-snug text-ink">

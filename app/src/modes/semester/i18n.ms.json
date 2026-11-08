@@ -4,5 +4,6 @@
   "bankku.tx.kedai.kehendak": "Kedai Kampus: kehendak",
   "bankku.tx.kedai.keperluan": "Kedai Kampus: keperluan",
   "dompet.save.in": "Simpan {amount}",
-  "dompet.save.out": "Keluarkan {amount}"
+  "dompet.save.out": "Keluarkan {amount}",
+  "rapor.papan": "Lihat Papan Markah"
 }

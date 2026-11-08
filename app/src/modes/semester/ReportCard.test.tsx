@@ -83,6 +83,11 @@ describe('ReportCard', () => {
     expect(useGame.getState().week).toBe(0);
     expect(useGame.getState().results).toEqual([]);
   });
+  it('opens Papan Markah from the report card (SRS 5.2b)', () => {
+    render(<ReportCard />);
+    fireEvent.click(screen.getByRole('button', { name: 'Lihat Papan Markah' }));
+    expect(window.location.hash).toBe('#/papan');
+  });
   // Kad Keputusan (W6, FR-85) sits on the report card when the finalist screens are on (D45); tests run with them on.
   it('Kembali goes home; the share button is Kad Keputusan', () => {
     render(<ReportCard />);
