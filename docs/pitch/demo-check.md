@@ -11,7 +11,9 @@ Only Tonton failed (still a placeholder then; now done, see below).
 **Re-run on the real `main` (`ec48ae6`, 8 Nov, after Akmal merged `lane/wafi`):** same result, 8 of 9 pass with no
 test branch; `npm run check` 767 tests green.
 
-**Current status (8 Nov, after Wafi's W5-W7 `189a57c`):** every demo step works. The one gap left: in `#/demo/pitch`
+**Current status (8 Nov, `main` `2c5ccaa`: Wafi's W5-W7 merged, Akmal's A8 lazy-loading, Papan Markah opens from the
+report card):** `npm run check` 776 tests green; dry run 8 of 9 from `#/demo/pitch`; both explainers still play all 15
+frames (checked from the `report` preset). Every demo step works. The one gap left: in `#/demo/pitch`
 the Kuasa Kompaun card is locked, so the Tonton step needs REQ 4 (Akmal). Then re-run once on the deployed link (16 Nov).
 
 | Demo step | Result | Blocker |
