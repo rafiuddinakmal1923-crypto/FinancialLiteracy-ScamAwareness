@@ -3,10 +3,7 @@
   command = "npm run build"
   publish = "dist"
 
+# A9 (D45): finalist screens on for every deploy, the live site included (turned on 8 Nov at Akmal's request).
 [build.environment]
   NODE_VERSION = "24"
-
-# Branch deploy of main (main--<site>.netlify.app): finalist screens on, so the team can see every feature.
-# Production builds build/celik-mvp and does not read this section, so it stays as it is (D45, D47).
-[context.main.environment]
   VITE_FINALIST = "1"
