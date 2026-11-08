@@ -1,23 +1,21 @@
 # Handoff (8 Nov 2026)
 
-State: MVP (milestones 1-6) and finalist work W1-W7 are built. `main` is at `ec48ae6`; Wafi's W5-W7 (`lane/wafi` 189a57c) and
-Aimar's pitch docs wait for the nightly A7 merge. Review branch `review/8nov` = main + both lanes + the ReportCard test fix:
-775 unit tests, tsc clean, check:content OK, build 1.55 MB, Playwright 85/85 with finalist screens on and retries off;
-with `VITE_FINALIST=0` the 65 non-finalist tests pass and the 20 finalist tests fail as expected (D45).
+State: `main` at `2c5ccaa` has the MVP, finalist work W1-W7, the report card Papan link and the A8 lazy-loading.
+776 unit tests, tsc clean, check:content OK, build about 1.55 MB, Playwright 85/85 with finalist on; with
+`VITE_FINALIST=0` the 65 non-finalist tests pass and the 20 finalist tests fail as expected (D45).
 Full review and scores: docs/REVIEW-2026-11-08.md.
 
-Live site: Netlify serves `build/celik-mvp`, still at `1dabbeb` (48 commits behind main). It lacks the C5 legal-line
-fixes, so film the 9 Nov video from a local build of `main`, not from the live link, unless the user updates the site.
-Finalist screens stay off on the live site until A9 (D45).
+Live site: Netlify builds `build/celik-mvp`, now `2c5ccaa` (same as `main`, finalist screens off). It only moves
+forward to a `main` commit that passed both Playwright configurations (D47). Filming from the live link is fine.
 
-Plans: docs/IMPLEMENTATION-PLAN.md (owners, tasks A1-A10, W1-W8, C1-C8, D1-D7). Decisions: docs/DECISIONS.md (D1-D46)
+Plans: docs/IMPLEMENTATION-PLAN.md (owners, tasks A1-A10, W1-W8, C1-C8, D1-D7). Decisions: docs/DECISIONS.md (D1-D47)
 win over everything.
 
 ## Left to do
-1. 9 Nov: film from a local `main` build (see docs/REVIEW-2026-11-08.md P0 list), upload, fill the form.
-2. 10-18 Nov: A7 nightly merges, A8 performance pass, A9 deploy with `VITE_FINALIST = "1"` only when the user says so.
+1. 9 Nov: fix the script overclaim (REQ-A1) and the mule bank notice (REQ-D5), film, upload, fill the form.
+2. 10-18 Nov: A7 nightly merges (then move `build/celik-mvp`, D47), A9 deploy with `VITE_FINALIST = "1"` only when the user says so.
 3. Open REQs from the review: Papan streak source and Kedai pot (Wafi), kipas and lampu in shop.json, Raya scenario, `_todoVerify`
-   clean-up and Semak Pulangan bands (Danish), script overclaim and film source (Aimar).
+   clean-up, Semak Pulangan bands and the mule bank notice (Danish), script overclaim (Aimar).
 
 ## Deferred minors worth fixing in the fix wave
 - Fixed in A6: typed-URL scenario guard, beginWeek guard, seedGame waits for the save, autosave flush, swipe clock
