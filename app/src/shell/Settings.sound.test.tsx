@@ -7,12 +7,12 @@ import { Settings } from './Settings';
 beforeEach(() => useSettings.getState().hydrate({ lang: 'ms', sound: true, reducedMotion: true, demo: true }));
 afterEach(cleanup);
 
-// F3 (docs/FUTURE-PLAN.md): no sounds exist yet, so the switch must not promise them.
+// The Sound switch turns the code-made music and sounds (engine/sound.ts) on and off.
 describe('Sound switch', () => {
-  it('says the sounds are coming soon', () => {
+  it('says what it turns on', () => {
     render(<Settings />);
     const sw = screen.getByRole('switch', { name: 'Bunyi' });
     expect(sw.getAttribute('aria-describedby')).toBeTruthy();
-    expect(document.getElementById(sw.getAttribute('aria-describedby')!)?.textContent).toMatch(/^Akan datang/);
+    expect(document.getElementById(sw.getAttribute('aria-describedby')!)?.textContent).toBe('Muzik dan bunyi permainan');
   });
 });

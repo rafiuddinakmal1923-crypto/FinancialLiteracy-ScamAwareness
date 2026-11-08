@@ -111,4 +111,6 @@ export const BALANCE = {
   /** Classmates' final grades; they start near startGrade (a fresh player scores about 21) and climb by week 12,
    *  moving up or down by up to `wobble` points along the way (fixed, not random). */
   papan: { grades: [42, 51, 58, 63, 67, 71, 76, 82, 90], startGrade: 16, wobble: 4 },
+  /** Volumes 0..1 for the code-made sounds (engine/sound.ts): everything, the music under it, the short sounds. */
+  sound: { master: 0.6, music: 0.18, sfx: 0.7, fadeSec: 0.4 },
 } as const;
