@@ -89,9 +89,9 @@ describe('ReportCard', () => {
     expect(window.location.hash).toBe('#/papan');
   });
   // Kad Keputusan (W6, FR-85) sits on the report card when the finalist screens are on (D45); tests run with them on.
-  it('Kembali goes home; the share button is Kad Keputusan', () => {
+  it('Kembali goes home; the share button is Kad Keputusan', async () => {
     render(<ReportCard />);
-    expect(screen.getAllByRole('button', { name: /kongsi|share/i }).map((b) => b.textContent)).toEqual(['Kongsi Kad Keputusan']);
+    expect((await screen.findAllByRole('button', { name: /kongsi|share/i })).map((b) => b.textContent)).toEqual(['Kongsi Kad Keputusan']);
     fireEvent.click(screen.getByRole('button', { name: 'Kembali' }));
     expect(window.location.hash).toBe('#/home');
   });

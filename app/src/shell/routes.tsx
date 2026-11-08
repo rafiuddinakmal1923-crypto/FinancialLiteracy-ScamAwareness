@@ -1,6 +1,6 @@
 // Route table: path pattern -> screen. Later tasks add their screens here (e.g. '/sembang', '/semester');
 // home tiles pointing at a path with no entry show an "Akan datang" toast instead.
-import type { ComponentType } from 'react';
+import { lazy, type ComponentType } from 'react';
 import type { KancilMood } from '../ui/Kancil';
 import { BankKuScreen } from '../modes/semester/BankKu';
 import { ChatList } from '../modes/semester/ChatList';
@@ -20,10 +20,6 @@ import { KadIlmu } from '../modes/kad/KadIlmu';
 import { Kalkulator } from '../modes/kalkulator/Kalkulator';
 import { CekHarian } from '../modes/harian/CekHarian';
 import { SwipeGame } from '../modes/harian/SwipeGame';
-import { ClassMode } from '../modes/classmode/ClassMode';
-import { Kedai } from '../modes/kedai/Kedai';
-import { Papan } from '../modes/papan/Papan';
-import { Suapan } from '../modes/suapan/Suapan';
 import { Checklist } from '../modes/drills/Checklist';
 import { Drill997 } from '../modes/drills/Drill997';
 import { Latihan } from '../modes/drills/Latihan';
@@ -35,6 +31,13 @@ import { Onboarding } from './Onboarding';
 import { setRouteTable } from './router';
 import { Settings } from './Settings';
 import { Splash } from './Splash';
+
+// A8: modes that are not on the first screens load as their own chunks. The service worker precaches every chunk,
+// so they still open offline.
+const ClassMode = lazy(() => import('../modes/classmode/ClassMode').then((m) => ({ default: m.ClassMode })));
+const Suapan = lazy(() => import('../modes/suapan/Suapan').then((m) => ({ default: m.Suapan })));
+const Kedai = lazy(() => import('../modes/kedai/Kedai').then((m) => ({ default: m.Kedai })));
+const Papan = lazy(() => import('../modes/papan/Papan').then((m) => ({ default: m.Papan })));
 
 export interface RouteDef {
   pattern: string;

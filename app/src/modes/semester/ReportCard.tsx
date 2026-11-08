@@ -1,5 +1,5 @@
 // S13: the semester report card. All counting lives in engine/report.ts; this file only lays it out.
-import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { lazy, Suspense, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { CircleCheck, CircleX, Dumbbell, Trophy } from 'lucide-react';
 import { scenarios } from 'virtual:celik-content';
 import { BALANCE } from '../../engine/balance';
@@ -16,8 +16,10 @@ import { MeterBar } from '../../ui/MeterBar';
 import { PORTRAIT } from '../../ui/portraits';
 import { useTactic } from '../../ui/tactics';
 import { useConceptName } from '../harian/shared';
-import { ShareButton } from '../kongsi/ShareButton';
 import { GoalResult } from '../matlamat/GoalResult';
+
+// A8: Kad Keputusan brings html-to-image, so it loads as its own chunk.
+const ShareButton = lazy(() => import('../kongsi/ShareButton').then((m) => ({ default: m.ShareButton })));
 
 const MOOD: Record<GradeLetter, KancilMood> = { A: 'proud', B: 'proud', C: 'smile', D: 'worried' };
 /** Stamp colours; the letter itself is always printed, so colour is never the only signal. */
@@ -129,7 +131,7 @@ export function ReportCard() {
         </section>
 
         {FINALIST && <GoalResult />}
-        {FINALIST && <ShareButton />}
+        {FINALIST && <Suspense fallback={<div className="min-h-12" />}><ShareButton /></Suspense>}
         {FINALIST && (
           <button
             type="button" onClick={() => navigate('/papan')}

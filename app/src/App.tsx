@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { MotionConfig } from 'framer-motion';
 import { DemoWatermark } from './shell/DemoWatermark';
 import { PhoneFrame } from './shell/PhoneFrame';
@@ -62,7 +62,9 @@ export default function App() {
       <MotionConfig reducedMotion={reducedMotion ? 'always' : 'user'}>
         <div className="relative min-h-dvh w-full">
           <RouteErrorBoundary key={path}>
-            <Screen params={params} />
+            <Suspense fallback={null}>
+              <Screen params={params} />
+            </Suspense>
           </RouteErrorBoundary>
           <DemoWatermark />
         </div>
@@ -77,7 +79,9 @@ export default function App() {
         mood={route.mood}
       >
         <RouteErrorBoundary key={path}>
-          <Screen params={params} />
+          <Suspense fallback={null}>
+            <Screen params={params} />
+          </Suspense>
         </RouteErrorBoundary>
       </PhoneFrame>
     </MotionConfig>
