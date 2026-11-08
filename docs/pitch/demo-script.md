@@ -7,6 +7,7 @@ and fix the timings.
 ## Setup (before going on stage)
 - Two phones on the **deployed link**, opened once online, then **airplane mode on** (status bar visible on the projector).
 - DEMO watermark on. Notifications off.
+- Sound: the app plays music and tap sounds (on by default). Decide in rehearsal 1: off (Settings) if the hall speaker is loud or Aimar is narrating over it; otherwise phone volume low.
 - Main phone state: open **`<deployed link>/#/demo/pitch`** on both phones (Akmal, 8 Nov). It opens the home screen
   at week 5 with RM1,120 Duit, the emergency-fund goal at RM200 / RM300, four chats played, and Kedai and Suapan untouched.
   Open it again between rehearsals to reset.

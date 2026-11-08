@@ -10,6 +10,7 @@ them aloud before recording. Shots follow the acceptance checklist in docs/SRS.m
 ## Before filming
 - **Airplane mode on, on camera, before anything else, and the status bar visible the whole time** (offline proof).
 - **DEMO watermark on** (Settings → Tanda air DEMO). Every bank or portal screen must show the SIMULASI banner.
+- **Sound:** the app now plays music and tap sounds (on by default). Turn it **off** in Settings before screen-recording so the narration is clean, or record it on purpose and keep it low under the voice. Decide once and use the same for every shot.
 - Film from a **local build of `main`** (`npm run build` + preview), opened once online, then switch to airplane mode. The Netlify link is a fallback only if it serves the same commit as `main` (Akmal checks; it did on 8 Nov, D47). An older live build has old legal lines.
 - Demo shortcuts (`#/demo/<scene>`) put the game in a known state: `job`, `mule`, `report`, `kelas`, `kalkulator`.
   Open each one before its shot so you don't play 12 weeks on camera.
