@@ -24,6 +24,8 @@ describe('Papan Markah (W5)', () => {
     expect(rows.indexOf(mine[0])).toBe(5);
     expect(within(mine[0]).getByText('Aina (kamu)')).toBeTruthy();
     expect(screen.getByText('Kamu di tempat ke-6 daripada 10.')).toBeTruthy();
+    // The same one-decimal score as the report card and Kad Keputusan.
+    expect(within(mine[0]).getByText('65.5/100')).toBeTruthy();
   });
 
   it('a tie places the player above the classmate; 100 is first and 0 is last', () => {
@@ -36,7 +38,7 @@ describe('Papan Markah (W5)', () => {
   });
 
   it('shows the Cek Harian streak and the offline note', () => {
-    useGame.setState({ swipe: { best: 5, streak: 3, lastPlayed: null } });
+    useGame.setState({ harian: { ...useGame.getState().harian, streak: 3 }, swipe: { best: 5, streak: 9, lastPlayed: null } });
     render(<Papan />);
     expect(screen.getByText('Siri Cek Harian kamu: 3 hari')).toBeTruthy();
     expect(screen.getByText(/rekaan/)).toBeTruthy();

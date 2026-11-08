@@ -43,7 +43,7 @@ describe('Kedai Kampus (W3)', () => {
     expect(spy).not.toHaveBeenCalled();
     fireEvent.click(within(card('snek')).getByRole('button', { name: 'Beli' }));
     fireEvent.click(screen.getByRole('button', { name: 'Sahkan' }));
-    expect(spy).toHaveBeenCalledWith('snek');
+    expect(spy).toHaveBeenCalledWith('snek', 'kehendak');
     spy.mockRestore();
   });
 

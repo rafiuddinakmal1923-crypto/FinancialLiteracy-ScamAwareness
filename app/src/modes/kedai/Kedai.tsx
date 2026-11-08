@@ -39,7 +39,7 @@ export function Kedai() {
   };
 
   const buy = (item: ShopItem) => {
-    const r = useGame.getState().buyItem(item.id);
+    const r = useGame.getState().buyItem(item.id, item.pot);
     setConfirm(null);
     if ('error' in r) { toast(t(`kedai.error.${r.error}`), 'danger'); return; }
     const name = (lang === 'en' ? item.name.en : undefined) ?? item.name.ms;
