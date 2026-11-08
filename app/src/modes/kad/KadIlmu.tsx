@@ -1,7 +1,7 @@
 // S21: one Kad Ilmu in full. Real scheme names come from content/concepts.json (D27); every figure carries its year.
-import { useEffect } from 'react';
-import { ArrowLeft } from 'lucide-react';
-import { concepts } from 'virtual:celik-content';
+import { useEffect, useRef } from 'react';
+import { ArrowLeft, Play } from 'lucide-react';
+import { concepts, explainers } from 'virtual:celik-content';
 import type { ConceptInfo } from '../../engine/schemas';
 import { FINALIST } from '../../shell/features';
 import { useT } from '../../shell/i18n';
@@ -34,6 +34,7 @@ export function KadIlmu({ params }: { params: Record<string, string> }) {
   const lang = useSettings((s) => s.lang);
   const earned = useGame((s) => s.kadIlmu);
   const info = concepts?.find((c) => c.code === params.code);
+  const slot = useRef<HTMLDivElement>(null);
   const ok = !!info && earned.includes(info.code);
 
   useEffect(() => {
@@ -42,12 +43,22 @@ export function KadIlmu({ params }: { params: Record<string, string> }) {
   if (!info || !ok) return null;
 
   const name = (lang === 'en' ? info.name.en : undefined) ?? info.name.ms;
+  const tonton = FINALIST && !!explainers?.some((e) => e.concept === info.code);
   return (
     <div data-screen="kad-ilmu" className="flex min-h-0 flex-1 flex-col overflow-y-auto bg-paper px-4 pb-6">
       <div className="flex items-center gap-1 pt-1">
         <button type="button" aria-label={t('common.back')} onClick={() => navigate('/kad')} className="-ml-2 flex h-12 w-12 items-center justify-center rounded-full text-ink">
           <ArrowLeft aria-hidden size={24} strokeWidth={1.75} />
         </button>
+        {tonton && (
+          <button
+            type="button" onClick={() => slot.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+            aria-label={t('kad.ilmu.tontonJump')}
+            className="ml-auto mr-16 flex min-h-12 items-center gap-2 rounded-full bg-indigo px-4 text-base font-semibold text-paper active:scale-[.97]"
+          >
+            <Play aria-hidden size={16} strokeWidth={2.5} fill="currentColor" />{t('kad.ilmu.tonton')}
+          </button>
+        )}
       </div>
       <article className="rounded-[24px] border-4 border-kancil bg-white px-4 pb-5 pt-4 shadow-[0_2px_8px_rgba(28,27,58,.08)]">
         <header className="flex items-center gap-3">
@@ -60,7 +71,7 @@ export function KadIlmu({ params }: { params: Record<string, string> }) {
         <Section title={t('ilmu.semak')} text={info.caraSemak} />
         <p className="mt-5 border-t border-kancil/50 pt-3 text-base italic text-ink-soft">{t('ilmu.footer')}</p>
       </article>
-      {FINALIST && <ExplainerSlot concept={info.code} />}
+      {FINALIST && <div ref={slot} className="scroll-mt-2"><ExplainerSlot concept={info.code} /></div>}
     </div>
   );
 }

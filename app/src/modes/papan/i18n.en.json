@@ -7,6 +7,8 @@
   "papan.place": "You are number {place} of {total}.",
   "papan.listLabel": "Class ranking",
   "papan.you": "{name} (you)",
+  "papan.up": "Up {n} this week",
+  "papan.down": "Down {n} this week",
   "papan.score": "{score}/100",
   "papan.streak": "Your Daily Check streak: {n} days",
   "papan.note": "These classmates are fictional, and this board stays on your phone."

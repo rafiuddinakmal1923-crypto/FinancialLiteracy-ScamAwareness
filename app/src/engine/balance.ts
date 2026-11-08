@@ -108,5 +108,7 @@ export const BALANCE = {
     measures: { kecemasan: 'simpanan', laptop: 'simpanan', raya: 'simpanan', labur: 'labur' },
     nudgeWeeks: [4, 8], xpReached: 100,
   },
-  papan: { grades: [42, 51, 58, 63, 67, 71, 76, 82, 90] },
+  /** Classmates' final grades; they start near startGrade (a fresh player scores about 21) and climb by week 12,
+   *  moving up or down by up to `wobble` points along the way (fixed, not random). */
+  papan: { grades: [42, 51, 58, 63, 67, 71, 76, 82, 90], startGrade: 16, wobble: 4 },
 } as const;

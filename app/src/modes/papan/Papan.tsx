@@ -1,6 +1,6 @@
 // W5 Papan Markah (FR-84, D39): the player's semester score so far, ranked offline among 9 fictional classmates
 // (rankClassmates). No network and no typed names: classmates come from content/classmates.json.
-import { ArrowLeft, Flame } from 'lucide-react';
+import { ArrowLeft, ChevronDown, ChevronUp, Flame } from 'lucide-react';
 import { classmates } from 'virtual:celik-content';
 import { rankClassmates } from '../../engine/papan';
 import { useT } from '../../shell/i18n';
@@ -13,8 +13,9 @@ export function Papan() {
   const t = useT();
   const name = useGame((s) => s.name);
   const streak = useGame((s) => s.harian.streak);
+  const week = useGame((s) => s.week);
   const { score, finished } = useReport();
-  const rows = rankClassmates(score);
+  const rows = rankClassmates(score, week);
   const nameOf = (id: string) => classmates?.find((c) => c.id === id)?.name ?? id;
   const place = rows.findIndex((r) => r.player) + 1;
   return (
@@ -45,7 +46,17 @@ export function Papan() {
                 <span className={`w-7 shrink-0 text-center font-mono text-base font-semibold ${r.player ? 'text-paper' : 'text-ink-soft'}`}>{i + 1}</span>
                 <Avatar name={r.player ? name : label} size={40} />
                 <span className="min-w-0 flex-1 truncate text-base font-semibold">{label}</span>
-                <span className="shrink-0 font-mono text-base font-semibold">{t('papan.score', { score: r.grade })}</span>
+                <span className="flex shrink-0 flex-col items-end leading-tight">
+                  <span className="font-mono text-base font-semibold">{t('papan.score', { score: r.grade })}</span>
+                  {r.change !== null && r.change !== 0 && (
+                    <span aria-label={t(r.change > 0 ? 'papan.up' : 'papan.down', { n: Math.abs(r.change) })} className="flex items-center font-mono text-base text-ink-soft">
+                      {r.change > 0
+                        ? <ChevronUp aria-hidden size={16} strokeWidth={2.25} className="text-safe" />
+                        : <ChevronDown aria-hidden size={16} strokeWidth={2.25} className="text-danger-ink" />}
+                      {Math.abs(r.change)}
+                    </span>
+                  )}
+                </span>
               </li>
             );
           })}

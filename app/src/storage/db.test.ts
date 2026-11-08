@@ -1,5 +1,5 @@
 import 'fake-indexeddb/auto';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { __resetStorageForTests, loadSave, storageMode, writeSave, type SaveData } from './db';
 import { initialGame } from '../state/game';
 import { defaultSettings } from '../state/settings';
@@ -48,5 +48,23 @@ describe('writeSaveNow', () => {
     await writeSaveNow(data);
     expect((await loadSave())?.game.week).toBe(5);
     expect(storageMode()).toBe('indexeddb');
+  });
+});
+
+describe('asks the browser to keep the save (lost-progress report, 8 Nov)', () => {
+  it('requests persistent storage once when the database opens, and copes without the API', async () => {
+    const { __resetStorageForTests, loadSave } = await import('./db');
+    const persist = vi.fn(() => Promise.resolve(true));
+    const nav = globalThis.navigator as unknown as { storage?: unknown };
+    const before = nav.storage;
+    Object.defineProperty(globalThis.navigator, 'storage', { value: { persist, persisted: () => Promise.resolve(false) }, configurable: true });
+    __resetStorageForTests();
+    await loadSave();
+    await loadSave();
+    expect(persist).toHaveBeenCalledTimes(1);
+    Object.defineProperty(globalThis.navigator, 'storage', { value: undefined, configurable: true });
+    __resetStorageForTests();
+    await expect(loadSave()).resolves.toBeDefined();
+    Object.defineProperty(globalThis.navigator, 'storage', { value: before, configurable: true });
   });
 });

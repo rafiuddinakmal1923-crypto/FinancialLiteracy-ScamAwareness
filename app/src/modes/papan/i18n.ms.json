@@ -7,6 +7,8 @@
   "papan.place": "Kamu di tempat ke-{place} daripada {total}.",
   "papan.listLabel": "Kedudukan kelas",
   "papan.you": "{name} (kamu)",
+  "papan.up": "Naik {n} minggu ini",
+  "papan.down": "Turun {n} minggu ini",
   "papan.score": "{score}/100",
   "papan.streak": "Siri Cek Harian kamu: {n} hari",
   "papan.note": "Rakan sekelas ini rekaan dan papan ini disimpan dalam telefon kamu sahaja."

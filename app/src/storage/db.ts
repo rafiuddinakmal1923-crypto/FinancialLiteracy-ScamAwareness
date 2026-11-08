@@ -12,12 +12,18 @@ let opened: Promise<CelikDb | null> | null = null;
 let mode: 'indexeddb' | 'memory' = 'indexeddb';
 let memorySave: SaveData | null = null;
 
+/** Asks the browser not to clear the save when the phone runs low on space. Best effort: ignored where unsupported. */
+function keepStorage(): void {
+  try { void navigator.storage?.persist?.().catch(() => undefined); } catch { /* not supported */ }
+}
+
 async function open(): Promise<CelikDb | null> {
   if (typeof indexedDB === 'undefined') { mode = 'memory'; return null; }
   try {
     const d = new Dexie('celik') as CelikDb;
     d.version(1).stores({ save: 'id' });
     await d.open();
+    keepStorage();
     db = d;
     mode = 'indexeddb';
     return d;

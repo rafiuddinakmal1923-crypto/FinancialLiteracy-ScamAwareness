@@ -15,6 +15,7 @@ afterEach(() => { cleanup(); useGame.getState().reset(); });
 
 describe('Papan Markah (W5)', () => {
   it('lists 10 rows and highlights the player at the place rankClassmates gives', () => {
+    useGame.getState().set({ week: 12 });
     render(<Papan />);
     const rows = within(screen.getByRole('list', { name: 'Kedudukan kelas' })).getAllByRole('listitem');
     expect(rows).toHaveLength(10);
@@ -29,6 +30,7 @@ describe('Papan Markah (W5)', () => {
   });
 
   it('a tie places the player above the classmate; 100 is first and 0 is last', () => {
+    useGame.getState().set({ week: 12 });
     for (const [score, place] of [[90, 1], [100, 1], [0, 10]] as const) {
       report.score = score;
       const v = render(<Papan />);
@@ -42,5 +44,15 @@ describe('Papan Markah (W5)', () => {
     render(<Papan />);
     expect(screen.getByText('Siri Cek Harian kamu: 3 hari')).toBeTruthy();
     expect(screen.getByText(/rekaan/)).toBeTruthy();
+  });
+
+  it('mid-semester, classmates show the grades for this week and an up or down mark (not the final grades)', () => {
+    useGame.getState().set({ week: 6 });
+    report.score = 40;
+    render(<Papan />);
+    const list = screen.getByRole('list', { name: 'Kedudukan kelas' });
+    expect(within(list).queryByText('90/100')).toBeNull();
+    expect(within(list).getAllByLabelText(/^Naik [\d.]+ minggu ini$/).length).toBeGreaterThan(0);
+    expect(within(list).getAllByLabelText(/^Turun [\d.]+ minggu ini$/).length).toBeGreaterThan(0);
   });
 });
