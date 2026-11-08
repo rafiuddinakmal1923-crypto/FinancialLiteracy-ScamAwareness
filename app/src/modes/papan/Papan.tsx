@@ -12,7 +12,7 @@ import { useReport } from '../kongsi/useReport';
 export function Papan() {
   const t = useT();
   const name = useGame((s) => s.name);
-  const streak = useGame((s) => s.swipe.streak);
+  const streak = useGame((s) => s.harian.streak);
   const { score, finished } = useReport();
   const rows = rankClassmates(score);
   const nameOf = (id: string) => classmates?.find((c) => c.id === id)?.name ?? id;
@@ -45,7 +45,7 @@ export function Papan() {
                 <span className={`w-7 shrink-0 text-center font-mono text-base font-semibold ${r.player ? 'text-paper' : 'text-ink-soft'}`}>{i + 1}</span>
                 <Avatar name={r.player ? name : label} size={40} />
                 <span className="min-w-0 flex-1 truncate text-base font-semibold">{label}</span>
-                <span className="shrink-0 font-mono text-base font-semibold">{t('papan.score', { score: Math.round(r.grade) })}</span>
+                <span className="shrink-0 font-mono text-base font-semibold">{t('papan.score', { score: r.grade })}</span>
               </li>
             );
           })}
